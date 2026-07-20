@@ -11,6 +11,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@azure/identity": "^4.2.1",
     "@azure/msal-node": "^2.6.4",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "bcrypt": "^5.1.1",
