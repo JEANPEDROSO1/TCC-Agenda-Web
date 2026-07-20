@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="configuracoes.css">
+    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <title>Agenda Web | Configurações</title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="barra-lateral-dashboard">
+        <div class="logo-barra-lateral">
+            <a href="dashboard.html">
+                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+            </a>
+        </div>
+
+        <nav class="barra-navegacao-dashboard">
+            <ul>
+                <li><a href="dashboard.html">Painel</a></li>
+                <li><a href="compromissos.html">Compromissos</a></li>
+                <li><a href="configuracoes.html" class="ativo">Configurações</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="admin.html">Administrador</a></li>
+                <li><a href="sair.html">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main class="conteudo-dashboard">
+        <div class="cabecalho-pagina">
+            <h1>Configurações</h1>
+            <p style="color: var(--text-color, #475569); margin-top: 8px;">Personalize a aparência e o funcionamento da sua agenda.</p>
+        </div>
+
+        <div class="grid-configuracoes">
+            <!-- SEÇÃO: APARÊNCIA E TEMA -->
+            <section class="cartao-vidro secao-config">
+                <div class="secao-header">
+                    <h2>🎨 Aparência e Tema</h2>
+                </div>
+                <div class="secao-body">
+                    <div class="config-grupo">
+                        <div class="config-info">
+                            <label>Tema Escuro</label>
+                            <span class="descricao-config">Alterne entre o modo claro e escuro para melhor conforto visual.</span>
+                        </div>
+                        <div class="config-acao">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggleTema">
+                                <span class="slider redimensionavel"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </section>
+
+            <!-- SEÇÃO: PERFIL -->
+            <section class="cartao-vidro secao-config">
+                <div class="secao-header">
+                    <h2>👤 Perfil do Usuário</h2>
+                </div>
+                <div class="secao-body">
+                    <div class="config-grupo">
+                        <div class="config-info">
+                            <label>Foto de Perfil</label>
+                            <span class="descricao-config">Atualize sua foto que aparecerá na plataforma.</span>
+                        </div>
+                        <div class="config-acao grupo-foto">
+                            <div class="foto-preview">
+                                <img id="imagemPreview" src="../IMG/avatar-padrao.png" alt="Foto do usuário" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NiZDVlMSI+PHBhdGggZD0iTTI0IDIwLjk5M1YyNGgtMjR2LTIuOTkzYy4wNDMtNC44NTIgMy45MDctOC43ODYgOC43NTktOC43ODYgMS4zMyAwIDIuNTg0LjMwNyAzLjcwMi44NDUgMS44NS0xLjMxNCAzLjAzNi0zLjQ4NyAzLjAzNi01LjkyNiAwLTMuOTAyLTMuMTM4LTcuMDY4LTcuMDM5LTcuMDY4cy03LjAzOSAzLjE2Ni03LjAzOSA3LjA2OGMwIDIuNDM5IDEuMTg2IDQuNjEyIDMuMDM2IDUuOTI2IDEuMTE4LS41MzggMi4zNzItLjg0NSAzLjcwMi0uODQ1IDQuODUzIDAgOC43MTYgMy45MzQgOC43NTkgOC43ODZ6Ii8+PC9zdmc+'">
+                            </div>
+                            <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+                            <button id="btnAlterarFoto" class="btn-secundario-pequeno">Escolher Foto</button>
+                        </div>
+                    </div>
+
+                    <div class="config-grupo em-coluna">
+                        <label>Nome Completo</label>
+                        <input type="text" id="inputNome" class="input-padrao largura-total" placeholder="Seu nome..." value="Usuário Padrão">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO: FUSO HORÁRIO -->
+            <section class="cartao-vidro secao-config">
+                <div class="secao-header">
+                    <h2>🌍 Região e Fuso Horário</h2>
+                </div>
+                <div class="secao-body">
+                    <div class="config-grupo em-coluna">
+                        <label>Fuso Horário</label>
+                        <select id="selectFuso" class="input-padrao largura-total">
+                            <option value="America/Sao_Paulo" selected>Horário de Brasília (BRT) - UTC-3 (Recomendado)</option>
+                            <option value="America/Manaus">Horário do Amazonas (AMT) - UTC-4</option>
+                            <option value="America/Noronha">Horário de Fernando de Noronha (FNT) - UTC-2</option>
+                            <option value="UTC">Tempo Universal Coordenado (UTC)</option>
+                        </select>
+                        <span class="descricao-config" style="margin-top: 8px; display: block;">Manter o padrão de Brasília garante melhor compatibilidade regional entre os membros de grupos e eventos.</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="rodape-configuracoes">
+            <button id="btnSalvarConfig" class="botao-principal-vidro btn-grande">
+                Salvar Configurações
+            </button>
+        </div>
+    </main>
+    
+    <!-- TOAST NOTIFICAÇÃO -->
+    <div id="toastNotificacao" class="toast">
+        Configurações salvas com sucesso!
+    </div>
+
+    <script src="configuracoes.js" defer></script>
+</body>
+</html>

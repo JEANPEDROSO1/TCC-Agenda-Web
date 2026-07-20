@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: TCC-Agenda-Web
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: FRONTEND_URL
+        sync: false # O Render deixará o espaço vazio para você colar a URL da Vercel
+      - key: DB_HOST
+        sync: false # Cole o host do Aiven MySQL
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        value: agenda_web
+      - key: DB_SSL
+        value: true
+      - key: JWT_SECRET
+        generateValue: true # O Render vai gerar uma senha forte automaticamente
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: AZURE_TENANT_ID
+        sync: false
+      - key: AZURE_CLIENT_ID
+        sync: false
+      - key: AZURE_CLIENT_SECRET
+        sync: false
+      - key: EMAIL_REMETENTE
+        sync: false

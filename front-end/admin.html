@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <title>Agenda Web | Administração</title>
+    <!-- Chart.js para renderização dos gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="barra-lateral-dashboard">
+        <div class="logo-barra-lateral">
+            <a href="dashboard.html">
+                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+            </a>
+        </div>
+
+        <nav class="barra-navegacao-dashboard">
+            <ul>
+                <li><a href="dashboard.html">Painel</a></li>
+                <li><a href="compromissos.html">Compromissos</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="admin.html" class="ativo">Administrador</a></li>
+                <li><a href="sair.html">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main class="conteudo-dashboard">
+        <div class="cabecalho-pagina" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="color: var(--primary-color); font-size: 2rem; margin: 0;">Painel de Administração</h1>
+                <p style="color: var(--text-muted); margin-top: 8px;">Gerencie usuários, permissões e acompanhe o uso do sistema.</p>
+            </div>
+        </div>
+
+        <!-- INDICADORES RÁPIDOS -->
+        <div class="grid-indicadores">
+            <div class="cartao-vidro card-indicador">
+                <div class="indicador-info">
+                    <h3>Total de Usuários</h3>
+                    <p id="totalUsuarios">0</p>
+                </div>
+                <div class="indicador-icone" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-color);">👥</div>
+            </div>
+            <div class="cartao-vidro card-indicador">
+                <div class="indicador-info">
+                    <h3>Compromissos Cadastrados</h3>
+                    <p id="totalCompromissos">0</p>
+                </div>
+                <div class="indicador-icone" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">📅</div>
+            </div>
+            <div class="cartao-vidro card-indicador">
+                <div class="indicador-info">
+                    <h3>Administradores</h3>
+                    <p id="totalAdmins">0</p>
+                </div>
+                <div class="indicador-icone" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">🛡️</div>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS -->
+        <div class="grid-graficos">
+            <div class="cartao-vidro card-grafico">
+                <h3>Distribuição de Usuários</h3>
+                <div class="grafico-container pie-container">
+                    <canvas id="graficoUsuarios"></canvas>
+                </div>
+            </div>
+            <div class="cartao-vidro card-grafico">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0;">Atividade Recente</h3>
+                    <select id="filtroGraficoAtividade" class="select-estilizado">
+                        <option value="dia">Hoje (24h)</option>
+                        <option value="mes" selected>Este Mês</option>
+                        <option value="ano">Este Ano</option>
+                    </select>
+                </div>
+                <div class="grafico-container">
+                    <canvas id="graficoCompromissos"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTAGEM DE USUÁRIOS -->
+        <div class="cartao-vidro" style="margin-top: 24px;">
+            <div class="cabecalho-cartao" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="color: var(--primary-color); margin: 0;">Gerenciamento de Usuários</h2>
+            </div>
+            <div class="tabela-container">
+                <table class="tabela-admin" id="tabelaUsuarios">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome e Perfil</th>
+                            <th>Email</th>
+                            <th>Cargo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabelaUsuarios">
+                        <!-- Renderizado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin.js" defer></script>
+</body>
+</html>

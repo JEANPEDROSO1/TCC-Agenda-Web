@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <title>Agenda Web | Entrar</title>
+    <script src="script.js"></script>
+    <script src="config.js"></script>
+    <script src="login.js" defer></script>
+</head>
+<body>
+    <main class="page auth-page">
+        <section class="auth-card" aria-labelledby="login-title">
+            <a href="index.html" class="logo-link auth-logo">
+                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+            </a>
+            <h1 id="login-title">Entrar</h1>
+            <p class="auth-subtitle">Acesse sua conta e continue organizando sua rotina.</p>
+
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+                </div>
+                <p class="auth-switch auth-switch--end">
+                    <a href="forgot-password.html">Esqueceu a senha?</a>
+                </p>
+                <button type="submit">Entrar</button>
+            </form>
+            <p class="auth-switch auth-switch--center">
+                Não tem uma conta? <a href="register.html">Cadastre-se</a>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Agenda Web. Todos os direitos reservados. || Desenvolvido por: Jean Pedroso</p>
+    </footer>
+</body>
+</html>

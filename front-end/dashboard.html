@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <title>Agenda Web | Dashboard</title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="barra-lateral-dashboard">
+        <div class="logo-barra-lateral">
+            <a href="dashboard.html">
+                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+            </a>
+        </div>
+
+        <nav class="barra-navegacao-dashboard">
+            <ul>
+                <li><a href="dashboard.html" class="ativo">Painel</a></li>
+                <li><a href="compromissos.html">Compromissos</a></li>
+                <li><a href="configuracoes.html">Configurações</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="admin.html">Administrador</a></li>
+                <li><a href="sair.html">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main class="conteudo-dashboard">
+        <div class="grade-dashboard">
+            <section class="cartao-vidro cartao-calendario">
+                <div class="cabecalho-cartao">
+                    <button id="mesAnterior" class="botao-navegacao-mes" aria-label="Mês anterior">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 18L9 12L15 6"/></svg>
+                    </button>
+                    <h2 id="mesEAno">Janeiro 2024</h2>
+                    <button id="proximoMes" class="botao-navegacao-mes" aria-label="Próximo mês">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18L15 12L9 6"/></svg>
+                    </button>
+                </div>
+
+                <div class="area-calendario">
+                    <div class="dias-da-semana">
+                        <span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span>
+                    </div>
+                    <div class="grade-calendario" id="calendario">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+
+                <div class="container-novo-compromisso-mobile">
+                    <button id="botaoNovoCompromissoMobile" class="botao-principal-vidro largura-total" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;">
+                        <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+                        Novo Compromisso
+                    </button>
+                </div>
+            </section>
+
+            <section class="painel-compromissos-dashboard">
+                <div class="cabecalho-cartao">
+                    <h2>Próximos compromissos</h2>
+                </div>
+                <div class="lista-compromissos" id="listaCompromissos">
+                    <div class="estado-vazio">
+                        <p>Nenhum compromisso para este mês.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- MODAL NOVO COMPROMISSO (Dashboard) -->
+    <!-- Este modal permite que o usuário adicione um compromisso diretamente do calendário do painel -->
+    <div id="modalCompromisso" class="modal-overlay" style="display: none;">
+        <div class="modal-content cartao-vidro">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Novo Compromisso</h2>
+                <button id="btnFecharModal" class="btn-fechar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="formCompromisso">
+                    <input type="hidden" id="compId">
+                    
+                    <div class="form-group">
+                        <label for="compTitulo">Título</label>
+                        <!-- Campo para o nome/título do compromisso -->
+                        <input type="text" id="compTitulo" class="input-padrao largura-total" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compDescricao">Descrição</label>
+                        <!-- Campo para a descrição detalhada -->
+                        <textarea id="compDescricao" class="input-padrao largura-total" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-metade">
+                            <label for="compData">Data</label>
+                            <!-- Data do compromisso, será preenchida automaticamente com o dia selecionado no calendário -->
+                            <input type="date" id="compData" class="input-padrao largura-total" required>
+                        </div>
+                        <div class="form-group col-metade">
+                            <label for="compHora">Hora</label>
+                            <!-- Horário do evento -->
+                            <input type="time" id="compHora" class="input-padrao largura-total" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-metade">
+                            <label for="compUrgencia">Urgência</label>
+                            <!-- Define se é urgente ou normal, afetando a cor na lista -->
+                            <select id="compUrgencia" class="input-padrao largura-total">
+                                <option value="normal">Normal</option>
+                                <option value="urgente">Urgente</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-metade">
+                            <label for="compRepeticao">Repetição</label>
+                            <!-- Frequência do evento (apenas demonstrativo na dashboard) -->
+                            <select id="compRepeticao" class="input-padrao largura-total">
+                                <option value="nenhuma">Nenhuma</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="mensal">Mensal</option>
+                                <option value="anual">Anual</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="btnCancelarModal" class="btn-secundario">Cancelar</button>
+                        <!-- Botão que envia o formulário e salva o compromisso no localStorage -->
+                        <button type="submit" class="botao-principal-vidro">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js" defer></script>
+</body>
+</html>

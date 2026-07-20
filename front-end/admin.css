@@ -1,0 +1,242 @@
+/* Estilos dedicados ao Painel de Administração */
+
+/* Indicadores Superiores */
+.grid-indicadores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.card-indicador {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+}
+
+.indicador-info h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.indicador-info p {
+    margin: 8px 0 0 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.indicador-icone {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+/* Gráficos */
+.grid-graficos {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+}
+
+.card-grafico h3 {
+    margin: 0 0 16px 0;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.grafico-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.pie-container {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 900px) {
+    .grid-graficos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tabelas Administrativas */
+.tabela-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-admin {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 600px;
+}
+
+.tabela-admin th {
+    background: rgba(37, 99, 235, 0.05);
+    color: var(--text-muted);
+    font-weight: bold;
+    text-align: left;
+    padding: 16px;
+    font-size: 0.9rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+html.dark-mode .tabela-admin th {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tabela-admin td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    vertical-align: middle;
+}
+
+.tabela-admin tbody tr {
+    transition: background-color 0.2s;
+}
+
+.tabela-admin tbody tr:hover {
+    background: rgba(37, 99, 235, 0.02);
+}
+
+html.dark-mode .tabela-admin tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Identidade do Usuário na Tabela */
+.usuario-identidade {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.usuario-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    object-fit: cover;
+}
+
+html.dark-mode .usuario-avatar {
+    background: #334155;
+}
+
+.usuario-info-nome {
+    font-weight: bold;
+}
+
+/* Badges e Tags */
+.badge-cargo {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.badge-cargo.admin {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+html.dark-mode .badge-cargo.admin {
+    color: #fbbf24;
+}
+
+.badge-cargo.usuario {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
+/* Ações na Tabela */
+.acoes-tabela {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-acao {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.btn-acao:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+html.dark-mode .btn-acao:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.btn-acao.delete:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.btn-acao.promover:hover {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+/* Select Estilizado para Filtros */
+.select-estilizado {
+    padding: 8px 32px 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background-color: rgba(37, 99, 235, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 20px;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    transition: all 0.2s;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%232563eb" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 8px);
+    background-position-y: 50%;
+}
+
+.select-estilizado:hover {
+    background-color: rgba(37, 99, 235, 0.15);
+}
+
+html.dark-mode .select-estilizado {
+    color: #e2e8f0;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23e2e8f0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+}
+
+html.dark-mode .select-estilizado:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Corrigir a cor das opções no dropdown para que não fiquem brancas no fundo branco */
+.select-estilizado option {
+    background-color: #ffffff;
+    color: var(--text-color);
+}
+
+html.dark-mode .select-estilizado option {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}

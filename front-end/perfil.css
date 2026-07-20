@@ -1,0 +1,433 @@
+/* Layout Geral da Página de Perfil */
+.grid-perfil {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+    .grid-perfil {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card-perfil, .card-seguranca {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-sessao {
+    margin: 0 0 24px 0;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+/* Área da Imagem do Avatar */
+.secao-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.container-imagem {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--border-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    cursor: pointer; /* Indicar que pode ser clicado para visualizar */
+}
+
+.container-imagem:hover {
+    transform: scale(1.05);
+}
+
+.foto-perfil {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f1f5f9;
+}
+
+html.dark-mode .foto-perfil {
+    background-color: #334155;
+}
+
+.btn-secundario-pequeno {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-secundario-pequeno:hover {
+    background: rgba(37, 99, 235, 0.05);
+    transform: translateY(-2px);
+}
+
+html.dark-mode .btn-secundario-pequeno:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Inputs da Página de Perfil */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.input-perfil {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.input-perfil:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-perfil:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Estilos de Modo Escuro para Inputs */
+html.dark-mode .input-perfil {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+}
+
+html.dark-mode .input-perfil:disabled {
+    background: rgba(0, 0, 0, 0.2);
+    color: #64748b;
+}
+
+html.dark-mode .input-perfil:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Override para o Autofill do Navegador */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+html.dark-mode input:-webkit-autofill,
+html.dark-mode input:-webkit-autofill:hover, 
+html.dark-mode input:-webkit-autofill:focus, 
+html.dark-mode input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important; /* Cor próxima ao bg-color escuro */
+    -webkit-text-fill-color: #f1f5f9 !important;
+}
+
+/* Botões da Página */
+.btn-primario-largo {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primario-largo:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-secundario-largo {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secundario-largo:hover {
+    background: rgba(37, 99, 235, 0.05);
+}
+
+html.dark-mode .btn-secundario-largo:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Cartão de Segurança Específicos */
+.descricao-seguranca {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-top: 0;
+}
+
+.alerta-seguranca {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    color: #059669;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+html.dark-mode .alerta-seguranca {
+    color: #34d399;
+}
+
+/* Modal e Fluxo de Verificação */
+.hidden {
+    display: none !important;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+html.dark-mode .modal-content {
+    background: var(--card-bg);
+}
+
+.btn-fechar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0,0,0,0.05);
+    border: none;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-fechar:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+html.dark-mode .btn-fechar {
+    background: rgba(255,255,255,0.05);
+}
+
+html.dark-mode .btn-fechar:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.titulo-modal {
+    margin: 0 0 10px 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.texto-modal {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.otp-container {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.input-otp {
+    width: calc(100% / 6 - 8px);
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+/* Modais Especiais (View e Crop) */
+.modal-viewer {
+    max-width: 500px;
+    padding: 16px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-viewer .btn-fechar {
+    top: -20px;
+    right: 0;
+    color: white;
+    background: rgba(255,255,255,0.2);
+}
+
+.modal-crop-container {
+    max-width: 500px;
+}
+
+.crop-area {
+    max-height: 400px;
+    width: 100%;
+    background: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+html.dark-mode .crop-area {
+    background: #0f172a;
+}
+
+.mensagem-erro {
+    color: #ef4444;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 6px;
+    font-weight: bold;
+}
+
+/* Toast Notification (Reutilizável/Estilo similar ao Configurações) */
+.toast-notificacao {
+    position: fixed;
+    bottom: -100px;
+    right: 24px;
+    background: #10b981;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 9999;
+}
+
+.toast-notificacao.mostrar {
+    bottom: 24px;
+}
+
+/* --- Verificador de Senha --- */
+.password-checker {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 8px;
+}
+
+.password-checker li {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+
+.password-checker li:last-child {
+    grid-column: 1 / -1;
+}
+
+.password-checker li::before {
+    content: '•';
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.password-checker li.valid {
+    color: #10b981;
+}
+
+.password-checker li.valid::before {
+    content: '✓';
+    color: #10b981;
+}
+
+.password-checker li.invalid {
+    color: #ef4444;
+}
+
+.password-checker li.invalid::before {
+    content: '✗';
+    color: #ef4444;
+}
