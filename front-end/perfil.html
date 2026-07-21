@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +8,18 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="perfil.css">
-    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <link rel="icon" href="IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
     <!-- Cropper.js CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <title>Agenda Web | Meu Perfil</title>
 </head>
+
 <body>
     <div class="barra-lateral-dashboard">
         <div class="logo-barra-lateral">
             <a href="dashboard.html">
-                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+                <img class="logo" src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
             </a>
         </div>
 
@@ -36,17 +38,21 @@
     <main class="conteudo-dashboard">
         <div class="cabecalho-pagina" style="margin-bottom: 24px;">
             <h1 style="color: var(--primary-color); font-size: 2rem; margin: 0;">Meu Perfil</h1>
-            <p style="color: var(--text-muted); margin-top: 8px;">Gerencie suas informações pessoais e a segurança da sua conta.</p>
+            <p style="color: var(--text-muted); margin-top: 8px;">Gerencie suas informações pessoais e a segurança da
+                sua conta.</p>
         </div>
 
         <div class="grid-perfil">
             <!-- CARTÃO DE DADOS PESSOAIS -->
             <div class="cartao-vidro card-perfil">
                 <h2 class="titulo-sessao">Dados Pessoais</h2>
-                
-                <div class="secao-avatar" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+
+                <div class="secao-avatar"
+                    style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
                     <div class="container-imagem" title="Clique para ver a foto">
-                        <img id="imagemPerfilPreview" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NiZDVlMSI+PHBhdGggZD0iTTI0IDIwLjk5M1YyNGgtMjR2LTIuOTkzYy4wNDMtNC44NTIgMy45MDctOC43ODYgOC43NTktOC43ODYgMS4zMyAwIDIuNTg0LjMwNyAzLjcwMi44NDUgMS44NS0xLjMxNCAzLjAzNi0zLjQ4NyAzLjAzNi01LjkyNiAwLTMuOTAyLTMuMTM4LTcuMDY4LTcuMDM5LTcuMDY4cy03LjAzOSAzLjE2Ni03LjAzOSA3LjA2OGMwIDIuNDM5IDEuMTg2IDQuNjEyIDMuMDM2IDUuOTI2IDEuMTE4LS41MzggMi4zNzItLjg0NSAzLjcwMi0uODQ1IDQuODUzIDAgOC43MTYgMy45MzQgOC43NTkgOC43ODZ6Ii8+PC9zdmc+" alt="Foto de Perfil" class="foto-perfil">
+                        <img id="imagemPerfilPreview"
+                            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NiZDVlMSI+PHBhdGggZD0iTTI0IDIwLjk5M1YyNGgtMjR2LTIuOTkzYy4wNDMtNC44NTIgMy45MDctOC43ODYgOC43NTktOC43ODYgMS4zMyAwIDIuNTg0LjMwNyAzLjcwMi44NDUgMS44NS0xLjMxNCAzLjAzNi0zLjQ4NyAzLjAzNi01LjkyNiAwLTMuOTAyLTMuMTM4LTcuMDY4LTcuMDM5LTcuMDY4cy03LjAzOSAzLjE2Ni03LjAzOSA3LjA2OGMwIDIuNDM5IDEuMTg2IDQuNjEyIDMuMDM2IDUuOTI2IDEuMTE4LS41MzggMi4zNzItLjg0NSAzLjcwMi0uODQ1IDQuODUzIDAgOC43MTYgMy45MzQgOC43NTkgOC43ODZ6Ii8+PC9zdmc+"
+                            alt="Foto de Perfil" class="foto-perfil">
                     </div>
                     <button id="btnAlterarFoto" class="btn-secundario-pequeno">📸 Alterar Foto</button>
                     <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;">
@@ -58,7 +64,8 @@
                 </div>
                 <div class="form-group">
                     <label>E-mail (Leitura)</label>
-                    <input type="email" id="inputEmailPerfil" class="input-perfil" value="usuario@email.com" disabled title="Não é possível alterar o e-mail por aqui.">
+                    <input type="email" id="inputEmailPerfil" class="input-perfil" value="usuario@email.com" disabled
+                        title="Não é possível alterar o e-mail por aqui.">
                 </div>
 
                 <button id="btnSalvarPerfil" class="btn-primario-largo">Salvar Informações</button>
@@ -67,13 +74,15 @@
             <!-- CARTÃO DE SEGURANÇA -->
             <div class="cartao-vidro card-seguranca">
                 <h2 class="titulo-sessao">Segurança e Senha</h2>
-                <p class="descricao-seguranca">Mantenha sua conta segura atualizando sua senha regularmente. Será necessário verificar seu e-mail.</p>
-                
+                <p class="descricao-seguranca">Mantenha sua conta segura atualizando sua senha regularmente. Será
+                    necessário verificar seu e-mail.</p>
+
                 <div class="alerta-seguranca">
                     <span>🔒 Proteção Ativada via E-mail</span>
                 </div>
 
-                <button id="btnIniciarTrocaSenha" class="btn-secundario-largo" style="margin-top: 24px;">Alterar Senha de Acesso</button>
+                <button id="btnIniciarTrocaSenha" class="btn-secundario-largo" style="margin-top: 24px;">Alterar Senha
+                    de Acesso</button>
             </div>
         </div>
     </main>
@@ -82,12 +91,13 @@
     <div id="modalSenha" class="modal-overlay hidden">
         <div class="modal-content">
             <button id="btnFecharModal" class="btn-fechar">&times;</button>
-            
+
             <!-- Etapa 1: Código de Verificação -->
             <div id="etapaVerificacao">
                 <h2 class="titulo-modal">Verificação de Segurança</h2>
-                <p class="texto-modal">Enviamos um código de segurança de 6 dígitos para o seu e-mail. <br><strong>(Para testes, insira: 123456)</strong></p>
-                
+                <p class="texto-modal">Enviamos um código de segurança de 6 dígitos para o seu e-mail. <br><strong>(Para
+                        testes, insira: 123456)</strong></p>
+
                 <div class="form-group" style="margin-top: 20px;">
                     <label>Código de Verificação</label>
                     <div class="otp-container" id="otpContainer">
@@ -100,18 +110,20 @@
                     </div>
                     <small id="erroCodigo" class="mensagem-erro hidden">Código inválido. Tente novamente.</small>
                 </div>
-                
-                <button id="btnVerificarCodigo" class="btn-primario-largo" style="margin-top: 20px;">Verificar Código</button>
+
+                <button id="btnVerificarCodigo" class="btn-primario-largo" style="margin-top: 20px;">Verificar
+                    Código</button>
             </div>
 
             <!-- Etapa 2: Nova Senha -->
             <div id="etapaNovaSenha" class="hidden">
                 <h2 class="titulo-modal">Criar Nova Senha</h2>
                 <p class="texto-modal">O código foi verificado! Digite sua nova senha abaixo.</p>
-                
+
                 <div class="form-group" style="margin-top: 20px;">
                     <label>Nova Senha</label>
-                    <input type="password" id="inputNovaSenha" class="input-perfil" placeholder="Mínimo de 8 caracteres">
+                    <input type="password" id="inputNovaSenha" class="input-perfil"
+                        placeholder="Mínimo de 8 caracteres">
                     <ul class="password-checker" id="perfil-password-checker">
                         <li data-rule="length">Pelo menos 8 caracteres</li>
                         <li data-rule="uppercase">Uma letra maiúscula</li>
@@ -122,11 +134,14 @@
                 </div>
                 <div class="form-group">
                     <label>Confirmar Nova Senha</label>
-                    <input type="password" id="inputConfirmaSenha" class="input-perfil" placeholder="Digite a senha novamente">
-                    <small id="erroSenha" class="mensagem-erro hidden">As senhas não coincidem ou são curtas demais.</small>
+                    <input type="password" id="inputConfirmaSenha" class="input-perfil"
+                        placeholder="Digite a senha novamente">
+                    <small id="erroSenha" class="mensagem-erro hidden">As senhas não coincidem ou são curtas
+                        demais.</small>
                 </div>
-                
-                <button id="btnSalvarNovaSenha" class="btn-primario-largo" style="margin-top: 20px;">Redefinir Senha</button>
+
+                <button id="btnSalvarNovaSenha" class="btn-primario-largo" style="margin-top: 20px;">Redefinir
+                    Senha</button>
             </div>
         </div>
     </div>
@@ -148,7 +163,8 @@
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
                 <button id="btnCancelarCrop" class="btn-secundario">Cancelar</button>
-                <button id="btnConfirmarCrop" class="btn-primario-largo" style="width: auto; padding: 10px 24px;">Aplicar Foto</button>
+                <button id="btnConfirmarCrop" class="btn-primario-largo"
+                    style="width: auto; padding: 10px 24px;">Aplicar Foto</button>
             </div>
         </div>
     </div>
@@ -158,4 +174,5 @@
 
     <script src="perfil.js" defer></script>
 </body>
+
 </html>

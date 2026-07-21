@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,17 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="admin.css">
-    <link rel="icon" href="../IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <link rel="icon" href="IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
     <title>Agenda Web | Administração</title>
     <!-- Chart.js para renderização dos gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="barra-lateral-dashboard">
         <div class="logo-barra-lateral">
             <a href="dashboard.html">
-                <img class="logo" src="../IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+                <img class="logo" src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
             </a>
         </div>
 
@@ -33,10 +35,12 @@
     </div>
 
     <main class="conteudo-dashboard">
-        <div class="cabecalho-pagina" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="cabecalho-pagina"
+            style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h1 style="color: var(--primary-color); font-size: 2rem; margin: 0;">Painel de Administração</h1>
-                <p style="color: var(--text-muted); margin-top: 8px;">Gerencie usuários, permissões e acompanhe o uso do sistema.</p>
+                <p style="color: var(--text-muted); margin-top: 8px;">Gerencie usuários, permissões e acompanhe o uso do
+                    sistema.</p>
             </div>
         </div>
 
@@ -47,7 +51,8 @@
                     <h3>Total de Usuários</h3>
                     <p id="totalUsuarios">0</p>
                 </div>
-                <div class="indicador-icone" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-color);">👥</div>
+                <div class="indicador-icone" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-color);">👥
+                </div>
             </div>
             <div class="cartao-vidro card-indicador">
                 <div class="indicador-info">
@@ -90,7 +95,8 @@
 
         <!-- LISTAGEM DE USUÁRIOS -->
         <div class="cartao-vidro" style="margin-top: 24px;">
-            <div class="cabecalho-cartao" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="cabecalho-cartao"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <h2 style="color: var(--primary-color); margin: 0;">Gerenciamento de Usuários</h2>
             </div>
             <div class="tabela-container">
@@ -114,4 +120,5 @@
 
     <script src="admin.js" defer></script>
 </body>
+
 </html>
