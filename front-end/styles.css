@@ -461,6 +461,48 @@ footer {
     box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.16);
 }
 
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 48px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    cursor: pointer;
+    color: #92a0ac;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: auto !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+.toggle-password:hover {
+    transform: none !important;
+    color: var(--blue) !important;
+    background: none !important;
+}
+
+html.dark-mode .toggle-password {
+    color: var(--text-muted);
+}
+
+html.dark-mode .toggle-password:hover {
+    color: var(--text-color) !important;
+}
+
 .auth-form button {
     width: 100%;
     margin-top: 6px;

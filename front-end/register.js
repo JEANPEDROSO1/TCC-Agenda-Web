@@ -8,6 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMsg = document.getElementById('register-error');
     const rules = document.querySelectorAll('#register-password-checker li');
 
+    // Alternar visibilidade das senhas
+    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+    togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = btn.previousElementSibling;
+            const eyeIcon = btn.querySelector('.icon-eye');
+            const eyeOffIcon = btn.querySelector('.icon-eye-off');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeIcon.style.display = 'none';
+                eyeOffIcon.style.display = 'block';
+            } else {
+                input.type = 'password';
+                eyeIcon.style.display = 'block';
+                eyeOffIcon.style.display = 'none';
+            }
+        });
+    });
+
     // Validação de senha forte em tempo real
     passwordInput.addEventListener('input', (e) => {
         const val = e.target.value;
@@ -26,6 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
             else li.className = '';
         });
     });
+
+    const triggerSubmitOnEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            form.querySelector('button[type="submit"]').click();
+        }
+    };
+
+    passwordInput.addEventListener('keydown', triggerSubmitOnEnter);
+    confirmPasswordInput.addEventListener('keydown', triggerSubmitOnEnter);
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
