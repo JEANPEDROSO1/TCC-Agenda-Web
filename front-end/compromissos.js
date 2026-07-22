@@ -17,10 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtroData = document.getElementById('filtroData');
     const filtroStatus = document.getElementById('filtroStatus');
     
-    let compromissos = JSON.parse(localStorage.getItem('agendaWeb_compromissos')) || [];
+    let compromissos = [];
 
-    function salvarCompromissos() {
-        localStorage.setItem('agendaWeb_compromissos', JSON.stringify(compromissos));
+    async function carregarCompromissos() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            if (res.ok) {
+                compromissos = await res.json();
+                renderizarLista();
+            }
+        } catch (e) { console.error('Erro ao carregar compromissos:', e); }
     }
 
     // Renderiza Lista
@@ -46,12 +52,38 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const agora = new Date();
+
+        // Adiciona botão Excluir Todos se o filtro for Desativados
+        if (filtroStatus.value === 'desativados' && filtrados.length > 0) {
+            const btnExcluirTodos = document.createElement('button');
+            btnExcluirTodos.textContent = 'Excluir Todos';
+            btnExcluirTodos.className = 'btn-acao excluir';
+            btnExcluirTodos.style.gridColumn = '1 / -1';
+            btnExcluirTodos.style.marginBottom = '16px';
+            btnExcluirTodos.onclick = async () => {
+                if (confirm('Excluir todos os compromissos desativados?')) {
+                    for (const comp of filtrados) {
+                        await fetch(`${API_BASE_URL}/compromissos/${comp.id}`, { method: 'DELETE' });
+                    }
+                    carregarCompromissos();
+                }
+            };
+            listaCompromissosEl.appendChild(btnExcluirTodos);
+        }
+
         filtrados.forEach(comp => {
             const card = document.createElement('div');
             card.className = 'card-compromisso';
-            if (comp.status === 'desativado') card.style.opacity = '0.6';
-
+            
             const [a, m, d] = comp.data.split('-');
+            const dataCompromisso = new Date(`${comp.data}T${comp.hora}:00`);
+            const jaPassou = dataCompromisso < agora;
+
+            if (comp.status === 'desativado' || jaPassou) {
+                card.style.opacity = '0.6';
+            }
+
             card.innerHTML = `
                 <div class="card-header">
                     <h3>${comp.titulo}</h3>
@@ -63,11 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>📅 ${d}/${m}/${a}</span>
                         <span>⏰ ${comp.hora}</span>
                         ${comp.repeticao !== 'nenhuma' ? `<span>🔄 ${comp.repeticao}</span>` : ''}
-                        ${comp.status === 'desativado' ? `<span>❌ Desativado</span>` : ''}
+                        ${comp.status === 'desativado' ? `<span>❌ Desativado</span>` : (jaPassou ? `<span>⏳ Passou</span>` : '')}
                     </div>
                 </div>
                 <div class="card-actions">
-                    <button class="btn-acao editar" onclick="editarCompromisso(${comp.id})">Editar</button>
+                    ${!jaPassou && comp.status !== 'desativado' ? `<button class="btn-acao editar" onclick="editarCompromisso(${comp.id})">Editar</button>` : ''}
                     <button class="btn-acao excluir" onclick="excluirCompromisso(${comp.id})">Excluir</button>
                 </div>
             `;
@@ -99,36 +131,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function fecharModal() { modalCompromisso.style.display = 'none'; }
 
-    formCompromisso.addEventListener('submit', (e) => {
+    formCompromisso.addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('compId').value;
+        const data = document.getElementById('compData').value;
+        const hora = document.getElementById('compHora').value;
+        
+        // Bloquear data passada
+        const dataEscolhida = new Date(`${data}T${hora}:00`);
+        if (dataEscolhida < new Date()) {
+            alert('Não é possível agendar um compromisso no passado.');
+            return;
+        }
+
         const novoComp = {
-            id: id ? parseInt(id) : Date.now(),
             titulo: document.getElementById('compTitulo').value,
             descricao: document.getElementById('compDescricao').value,
-            data: document.getElementById('compData').value,
-            hora: document.getElementById('compHora').value,
+            data: data,
+            hora: hora,
             urgencia: document.getElementById('compUrgencia').value,
             repeticao: document.getElementById('compRepeticao').value,
             status: 'ativo'
         };
 
-        if (id) {
-            const index = compromissos.findIndex(c => c.id === parseInt(id));
-            if(index !== -1) { novoComp.status = compromissos[index].status; compromissos[index] = novoComp; }
-        } else compromissos.push(novoComp);
-
-        salvarCompromissos();
-        fecharModal();
-        renderizarLista();
+        try {
+            if (id) {
+                const index = compromissos.findIndex(c => c.id === parseInt(id));
+                if(index !== -1) { novoComp.status = compromissos[index].status; }
+                await fetch(`${API_BASE_URL}/compromissos/${id}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+                });
+            } else {
+                await fetch(`${API_BASE_URL}/compromissos`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+                });
+            }
+            carregarCompromissos();
+            fecharModal();
+        } catch (error) { console.error(error); }
     });
 
     window.editarCompromisso = (id) => abrirModal(id);
-    window.excluirCompromisso = (id) => {
+    window.excluirCompromisso = async (id) => {
         if(confirm('Tem certeza que deseja excluir?')) {
-            compromissos = compromissos.filter(c => c.id !== id);
-            salvarCompromissos();
-            renderizarLista();
+            try {
+                await fetch(`${API_BASE_URL}/compromissos/${id}`, { method: 'DELETE' });
+                carregarCompromissos();
+            } catch (error) { console.error(error); }
         }
     };
 
@@ -220,6 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarCalendario(calMesAtual, calAnoAtual);
     });
 
-    renderizarLista();
+    carregarCompromissos();
     renderizarCalendario(calMesAtual, calAnoAtual);
 });

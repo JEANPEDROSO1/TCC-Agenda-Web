@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
+const compromissosRoutes = require('./routes/compromissosRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +28,8 @@ app.use(cookieParser());
 
 // Rotas
 app.use('/api/auth', authRoutes);
+app.use('/api/compromissos', compromissosRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Rota raiz para teste
 app.get('/', (req, res) => {

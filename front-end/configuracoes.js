@@ -15,7 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         aplicarTemaEscuro(modoEscuro);
         
         inputNome.value = localStorage.getItem('agendaWeb_nome') || 'Usuário Padrão';
-        selectFuso.value = localStorage.getItem('agendaWeb_fuso') || 'America/Sao_Paulo';
+        
+        let fusoSalvo = localStorage.getItem('agendaWeb_fuso');
+        if (!fusoSalvo) {
+            fusoSalvo = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Sao_Paulo';
+            localStorage.setItem('agendaWeb_fuso', fusoSalvo);
+        }
+        selectFuso.value = fusoSalvo;
         
         const fotoSalva = localStorage.getItem('agendaWeb_foto');
         if (fotoSalva) imagemPreview.src = fotoSalva;

@@ -173,3 +173,56 @@ exports.logout = (req, res) => {
     res.clearCookie('token');
     res.json({ mensagem: 'Deslogado com sucesso!' });
 };
+
+// Solicitar Troca de Senha (Usuário Autenticado)
+exports.requestPasswordChange = async (req, res) => {
+    try {
+        const [users] = await pool.execute('SELECT email FROM usuarios WHERE id = ?', [req.user.id]);
+        if (users.length === 0) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        
+        const email = users[0].email;
+        const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiracao = new Date(Date.now() + 15 * 60000); // 15 mins
+
+        await pool.execute(
+            'UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE id = ?',
+            [codigo, expiracao, req.user.id]
+        );
+
+        await enviarCodigoRecuperacao(email, codigo);
+
+        res.json({ mensagem: 'Código de verificação enviado para o seu e-mail.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao solicitar troca de senha.' });
+    }
+};
+
+// Verificar e Trocar Senha (Usuário Autenticado)
+exports.verifyPasswordChange = async (req, res) => {
+    const { codigo, novaSenha } = req.body;
+    try {
+        const [users] = await pool.execute(
+            'SELECT codigo_expiracao FROM usuarios WHERE id = ? AND codigo_verificacao = ?',
+            [req.user.id, codigo]
+        );
+
+        const user = users[0];
+        if (!user || new Date() > new Date(user.codigo_expiracao)) {
+            return res.status(400).json({ erro: 'Código inválido ou expirado.' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const senhaHash = await bcrypt.hash(novaSenha, salt);
+
+        await pool.execute(
+            'UPDATE usuarios SET senha = ?, codigo_verificacao = NULL, codigo_expiracao = NULL WHERE id = ?',
+            [senhaHash, req.user.id]
+        );
+
+        res.json({ mensagem: 'Senha alterada com sucesso!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao alterar a senha.' });
+    }
+};

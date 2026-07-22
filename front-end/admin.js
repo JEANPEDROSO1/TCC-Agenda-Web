@@ -1,19 +1,8 @@
 // Lógica da página de Administração
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicialização de dados
-    if (!localStorage.getItem('agendaWeb_usuarios')) {
-        const mockUsuarios = [
-            { id: 101, nome: 'Jean Pedroso', email: 'jean.pedroso@email.com', cargo: 'admin', foto: '' },
-            { id: 102, nome: 'Carlos Silva', email: 'carlos.s@email.com', cargo: 'usuario', foto: '' },
-            { id: 103, nome: 'Maria Ferreira', email: 'maria.f@email.com', cargo: 'usuario', foto: '' },
-            { id: 104, nome: 'Lucas Almeida', email: 'lucas.almeida@email.com', cargo: 'admin', foto: '' },
-            { id: 105, nome: 'Juliana Costa', email: 'juli.costa@email.com', cargo: 'usuario', foto: '' }
-        ];
-        localStorage.setItem('agendaWeb_usuarios', JSON.stringify(mockUsuarios));
-    }
-
-    let usuarios = JSON.parse(localStorage.getItem('agendaWeb_usuarios')) || [];
-    let compromissosGlobais = JSON.parse(localStorage.getItem('agendaWeb_compromissos')) || [];
+    let usuarios = [];
+    let compromissosData = [];
+    let totalCompromissosCount = 0;
 
     // Referências DOM
     const totalUsuariosEl = document.getElementById('totalUsuarios');
@@ -27,19 +16,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const corGridGrafico = ehDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
     const corPrincipalHex = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#2563eb';
 
+    // Carrega dados do backend
+    async function carregarDados() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/estatisticas`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                // credentials: 'omit' // O ideal seria enviar cookies ou token, mas o projeto usa localStorage/cookies
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                usuarios = data.usuarios || [];
+                totalCompromissosCount = data.totalCompromissos || 0;
+                compromissosData = data.compromissosData || [];
+                atualizarPainel();
+            } else {
+                alert(data.erro || 'Erro ao carregar dados do admin.');
+            }
+        } catch (error) {
+            console.error('Erro de conexão:', error);
+        }
+    }
+
     // Atualiza indicadores e gráficos
     function atualizarPainel() {
         totalUsuariosEl.textContent = usuarios.length;
         totalAdminsEl.textContent = usuarios.filter(u => u.cargo === 'admin').length;
-        totalCompromissosEl.textContent = compromissosGlobais.length;
+        totalCompromissosEl.textContent = totalCompromissosCount;
 
         renderizarTabelaUsuarios();
         atualizarGraficoUsuarios();
         atualizarGraficoCompromissos();
-    }
-
-    function salvarUsuarios() {
-        localStorage.setItem('agendaWeb_usuarios', JSON.stringify(usuarios));
     }
 
     // Renderiza a tabela de usuários
@@ -71,20 +79,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Ações na tabela
-    window.alternarCargoUsuario = (id) => {
-        const index = usuarios.findIndex(u => u.id === id);
-        if (index > -1) {
-            usuarios[index].cargo = usuarios[index].cargo === 'admin' ? 'usuario' : 'admin';
-            salvarUsuarios();
-            atualizarPainel();
-        }
+    window.alternarCargoUsuario = async (id) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/usuarios/${id}/cargo`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            if (res.ok) {
+                carregarDados();
+            } else {
+                const data = await res.json();
+                alert(data.erro || 'Erro ao alterar cargo.');
+            }
+        } catch (error) { console.error(error); }
     };
 
-    window.deletarUsuario = (id) => {
+    window.deletarUsuario = async (id) => {
         if (confirm("ATENÇÃO: Deseja realmente excluir este usuário do sistema?")) {
-            usuarios = usuarios.filter(u => u.id !== id);
-            salvarUsuarios();
-            atualizarPainel();
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/usuarios/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (res.ok) {
+                    carregarDados();
+                } else {
+                    const data = await res.json();
+                    alert(data.erro || 'Erro ao deletar usuário.');
+                }
+            } catch (error) { console.error(error); }
         }
     };
 
@@ -127,12 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filtro === 'dia') {
             labels = Array.from({length: 24}, (_, i) => `${String(i).padStart(2, '0')}:00`);
             contagemArray = new Array(24).fill(0);
-            compromissosGlobais.filter(c => c.data === dataHojeStr).forEach(c => contagemArray[parseInt(c.hora.split(':')[0])]++;);
+            compromissosData.filter(c => c.data === dataHojeStr).forEach(c => contagemArray[parseInt(c.hora.split(':')[0])]++);
         } else if (filtro === 'mes') {
             const diasNoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
             labels = Array.from({length: diasNoMes}, (_, i) => `Dia ${i+1}`);
             contagemArray = new Array(diasNoMes).fill(0);
-            compromissosGlobais.forEach(c => {
+            compromissosData.forEach(c => {
                 const [a, m, d] = c.data.split('-');
                 if (parseInt(a) === hoje.getFullYear() && parseInt(m) === hoje.getMonth() + 1) {
                     contagemArray[parseInt(d) - 1]++;
@@ -141,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             contagemArray = new Array(12).fill(0);
-            compromissosGlobais.forEach(c => {
+            compromissosData.forEach(c => {
                 const [a, m] = c.data.split('-');
                 if (parseInt(a) === hoje.getFullYear()) contagemArray[parseInt(m) - 1]++;
             });
@@ -167,5 +190,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('filtroGraficoAtividade').addEventListener('change', atualizarGraficoCompromissos);
-    atualizarPainel();
+    carregarDados();
 });

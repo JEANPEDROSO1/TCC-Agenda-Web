@@ -14,15 +14,32 @@ document.addEventListener('DOMContentLoaded', () => {
     let dataSelecionada = `${anoAtual}-${String(mesAtual + 1).padStart(2, '0')}-${String(dataAtual.getDate()).padStart(2, '0')}`;
 
     const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    let compromissos = JSON.parse(localStorage.getItem('agendaWeb_compromissos')) || [];
+    let compromissos = [];
+
+    async function carregarCompromissos() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            if (res.ok) {
+                compromissos = await res.json();
+                renderizarCalendario(mesAtual, anoAtual);
+                renderizarLista();
+            }
+        } catch (e) { console.error('Erro ao carregar compromissos:', e); }
+    }
 
     // Renderiza a lista de "Próximos Compromissos"
     function renderizarLista() {
         listaCompromissosEl.innerHTML = '';
-        const ativos = compromissos.filter(c => c.status === 'ativo').sort((a, b) => new Date(a.data) - new Date(b.data));
+        
+        // Filtra os ativos e que pertencem ao mês selecionado no calendário
+        const ativos = compromissos.filter(c => {
+            if (c.status !== 'ativo') return false;
+            const [a, m] = c.data.split('-');
+            return parseInt(m) - 1 === mesAtual && parseInt(a) === anoAtual;
+        }).sort((a, b) => new Date(a.data) - new Date(b.data));
         
         if (ativos.length === 0) {
-            listaCompromissosEl.innerHTML = `<div class="estado-vazio"><p>Nenhum compromisso pendente.</p></div>`;
+            listaCompromissosEl.innerHTML = `<div class="estado-vazio"><p class="mensagem-vazia">Nenhum compromisso pendente para este mês.</p></div>`;
             return;
         }
 
@@ -92,11 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAnterior.addEventListener('click', () => {
         if (--mesAtual < 0) { mesAtual = 11; anoAtual--; }
         renderizarCalendario(mesAtual, anoAtual);
+        renderizarLista();
     });
 
     btnProximo.addEventListener('click', () => {
         if (++mesAtual > 11) { mesAtual = 0; anoAtual++; }
         renderizarCalendario(mesAtual, anoAtual);
+        renderizarLista();
     });
 
     // Modal de Novo Compromisso
@@ -112,33 +131,38 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnFecharModal')?.addEventListener('click', fecharModal);
     document.getElementById('btnCancelarModal')?.addEventListener('click', fecharModal);
 
-    formCompromisso?.addEventListener('submit', (e) => {
+    formCompromisso?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const data = document.getElementById('compData').value;
+        const hora = document.getElementById('compHora').value;
+
+        // Bloquear data passada
+        const dataEscolhida = new Date(`${data}T${hora}:00`);
+        if (dataEscolhida < new Date()) {
+            alert('Não é possível agendar um compromisso no passado.');
+            return;
+        }
+
         const novoComp = {
-            id: Date.now(),
             titulo: document.getElementById('compTitulo').value,
             descricao: document.getElementById('compDescricao').value,
-            data: document.getElementById('compData').value,
-            hora: document.getElementById('compHora').value,
+            data: data,
+            hora: hora,
             urgencia: document.getElementById('compUrgencia').value,
             repeticao: document.getElementById('compRepeticao').value,
             status: 'ativo'
         };
 
-        compromissos.push(novoComp);
-        localStorage.setItem('agendaWeb_compromissos', JSON.stringify(compromissos));
-        
-        fecharModal();
-        renderizarLista();
-        
-        const [a, m] = novoComp.data.split('-');
-        mesAtual = parseInt(m) - 1;
-        anoAtual = parseInt(a);
-        dataSelecionada = novoComp.data;
-        renderizarCalendario(mesAtual, anoAtual);
+        try {
+            await fetch(`${API_BASE_URL}/compromissos`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+            });
+            fecharModal();
+            carregarCompromissos();
+        } catch (error) { console.error(error); }
     });
 
     // Inicialização
-    renderizarCalendario(mesAtual, anoAtual);
-    renderizarLista();
+    carregarCompromissos();
 });

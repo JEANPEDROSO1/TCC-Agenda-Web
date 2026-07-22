@@ -77,13 +77,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Troca de Senha (Modal e OTP)
-    function abrirModal() {
-        modalSenha.classList.remove('hidden');
-        etapaVerificacao.classList.remove('hidden');
-        etapaNovaSenha.classList.add('hidden');
-        otpInputs.forEach(input => input.value = '');
-        erroCodigo.classList.add('hidden');
-        setTimeout(() => otpInputs[0].focus(), 100);
+    async function abrirModal() {
+        // Envia requisição para gerar OTP
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/request-password-change`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                mostrarToast(data.mensagem);
+                modalSenha.classList.remove('hidden');
+                etapaVerificacao.classList.remove('hidden');
+                etapaNovaSenha.classList.add('hidden');
+                otpInputs.forEach(input => input.value = '');
+                erroCodigo.classList.add('hidden');
+                setTimeout(() => otpInputs[0].focus(), 100);
+            } else {
+                alert(data.erro || "Erro ao solicitar código.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão.");
+        }
     }
     function fecharModal() {
         modalSenha.classList.add('hidden');
@@ -102,13 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', () => { if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus(); });
     });
 
+    let codigoGuardado = '';
     btnVerificarCodigo.addEventListener('click', () => {
-        const codigo = Array.from(otpInputs).map(i => i.value).join('');
-        if (codigo === '123456') {
+        codigoGuardado = Array.from(otpInputs).map(i => i.value).join('');
+        if (codigoGuardado.length === 6) {
             erroCodigo.classList.add('hidden');
             etapaVerificacao.classList.add('hidden');
             etapaNovaSenha.classList.remove('hidden');
-        } else erroCodigo.classList.remove('hidden');
+        } else {
+            erroCodigo.textContent = "Digite os 6 dígitos.";
+            erroCodigo.classList.remove('hidden');
+        }
     });
 
     // Validação de Senha Forte
@@ -124,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    btnSalvarNovaSenha.addEventListener('click', () => {
+    btnSalvarNovaSenha.addEventListener('click', async () => {
         const s1 = inputNovaSenha.value;
         if (!(s1.length >= 8 && /[A-Z]/.test(s1) && /[a-z]/.test(s1) && /[0-9]/.test(s1) && /[@#$!%*?&]/.test(s1))) {
             erroSenha.textContent = "A senha não atende aos requisitos.";
@@ -137,8 +157,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         erroSenha.classList.add('hidden');
-        fecharModal();
-        mostrarToast("Senha alterada com segurança!");
+        
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/verify-change-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo: codigoGuardado, novaSenha: s1 })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                fecharModal();
+                mostrarToast("Senha alterada com segurança!");
+            } else {
+                erroSenha.textContent = data.erro || "Erro ao alterar a senha.";
+                erroSenha.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error(error);
+            erroSenha.textContent = "Erro de conexão.";
+            erroSenha.classList.remove('hidden');
+        }
     });
 
     function mostrarToast(msg) {

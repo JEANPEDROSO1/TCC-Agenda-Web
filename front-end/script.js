@@ -12,17 +12,7 @@
         document.documentElement.style.setProperty('--primary-hover', corPrincipal);
     }
 
-    if (!localStorage.getItem('agendaWeb_compromissos')) {
-        const hoje = new Date();
-        const anoStr = hoje.getFullYear();
-        const mesStr = String(hoje.getMonth() + 1).padStart(2, '0');
-        
-        const mock = [
-            { id: 1, titulo: 'Reunião de Alinhamento', descricao: 'Equipe', data: `${anoStr}-${mesStr}-15`, hora: '10:00', urgencia: 'normal', repeticao: 'semanal', status: 'ativo' },
-            { id: 2, titulo: 'Entrega do TCC', descricao: 'Final', data: `${anoStr}-${mesStr}-20`, hora: '19:00', urgencia: 'urgente', repeticao: 'nenhuma', status: 'ativo' }
-        ];
-        localStorage.setItem('agendaWeb_compromissos', JSON.stringify(mock));
-    }
+
 })();
 
 // Lógica Global de Logout

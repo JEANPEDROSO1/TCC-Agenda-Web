@@ -63,9 +63,8 @@
                     <input type="text" id="inputNomePerfil" class="input-perfil" placeholder="Digite seu nome">
                 </div>
                 <div class="form-group">
-                    <label>E-mail (Leitura)</label>
-                    <input type="email" id="inputEmailPerfil" class="input-perfil" value="usuario@email.com" disabled
-                        title="Não é possível alterar o e-mail por aqui.">
+                    <label for="inputEmailPerfil">E-mail (Apenas leitura)</label>
+                    <input type="email" id="inputEmailPerfil" class="input-readonly" readonly disabled style="opacity: 0.6; cursor: not-allowed;" value="usuario@email.com" title="Não é possível alterar o e-mail por aqui.">
                 </div>
 
                 <button id="btnSalvarPerfil" class="btn-primario-largo">Salvar Informações</button>
