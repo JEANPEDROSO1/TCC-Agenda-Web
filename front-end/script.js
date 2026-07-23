@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Oculta aba Administrador se não for admin
+    // Mostra aba Administrador apenas se for admin
     const cargo = localStorage.getItem('agendaWeb_cargo');
-    const linkAdmin = document.querySelector('a[href="admin.html"]');
-    if (linkAdmin && cargo !== 'admin') {
-        linkAdmin.parentElement.style.display = 'none';
+    const itensAdmin = document.querySelectorAll('.admin-nav-item');
+    if (cargo === 'admin') {
+        itensAdmin.forEach(item => item.style.display = 'block');
     }
 });
