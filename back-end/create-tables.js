@@ -14,8 +14,7 @@ async function up() {
                 urgencia ENUM('normal', 'urgente') DEFAULT 'normal',
                 repeticao ENUM('nenhuma', 'diaria', 'semanal', 'mensal') DEFAULT 'nenhuma',
                 status ENUM('ativo', 'desativado') DEFAULT 'ativo',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
         console.log("Tabela compromissos criada com sucesso!");
