@@ -194,7 +194,7 @@ exports.requestPasswordChange = async (req, res) => {
         res.json({ mensagem: 'Código de verificação enviado para o seu e-mail.' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao solicitar troca de senha.' });
+        res.status(500).json({ erro: 'Erro ao solicitar troca de senha: ' + error.message });
     }
 };
 
@@ -223,6 +223,6 @@ exports.verifyPasswordChange = async (req, res) => {
         res.json({ mensagem: 'Senha alterada com sucesso!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ erro: 'Erro ao alterar a senha.' });
+        res.status(500).json({ erro: 'Erro ao alterar a senha: ' + error.message });
     }
 };
