@@ -8,7 +8,7 @@ exports.obterEstatisticas = async (req, res) => {
         }
 
         // Obtém todos os usuários
-        const [usuarios] = await pool.execute('SELECT id_usuario AS id, nome, email, role AS cargo FROM usuarios');
+        const [usuarios] = await pool.execute('SELECT id, nome, email, cargo FROM usuarios');
         
         // Obtém estatísticas de compromissos
         const [compromissosCount] = await pool.execute('SELECT COUNT(*) as total FROM compromissos');
@@ -30,11 +30,11 @@ exports.alternarCargo = async (req, res) => {
         if (req.user.cargo !== 'admin') return res.status(403).json({ erro: 'Acesso negado.' });
         const { id } = req.params;
         
-        const [users] = await pool.execute('SELECT role AS cargo FROM usuarios WHERE id_usuario = ?', [id]);
+        const [users] = await pool.execute('SELECT cargo FROM usuarios WHERE id = ?', [id]);
         if (users.length === 0) return res.status(404).json({ erro: 'Usuário não encontrado.' });
         
-        const novoCargo = users[0].cargo === 'admin' ? 'user' : 'admin';
-        await pool.execute('UPDATE usuarios SET role = ? WHERE id_usuario = ?', [novoCargo, id]);
+        const novoCargo = users[0].cargo === 'admin' ? 'usuario' : 'admin';
+        await pool.execute('UPDATE usuarios SET cargo = ? WHERE id = ?', [novoCargo, id]);
         
         res.json({ mensagem: `Cargo atualizado para ${novoCargo} com sucesso!` });
     } catch (error) {
@@ -52,7 +52,7 @@ exports.deletarUsuario = async (req, res) => {
             return res.status(400).json({ erro: 'Você não pode deletar a si mesmo.' });
         }
 
-        await pool.execute('DELETE FROM usuarios WHERE id_usuario = ?', [id]);
+        await pool.execute('DELETE FROM usuarios WHERE id = ?', [id]);
         res.json({ mensagem: 'Usuário deletado com sucesso!' });
     } catch (error) {
         console.error(error);

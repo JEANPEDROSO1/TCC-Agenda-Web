@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
 
     try {
         // Verifica se usuário existe
-        const [users] = await pool.execute('SELECT id_usuario AS id FROM usuarios WHERE email = ?', [email]);
+        const [users] = await pool.execute('SELECT id FROM usuarios WHERE email = ?', [email]);
         if (users.length > 0) {
             return res.status(400).json({ erro: 'Este e-mail já está em uso.' });
         }
@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
 
         // Insere no banco
         await pool.execute(
-            'INSERT INTO usuarios (nome, email, senha, role) VALUES (?, ?, ?, ?)',
+            'INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)',
             [nome, email, senhaHash, 'usuario']
         );
 
@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
         }
 
         // Gera JWT
-        const payload = { id: user.id_usuario, cargo: user.role, nome: user.nome };
+        const payload = { id: user.id, cargo: user.cargo, nome: user.nome };
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
 
         // Envia Token em Cookie Seguro (HttpOnly previne XSS)
@@ -65,7 +65,7 @@ exports.login = async (req, res) => {
 
         res.json({
             mensagem: 'Login efetuado com sucesso!',
-            usuario: { id: user.id_usuario, nome: user.nome, email: user.email, cargo: user.role, foto: user.foto }
+            usuario: { id: user.id, nome: user.nome, email: user.email, cargo: user.cargo, foto: user.foto }
         });
     } catch (error) {
         console.error(error);
@@ -78,7 +78,7 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
-        const [users] = await pool.execute('SELECT id_usuario AS id FROM usuarios WHERE email = ?', [email]);
+        const [users] = await pool.execute('SELECT id FROM usuarios WHERE email = ?', [email]);
         if (users.length === 0) {
             // Retorna sucesso de qualquer forma para não vazar emails existentes (Prática de segurança)
             return res.json({ mensagem: 'Se o e-mail existir, um código foi enviado.' });
@@ -112,7 +112,7 @@ exports.verifyCode = async (req, res) => {
 
     try {
         const [users] = await pool.execute(
-            'SELECT id_usuario AS id, codigo_expiracao FROM usuarios WHERE email = ? AND codigo_verificacao = ?',
+            'SELECT id, codigo_expiracao FROM usuarios WHERE email = ? AND codigo_verificacao = ?',
             [email, codigo]
         );
 
@@ -141,7 +141,7 @@ exports.resetPassword = async (req, res) => {
     try {
         // Dupla verificação de segurança antes de mudar a senha
         const [users] = await pool.execute(
-            'SELECT id_usuario AS id, codigo_expiracao FROM usuarios WHERE email = ? AND codigo_verificacao = ?',
+            'SELECT id, codigo_expiracao FROM usuarios WHERE email = ? AND codigo_verificacao = ?',
             [email, codigo]
         );
 
@@ -177,7 +177,7 @@ exports.logout = (req, res) => {
 // Solicitar Troca de Senha (Usuário Autenticado)
 exports.requestPasswordChange = async (req, res) => {
     try {
-        const [users] = await pool.execute('SELECT email FROM usuarios WHERE id_usuario = ?', [req.user.id]);
+        const [users] = await pool.execute('SELECT email FROM usuarios WHERE id = ?', [req.user.id]);
         if (users.length === 0) return res.status(404).json({ erro: 'Usuário não encontrado.' });
         
         const email = users[0].email;
@@ -185,7 +185,7 @@ exports.requestPasswordChange = async (req, res) => {
         const expiracao = new Date(Date.now() + 15 * 60000); // 15 mins
 
         await pool.execute(
-            'UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE id_usuario = ?',
+            'UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE id = ?',
             [codigo, expiracao, req.user.id]
         );
 
@@ -203,7 +203,7 @@ exports.verifyPasswordChange = async (req, res) => {
     const { codigo, novaSenha } = req.body;
     try {
         const [users] = await pool.execute(
-            'SELECT codigo_expiracao FROM usuarios WHERE id_usuario = ? AND codigo_verificacao = ?',
+            'SELECT codigo_expiracao FROM usuarios WHERE id = ? AND codigo_verificacao = ?',
             [req.user.id, codigo]
         );
 
@@ -216,7 +216,7 @@ exports.verifyPasswordChange = async (req, res) => {
         const senhaHash = await bcrypt.hash(novaSenha, salt);
 
         await pool.execute(
-            'UPDATE usuarios SET senha = ?, codigo_verificacao = NULL, codigo_expiracao = NULL WHERE id_usuario = ?',
+            'UPDATE usuarios SET senha = ?, codigo_verificacao = NULL, codigo_expiracao = NULL WHERE id = ?',
             [senhaHash, req.user.id]
         );
 
