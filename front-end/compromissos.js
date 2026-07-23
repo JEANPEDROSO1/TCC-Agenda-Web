@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function carregarCompromissos() {
         try {
-            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
             if (res.ok) {
                 compromissos = await res.json();
                 renderizarLista();
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnExcluirTodos.onclick = async () => {
                 if (confirm('Excluir todos os compromissos desativados?')) {
                     for (const comp of filtrados) {
-                        await fetch(`${API_BASE_URL}/compromissos/${comp.id}`, { method: 'DELETE' });
+                        await fetch(`${API_BASE_URL}/compromissos/${comp.id}`, { method: 'DELETE', credentials: 'include' });
                     }
                     carregarCompromissos();
                 }
@@ -159,11 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const index = compromissos.findIndex(c => c.id === parseInt(id));
                 if(index !== -1) { novoComp.status = compromissos[index].status; }
                 await fetch(`${API_BASE_URL}/compromissos/${id}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
                 });
             } else {
                 await fetch(`${API_BASE_URL}/compromissos`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
                 });
             }
             carregarCompromissos();
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.excluirCompromisso = async (id) => {
         if(confirm('Tem certeza que deseja excluir?')) {
             try {
-                await fetch(`${API_BASE_URL}/compromissos/${id}`, { method: 'DELETE' });
+                await fetch(`${API_BASE_URL}/compromissos/${id}`, { method: 'DELETE', credentials: 'include' });
                 carregarCompromissos();
             } catch (error) { console.error(error); }
         }

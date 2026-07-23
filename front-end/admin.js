@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`${API_BASE_URL}/admin/estatisticas`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
-                // credentials: 'omit' // O ideal seria enviar cookies ou token, mas o projeto usa localStorage/cookies
+                credentials: 'include'
             });
             const data = await res.json();
             
@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch(`${API_BASE_URL}/admin/usuarios/${id}/cargo`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
             });
             if (res.ok) {
                 carregarDados();
@@ -99,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const res = await fetch(`${API_BASE_URL}/admin/usuarios/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
                 });
                 if (res.ok) {
                     carregarDados();

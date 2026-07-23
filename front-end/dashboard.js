@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function carregarCompromissos() {
         try {
-            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
             if (res.ok) {
                 compromissos = await res.json();
                 renderizarCalendario(mesAtual, anoAtual);
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await fetch(`${API_BASE_URL}/compromissos`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(novoComp)
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
             });
             fecharModal();
             carregarCompromissos();
