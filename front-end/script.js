@@ -52,3 +52,28 @@ document.addEventListener('DOMContentLoaded', () => {
         itensAdmin.forEach(item => item.style.display = 'block');
     }
 });
+
+// Sistema de Toast Global
+window.showToast = function(mensagem, tipo = 'sucesso') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + tipo;
+    toast.innerHTML = (tipo === 'sucesso' ? '? ' : '? ') + mensagem;
+    
+    container.appendChild(toast);
+    
+    // Força o reflow para a animação CSS funcionar
+    toast.offsetHeight;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+};

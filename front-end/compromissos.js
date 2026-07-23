@@ -23,8 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
             if (res.ok) {
-                compromissos = await res.json();
+                const dados = await res.json();
+                compromissos = dados.map(c => ({
+                    ...c,
+                    data: c.data.split('T')[0]
+                }));
                 renderizarLista();
+                renderizarCalendario(calMesAtual, calAnoAtual);
             }
         } catch (e) { console.error('Erro ao carregar compromissos:', e); }
     }
@@ -140,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Bloquear data passada
         const dataEscolhida = new Date(`${data}T${hora}:00`);
         if (dataEscolhida < new Date()) {
-            alert('Não é possível agendar um compromisso no passado.');
+            showToast('Não é possível agendar um compromisso no passado.', 'erro');
             return;
         }
 
@@ -168,10 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             if (res.ok) {
-                alert(id ? "Compromisso atualizado com sucesso!" : "Compromisso criado com sucesso!");
+                showToast(id ? "Compromisso atualizado com sucesso!" : "Compromisso criado com sucesso!");
             } else {
                 const data = await res.json();
-                alert(data.erro || "Erro ao salvar compromisso.");
+                showToast(data.erro || "Erro ao salvar compromisso.", 'erro');
             }
             carregarCompromissos();
             fecharModal();
