@@ -44,4 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('btnSimSair').addEventListener('click', () => window.location.href = 'index.html');
         });
     }
+
+    // Oculta aba Administrador se não for admin
+    const cargo = localStorage.getItem('agendaWeb_cargo');
+    const linkAdmin = document.querySelector('a[href="admin.html"]');
+    if (linkAdmin && cargo !== 'admin') {
+        linkAdmin.parentElement.style.display = 'none';
+    }
 });

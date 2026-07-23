@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Salva dados locais se necessário (não salvar a senha!)
             localStorage.setItem('agendaWeb_nome', data.usuario.nome);
+            localStorage.setItem('agendaWeb_cargo', data.usuario.cargo);
             if (data.usuario.foto) {
                 localStorage.setItem('agendaWeb_foto', data.usuario.foto);
             }

@@ -155,9 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            await fetch(`${API_BASE_URL}/compromissos`, {
+            const res = await fetch(`${API_BASE_URL}/compromissos`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
             });
+            if (res.ok) {
+                alert("Compromisso criado com sucesso!");
+            } else {
+                const data = await res.json();
+                alert(data.erro || "Erro ao criar compromisso.");
+            }
             fecharModal();
             carregarCompromissos();
         } catch (error) { console.error(error); }

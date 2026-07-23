@@ -155,16 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            let res;
             if (id) {
                 const index = compromissos.findIndex(c => c.id === parseInt(id));
                 if(index !== -1) { novoComp.status = compromissos[index].status; }
-                await fetch(`${API_BASE_URL}/compromissos/${id}`, {
+                res = await fetch(`${API_BASE_URL}/compromissos/${id}`, {
                     method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
                 });
             } else {
-                await fetch(`${API_BASE_URL}/compromissos`, {
+                res = await fetch(`${API_BASE_URL}/compromissos`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
                 });
+            }
+            if (res.ok) {
+                alert(id ? "Compromisso atualizado com sucesso!" : "Compromisso criado com sucesso!");
+            } else {
+                const data = await res.json();
+                alert(data.erro || "Erro ao salvar compromisso.");
             }
             carregarCompromissos();
             fecharModal();
