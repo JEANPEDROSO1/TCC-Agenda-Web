@@ -12,6 +12,7 @@ router.post('/logout', authController.logout);
 
 // Rotas protegidas (Usuário logado)
 router.post('/request-password-change', authMiddleware, authController.requestPasswordChange);
+router.post('/verify-code-auth', authMiddleware, authController.verifyCodeAuth);
 router.post('/verify-change-password', authMiddleware, authController.verifyPasswordChange);
 
 module.exports = router;

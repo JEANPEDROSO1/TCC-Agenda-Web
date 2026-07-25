@@ -120,12 +120,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let codigoGuardado = '';
-    btnVerificarCodigo.addEventListener('click', () => {
+    btnVerificarCodigo.addEventListener('click', async () => {
         codigoGuardado = Array.from(otpInputs).map(i => i.value).join('');
         if (codigoGuardado.length === 6) {
-            erroCodigo.classList.add('hidden');
-            etapaVerificacao.classList.add('hidden');
-            etapaNovaSenha.classList.remove('hidden');
+            btnVerificarCodigo.textContent = "Verificando...";
+            btnVerificarCodigo.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE_URL}/auth/verify-code-auth`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ codigo: codigoGuardado })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    erroCodigo.classList.add('hidden');
+                    etapaVerificacao.classList.add('hidden');
+                    etapaNovaSenha.classList.remove('hidden');
+                } else {
+                    erroCodigo.textContent = data.erro || "Código inválido.";
+                    erroCodigo.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error(error);
+                erroCodigo.textContent = "Erro de conexão.";
+                erroCodigo.classList.remove('hidden');
+            } finally {
+                btnVerificarCodigo.textContent = "Verificar Código";
+                btnVerificarCodigo.disabled = false;
+            }
         } else {
             erroCodigo.textContent = "Digite os 6 dígitos.";
             erroCodigo.classList.remove('hidden');

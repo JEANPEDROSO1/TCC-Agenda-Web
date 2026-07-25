@@ -198,6 +198,32 @@ exports.requestPasswordChange = async (req, res) => {
     }
 };
 
+// Verificar Código (Usuário Autenticado - Etapa 2)
+exports.verifyCodeAuth = async (req, res) => {
+    const { codigo } = req.body;
+    try {
+        const [users] = await pool.execute(
+            'SELECT id, codigo_expiracao FROM usuarios WHERE id = ? AND codigo_verificacao = ?',
+            [req.user.id, codigo]
+        );
+
+        const user = users[0];
+
+        if (!user) {
+            return res.status(400).json({ erro: 'Código inválido.' });
+        }
+
+        if (new Date() > new Date(user.codigo_expiracao)) {
+            return res.status(400).json({ erro: 'Código expirado. Solicite um novo.' });
+        }
+
+        res.json({ mensagem: 'Código verificado com sucesso!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro interno no servidor.' });
+    }
+};
+
 // Verificar e Trocar Senha (Usuário Autenticado)
 exports.verifyPasswordChange = async (req, res) => {
     const { codigo, novaSenha } = req.body;
