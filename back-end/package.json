@@ -11,16 +11,13 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@azure/identity": "^4.2.1",
-    "@azure/msal-node": "^2.6.4",
-    "@microsoft/microsoft-graph-client": "^3.0.7",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.9.7"
+    "mysql2": "^3.9.7",
+    "nodemailer": "^9.0.3"
   }
 }

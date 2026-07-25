@@ -26,11 +26,11 @@ services:
         generateValue: true # O Render vai gerar uma senha forte automaticamente
       - key: JWT_EXPIRES_IN
         value: 24h
-      - key: AZURE_TENANT_ID
+      - key: SMTP_HOST
+        value: smtp-mail.outlook.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
         sync: false
-      - key: AZURE_CLIENT_ID
-        sync: false
-      - key: AZURE_CLIENT_SECRET
-        sync: false
-      - key: EMAIL_REMETENTE
+      - key: SMTP_PASS
         sync: false
