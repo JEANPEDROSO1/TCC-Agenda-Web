@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 compromissosData = data.compromissosData || [];
                 atualizarPainel();
             } else {
-                alert(data.erro || 'Erro ao carregar dados do admin.');
+                showToast(data.erro || 'Erro ao carregar dados do admin.', 'erro');
             }
         } catch (error) {
             console.error('Erro de conexão:', error);
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 carregarDados();
             } else {
                 const data = await res.json();
-                alert(data.erro || 'Erro ao alterar cargo.');
+                showToast(data.erro || 'Erro ao alterar cargo.', 'erro');
             }
         } catch (error) { console.error(error); }
     };
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 carregarDados();
             } else {
                 const data = await res.json();
-                alert(data.erro || 'Erro ao alterar status.');
+                showToast(data.erro || 'Erro ao alterar status.', 'erro');
             }
         } catch (error) { console.error(error); }
     };
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     carregarDados();
                 } else {
                     const data = await res.json();
-                    alert(data.erro || 'Erro ao deletar usuário.');
+                    showToast(data.erro || 'Erro ao deletar usuário.', 'erro');
                 }
             } catch (error) { console.error(error); }
         }
