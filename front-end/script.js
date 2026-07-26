@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 if (data.nome) localStorage.setItem('agendaWeb_nome', data.nome);
+                if (data.cargo) localStorage.setItem('agendaWeb_cargo', data.cargo);
                 if (data.foto) {
                     localStorage.setItem('agendaWeb_foto', data.foto);
                     const imgPerfil = document.getElementById('imagemPerfilPreview');

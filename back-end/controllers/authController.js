@@ -308,9 +308,9 @@ exports.updatePerfil = async (req, res) => {
 // Retornar Dados Atuais do Usuário (Sincronização)
 exports.me = async (req, res) => {
     try {
-        const [users] = await pool.execute('SELECT nome, foto FROM usuarios WHERE id = ?', [req.user.id]);
+        const [users] = await pool.execute('SELECT nome, foto, cargo FROM usuarios WHERE id = ?', [req.user.id]);
         if (users.length > 0) {
-            res.json({ nome: users[0].nome, foto: users[0].foto });
+            res.json({ nome: users[0].nome, foto: users[0].foto, cargo: users[0].cargo });
         } else {
             res.status(404).json({ erro: 'Usuário não encontrado' });
         }
