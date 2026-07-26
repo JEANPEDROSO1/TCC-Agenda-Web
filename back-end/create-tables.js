@@ -31,9 +31,20 @@ async function up() {
                 ADD COLUMN notificacao_hora_enviada TINYINT(1) DEFAULT 0;
             `);
             console.log("Colunas de lembrete adicionadas em base existente!");
+        } catch(e) {}
+
+        // Garante que a coluna foto seja grande o suficiente para armazenar Base64
+        try {
+            await pool.execute('ALTER TABLE usuarios MODIFY COLUMN foto LONGTEXT');
+            console.log("Coluna foto verificada/modificada para suportar Base64.");
         } catch(e) {
-            // Se já existirem, apenas ignora
+            // Se a coluna não existir, tenta adicionar
+            try {
+                await pool.execute('ALTER TABLE usuarios ADD COLUMN foto LONGTEXT');
+                console.log("Coluna foto adicionada na tabela usuarios.");
+            } catch(innerE) {}
         }
+
     } catch (err) {
         console.error("Erro:", err);
     }

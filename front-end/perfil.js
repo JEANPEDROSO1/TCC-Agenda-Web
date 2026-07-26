@@ -68,12 +68,47 @@ document.addEventListener('DOMContentLoaded', () => {
         cropper.destroy();
     });
 
-    btnSalvarPerfil.addEventListener('click', () => {
-        if (inputNome.value.trim()) localStorage.setItem('agendaWeb_nome', inputNome.value.trim());
+    btnSalvarPerfil.addEventListener('click', async () => {
+        const nome = inputNome.value.trim();
+        let foto = null;
+
+        if (nome) localStorage.setItem('agendaWeb_nome', nome);
+        
         if (imagemPreview.src.startsWith('data:image')) {
-            try { localStorage.setItem('agendaWeb_foto', imagemPreview.src); } catch(e) {}
+            foto = imagemPreview.src;
+            try { localStorage.setItem('agendaWeb_foto', foto); } catch(e) {}
         }
-        mostrarToast("Informações atualizadas com sucesso!");
+
+        if (!nome) {
+            mostrarToast("O nome não pode ficar vazio!");
+            return;
+        }
+
+        const btnOriginalText = btnSalvarPerfil.textContent;
+        btnSalvarPerfil.textContent = "Salvando...";
+        btnSalvarPerfil.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/perfil`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ nome, foto })
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                mostrarToast("Informações atualizadas com sucesso!");
+            } else {
+                alert(data.erro || "Erro ao salvar perfil no banco de dados.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão ao salvar perfil.");
+        } finally {
+            btnSalvarPerfil.textContent = btnOriginalText;
+            btnSalvarPerfil.disabled = false;
+        }
     });
 
     // Troca de Senha (Modal e OTP)
@@ -125,7 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Backspace' && !input.value && index > 0) otpInputs[index - 1].focus();
             else if (e.key === 'Enter') btnVerificarCodigo.click();
         });
-        input.addEventListener('input', () => { if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus(); });
+        input.addEventListener('input', () => { 
+            input.value = input.value.replace(/\D/g, '').slice(0, 1);
+            if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus(); 
+        });
     });
 
     const btnReenviarCodigo = document.getElementById('btnReenviarCodigo');

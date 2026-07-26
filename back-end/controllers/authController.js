@@ -258,3 +258,32 @@ exports.verifyPasswordChange = async (req, res) => {
         res.status(500).json({ erro: 'Erro ao alterar a senha.' });
     }
 };
+
+// Atualizar Perfil (Usuário Autenticado)
+exports.updatePerfil = async (req, res) => {
+    const { nome, foto } = req.body;
+    
+    if (!nome) {
+        return res.status(400).json({ erro: 'O nome é obrigatório.' });
+    }
+
+    try {
+        // Se foto foi enviada, atualiza ambos. Se não, apenas o nome.
+        if (foto) {
+            await pool.execute(
+                'UPDATE usuarios SET nome = ?, foto = ? WHERE id = ?',
+                [nome, foto, req.user.id]
+            );
+        } else {
+            await pool.execute(
+                'UPDATE usuarios SET nome = ? WHERE id = ?',
+                [nome, req.user.id]
+            );
+        }
+
+        res.json({ mensagem: 'Perfil atualizado com sucesso!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro interno ao atualizar perfil.' });
+    }
+};
