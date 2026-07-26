@@ -24,15 +24,28 @@
             transition: opacity 0.5s ease;
         }
         .dark-mode #global-preloader { background: #0f172a; } /* Tema Escuro */
-        #global-preloader img { width: 120px; height: auto; margin-bottom: 20px; animation: pulse 1.5s infinite; }
+        #global-preloader img { width: 120px; height: auto; margin-bottom: 20px; }
         #global-preloader h1 { font-size: 28px; margin: 0 0 5px 0; color: #1f2937; font-family: sans-serif; }
         .dark-mode #global-preloader h1 { color: #f1f5f9; }
         #global-preloader p { font-size: 14px; margin: 0; color: #64748b; font-family: sans-serif; }
         .dark-mode #global-preloader p { color: #94a3b8; }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        
+        .progress-container {
+            width: 200px; height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px; margin-top: 20px; overflow: hidden;
+            position: relative;
+        }
+        .dark-mode .progress-container { background: rgba(255, 255, 255, 0.1); }
+        .progress-bar {
+            width: 30%; height: 100%;
+            background: var(--primary-color, #2563eb);
+            position: absolute; left: 0; top: 0; border-radius: 4px;
+            animation: moveProgress 1.5s ease-in-out infinite;
+        }
+        @keyframes moveProgress {
+            0% { left: -30%; }
+            100% { left: 100%; }
         }
     `;
     document.head.appendChild(preloaderStyle);
@@ -44,6 +57,9 @@
                 <img src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
                 <h1>Agenda Web</h1>
                 <p>Desenvolvido por Jean Pedroso</p>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
             </div>
         `);
     });
