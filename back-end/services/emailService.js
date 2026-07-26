@@ -18,10 +18,13 @@ const transporter = nodemailer.createTransport({
  * @param {string} codigo - Código de 6 dígitos gerado
  */
 async function enviarCodigoRecuperacao(destinatario, codigo) {
+    console.log(`[ETAPA 3 - INÍCIO] Nodemailer instanciado. Preparando para conectar com SMTP_USER: ${process.env.SMTP_USER}`);
+
     // Caso as credenciais não estejam configuradas, exibe apenas no console (para desenvolvimento local)
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS || process.env.SMTP_PASS.includes('senha')) {
         console.log('\n======================================================');
-        console.log('⚠️ NODEMAILER NÃO CONFIGURADO COMPLETAMENTE NO .ENV');
+        console.log('⚠️ [ETAPA 3 - MODO SIMULAÇÃO] NODEMAILER NÃO CONFIGURADO NO .ENV OU RENDER!');
+        console.log('Motivo: Faltou SMTP_USER, SMTP_PASS, ou a senha ainda contém a palavra "senha".');
         console.log(`✉️ SIMULAÇÃO DE E-MAIL PARA: ${destinatario}`);
         console.log(`🔑 CÓDIGO DE RECUPERAÇÃO: ${codigo}`);
         console.log('======================================================\n');
@@ -48,11 +51,12 @@ async function enviarCodigoRecuperacao(destinatario, codigo) {
     };
 
     try {
+        console.log(`[ETAPA 3 - PROCESSANDO] Disparando transporte SMTP para ${destinatario}...`);
         const info = await transporter.sendMail(mensagem);
-        console.log(`✅ E-mail enviado com sucesso para ${destinatario} via Nodemailer (${info.messageId})`);
+        console.log(`[ETAPA 3 - SUCESSO] ✅ E-mail enviado com sucesso! MessageID: ${info.messageId}`);
         return true;
     } catch (error) {
-        console.error('❌ Erro ao enviar e-mail via Nodemailer:', error);
+        console.error('[ETAPA 3 - FALHA DE CONEXÃO SMTP] ❌ Erro detalhado do Nodemailer:', error);
         throw error;
     }
 }

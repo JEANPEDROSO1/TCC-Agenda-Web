@@ -177,8 +177,12 @@ exports.logout = (req, res) => {
 // Solicitar Troca de Senha (Usuário Autenticado)
 exports.requestPasswordChange = async (req, res) => {
     try {
+        console.log(`\n[ETAPA 1] Recebida solicitação de troca de senha. Buscando email do usuário ID: ${req.user.id}...`);
         const [users] = await pool.execute('SELECT email FROM usuarios WHERE id = ?', [req.user.id]);
-        if (users.length === 0) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        if (users.length === 0) {
+            console.log(`[ERRO] Usuário ID ${req.user.id} não encontrado no banco.`);
+            return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        }
         
         const email = users[0].email;
         const codigo = Math.floor(100000 + Math.random() * 900000).toString();
@@ -188,9 +192,10 @@ exports.requestPasswordChange = async (req, res) => {
             'UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE id = ?',
             [codigo, expiracao, req.user.id]
         );
+        console.log(`[ETAPA 2] Código OTP gerado e salvo no banco. Chamando serviço de email para: ${email}`);
 
         // Envia em background para não travar a resposta HTTP
-        enviarCodigoRecuperacao(email, codigo).catch(err => console.error("Falha ao enviar email do perfil:", err));
+        enviarCodigoRecuperacao(email, codigo).catch(err => console.error("[ETAPA 3 - FALHA FATAL] O background falhou ao enviar o e-mail:", err));
 
         res.json({ mensagem: 'Código de verificação enviado para o seu e-mail.' });
     } catch (error) {
