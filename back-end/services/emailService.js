@@ -1,72 +1,56 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
-
-// Identifica se é Gmail para usar as configurações nativas seguras do Nodemailer
-const isGmail = process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail');
-
-const transporter = isGmail 
-    ? nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        }
-    })
-    : nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp-mail.outlook.com',
-        port: process.env.SMTP_PORT || 587,
-        secure: Number(process.env.SMTP_PORT) === 465,
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS
-        }
-    });
+// URL da sua API privada criada no Google Apps Script
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDiqrLezETAXj8V-_8dU8OLmTo1uEVJRQyCGmiAc1t_6P0HSiCPleHXtG_QNG9lsTt/exec';
+const GOOGLE_SCRIPT_TOKEN = 'agenda_tcc_secreto_2026';
 
 /**
- * Envia um e-mail com o código de recuperação
+ * Envia um e-mail com o código de recuperação via Google Apps Script (Bypass de porta 587)
  * @param {string} destinatario - Email do usuário que solicitou recuperação
  * @param {string} codigo - Código de 6 dígitos gerado
  */
 async function enviarCodigoRecuperacao(destinatario, codigo) {
-    console.log(`[ETAPA 3 - INÍCIO] Nodemailer instanciado. Preparando para conectar com SMTP_USER: ${process.env.SMTP_USER}`);
+    console.log(`[ETAPA 3 - INÍCIO] Preparando para enviar via Google Apps Script para: ${destinatario}`);
 
-    // Caso as credenciais não estejam configuradas, exibe apenas no console (para desenvolvimento local)
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS || process.env.SMTP_PASS.includes('senha')) {
-        console.log('\n======================================================');
-        console.log('⚠️ [ETAPA 3 - MODO SIMULAÇÃO] NODEMAILER NÃO CONFIGURADO NO .ENV OU RENDER!');
-        console.log('Motivo: Faltou SMTP_USER, SMTP_PASS, ou a senha ainda contém a palavra "senha".');
-        console.log(`✉️ SIMULAÇÃO DE E-MAIL PARA: ${destinatario}`);
-        console.log(`🔑 CÓDIGO DE RECUPERAÇÃO: ${codigo}`);
-        console.log('======================================================\n');
-        return true;
-    }
-
-    const mensagem = {
-        from: `"Agenda Web" <${process.env.SMTP_USER}>`,
-        to: destinatario,
-        subject: 'Seu Código de Recuperação - Agenda Web',
-        html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
-                <h2 style="color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Recuperação de Senha</h2>
-                <p>Olá,</p>
-                <p>Você solicitou a recuperação de senha no <strong>Agenda Web</strong>.</p>
-                <p>Seu código de verificação é:</p>
-                <div style="text-align: center; margin: 20px 0;">
-                    <span style="font-size: 32px; font-weight: bold; color: #2563eb; letter-spacing: 5px; background: #f3f4f6; padding: 10px 20px; border-radius: 8px; border: 1px dashed #2563eb;">${codigo}</span>
-                </div>
-                <p>Este código expira em 15 minutos.</p>
-                <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 30px;">Se você não solicitou isso, pode ignorar este e-mail.</p>
+    const htmlBody = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
+            <h2 style="color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Recuperação de Senha</h2>
+            <p>Olá,</p>
+            <p>Você solicitou a recuperação de senha no <strong>Agenda Web</strong>.</p>
+            <p>Seu código de verificação é:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <span style="font-size: 32px; font-weight: bold; color: #2563eb; letter-spacing: 5px; background: #f3f4f6; padding: 10px 20px; border-radius: 8px; border: 1px dashed #2563eb;">${codigo}</span>
             </div>
-        `
-    };
+            <p>Este código expira em 15 minutos.</p>
+            <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 30px;">Se você não solicitou isso, pode ignorar este e-mail.</p>
+        </div>
+    `;
 
     try {
-        console.log(`[ETAPA 3 - PROCESSANDO] Disparando transporte SMTP para ${destinatario}...`);
-        const info = await transporter.sendMail(mensagem);
-        console.log(`[ETAPA 3 - SUCESSO] ✅ E-mail enviado com sucesso! MessageID: ${info.messageId}`);
-        return true;
+        console.log(`[ETAPA 3 - PROCESSANDO] Disparando Webhook POST (HTTPS) para o Google...`);
+        
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token: GOOGLE_SCRIPT_TOKEN,
+                to: destinatario,
+                subject: 'Seu Código de Recuperação - Agenda Web',
+                html: htmlBody
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log(`[ETAPA 3 - SUCESSO] ✅ E-mail enviado com sucesso pelo Google Apps Script!`);
+            return true;
+        } else {
+            console.error('[ETAPA 3 - FALHA DA API GOOGLE] ❌ O Google retornou erro:', data.error);
+            throw new Error(data.error);
+        }
     } catch (error) {
-        console.error('[ETAPA 3 - FALHA DE CONEXÃO SMTP] ❌ Erro detalhado do Nodemailer:', error);
+        console.error('[ETAPA 3 - FALHA DE CONEXÃO HTTPS] ❌ Erro ao conectar com o script:', error);
         throw error;
     }
 }
