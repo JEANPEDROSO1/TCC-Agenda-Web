@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function carregarDados() {
         inputNome.value = localStorage.getItem('agendaWeb_nome') || 'Usuário Exemplo';
-        inputEmail.value = 'usuario@email.com';
+        inputEmail.value = localStorage.getItem('agendaWeb_email') || 'Erro ao carregar e-mail';
         const fotoSalva = localStorage.getItem('agendaWeb_foto');
         if (fotoSalva && !fotoSalva.includes('avatar-padrao')) imagemPreview.src = fotoSalva;
     }

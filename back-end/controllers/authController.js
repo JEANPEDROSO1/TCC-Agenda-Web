@@ -96,8 +96,8 @@ exports.forgotPassword = async (req, res) => {
             [codigo, expiracao, email]
         );
 
-        // Envia E-mail (Via Microsoft Graph)
-        await enviarCodigoRecuperacao(email, codigo);
+        // Envia E-mail (No Background)
+        enviarCodigoRecuperacao(email, codigo).catch(err => console.error("Falha silenciosa ao enviar email:", err));
 
         res.json({ mensagem: 'Se o e-mail existir, um código foi enviado.' });
     } catch (error) {
@@ -189,7 +189,8 @@ exports.requestPasswordChange = async (req, res) => {
             [codigo, expiracao, req.user.id]
         );
 
-        await enviarCodigoRecuperacao(email, codigo);
+        // Envia em background para não travar a resposta HTTP
+        enviarCodigoRecuperacao(email, codigo).catch(err => console.error("Falha ao enviar email do perfil:", err));
 
         res.json({ mensagem: 'Código de verificação enviado para o seu e-mail.' });
     } catch (error) {
