@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('agendaWeb_nome', inputNome.value);
         localStorage.setItem('agendaWeb_fuso', selectFuso.value);
         
-        if (imagemPreview.src && !imagemPreview.src.includes('avatar-padrao.png')) {
+        if (imagemPreview.src && !imagemPreview.src.includes('avatar-padrao') && !imagemPreview.src.includes('data:image/svg')) {
             try { localStorage.setItem('agendaWeb_foto', imagemPreview.src); } 
             catch (err) { console.warn("Imagem grande demais."); }
         }
