@@ -1,4 +1,4 @@
-// script.js - ConfiguraÃ§Ãµes globais e tema
+ï»¿// script.js - ConfiguraÃ§Ãµes globais e tema
 (function() {
     const COR_PADRAO = '#2563eb';
     const temaEscuro = localStorage.getItem('agendaWeb_temaEscuro') === 'true';
@@ -68,7 +68,7 @@ window.showToast = function(mensagem, tipo = 'sucesso') {
     
     container.appendChild(toast);
     
-    // Força o reflow para a animação CSS funcionar
+    // Forï¿½a o reflow para a animaï¿½ï¿½o CSS funcionar
     toast.offsetHeight;
     toast.classList.add('show');
     
@@ -82,7 +82,7 @@ window.showToast = function(mensagem, tipo = 'sucesso') {
 document.addEventListener('DOMContentLoaded', async () => {
     if (typeof API_BASE_URL !== 'undefined') {
         try {
-            const res = await fetch($(${API_BASE_URL})/auth/me, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
+            const res = await fetch(API_BASE_URL + '/auth/me', { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
             if (res.ok) {
                 const data = await res.json();
                 if (data.nome) localStorage.setItem('agendaWeb_nome', data.nome);
