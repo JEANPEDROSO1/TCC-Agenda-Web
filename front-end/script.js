@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Auto-login se acessar index/login/cadastro estando logado
                 const paginasPublicas = ['index.html', '', 'login.html', 'register.html', 'verificacao.html', 'forgot-password.html'];
                 if (paginasPublicas.includes(paginaAtual)) {
-                    window.location.href = data.cargo === 'admin' ? 'admin.html' : 'dashboard.html';
+                    window.location.href = 'dashboard.html';
                     return;
                 }
 
