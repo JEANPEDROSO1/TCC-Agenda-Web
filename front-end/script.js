@@ -41,7 +41,22 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.insertAdjacentHTML('beforeend', modalHtml);
             
             document.getElementById('btnNaoSair').addEventListener('click', () => document.getElementById('modalSairGlobal').remove());
-            document.getElementById('btnSimSair').addEventListener('click', () => window.location.href = 'index.html');
+            document.getElementById('btnSimSair').addEventListener('click', async () => {
+                document.getElementById('btnSimSair').textContent = 'Saindo...';
+                if (typeof API_BASE_URL !== 'undefined') {
+                    try {
+                        await fetch(API_BASE_URL + '/auth/logout', { method: 'POST', credentials: 'include' });
+                    } catch(e) {}
+                }
+                // Limpa apenas os dados de sessão da agenda
+                Object.keys(localStorage).forEach(key => {
+                    if(key.startsWith('agendaWeb_') && key !== 'agendaWeb_temaEscuro' && key !== 'agendaWeb_corPrincipal') {
+                        localStorage.removeItem(key);
+                    }
+                });
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            });
         });
     }
 
@@ -92,6 +107,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Proteção para Admin
                 if (paginaAtual === 'admin.html' && data.cargo !== 'admin') {
                     window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                // Auto-login se acessar index/login/cadastro estando logado
+                const paginasPublicas = ['index.html', '', 'login.html', 'register.html', 'verificacao.html', 'forgot-password.html'];
+                if (paginasPublicas.includes(paginaAtual)) {
+                    window.location.href = data.cargo === 'admin' ? 'admin.html' : 'dashboard.html';
                     return;
                 }
 
