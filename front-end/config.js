@@ -5,11 +5,12 @@ const ENV = {
     // Altere para true quando fizer o deploy na Vercel
     IS_PRODUCTION: true, 
     
-    // URL da API quando rodando localmente no seu computador (com Node)
+    // URL da API quando rodando localmente (mude para o IP do seu PC se for testar no celular, ex: 'http://192.168.1.10:3000/api')
     LOCAL_API_URL: 'http://localhost:3000/api',
     
-    // URL da API oficial quando estiver hospedada no Render (ex: https://agenda-backend.onrender.com/api)
-    PRODUCTION_API_URL: 'https://tcc-agenda-web.onrender.com/api'
+    // Na Vercel, usamos o Proxy (vercel.json) para enganar o navegador e evitar bloqueio de cookies no celular.
+    // A Vercel repassará automaticamente tudo que for '/api' para o Render.
+    PRODUCTION_API_URL: '/api'
 };
 
 // Variável global que os outros arquivos vão usar

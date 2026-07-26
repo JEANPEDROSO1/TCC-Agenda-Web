@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://tcc-agenda-web.onrender.com/api/:path*"
+    }
+  ]
+}
