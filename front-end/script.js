@@ -64,7 +64,7 @@ window.showToast = function(mensagem, tipo = 'sucesso') {
 
     const toast = document.createElement('div');
     toast.className = 'toast toast-' + tipo;
-    toast.innerHTML = (tipo === 'sucesso' ? '? ' : '? ') + mensagem;
+    toast.innerHTML = (tipo === 'sucesso' ? '✅ ' : '❌ ') + mensagem;
     
     container.appendChild(toast);
     
