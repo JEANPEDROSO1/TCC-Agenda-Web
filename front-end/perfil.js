@@ -78,6 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Troca de Senha (Modal e OTP)
     async function abrirModal() {
+        // Feedback visual de carregamento
+        const textoOriginal = btnIniciarTrocaSenha.textContent;
+        btnIniciarTrocaSenha.textContent = "Enviando código para seu e-mail...";
+        btnIniciarTrocaSenha.disabled = true;
+
         // Envia requisição para gerar OTP
         try {
             const res = await fetch(`${API_BASE_URL}/auth/request-password-change`, {
@@ -99,7 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error(error);
-            alert("Erro de conexão.");
+            alert("Erro de conexão com o servidor. O envio do e-mail falhou ou demorou demais.");
+        } finally {
+            // Restaura o botão
+            btnIniciarTrocaSenha.textContent = textoOriginal;
+            btnIniciarTrocaSenha.disabled = false;
         }
     }
     function fecharModal() {
