@@ -14,11 +14,11 @@ exports.listar = async (req, res) => {
 };
 
 exports.criar = async (req, res) => {
-    const { titulo, descricao, data, hora, urgencia, repeticao, status } = req.body;
+    const { titulo, descricao, data, hora, urgencia, repeticao, status, tempo_lembrete } = req.body;
     try {
         const [result] = await pool.execute(
-            'INSERT INTO compromissos (usuario_id, titulo, descricao, data, hora, urgencia, repeticao, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, titulo, descricao || '', data, hora, urgencia || 'normal', repeticao || 'nenhuma', status || 'ativo']
+            'INSERT INTO compromissos (usuario_id, titulo, descricao, data, hora, urgencia, repeticao, status, tempo_lembrete, lembrete_enviado, notificacao_hora_enviada) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0)',
+            [req.user.id, titulo, descricao || '', data, hora, urgencia || 'normal', repeticao || 'nenhuma', status || 'ativo', tempo_lembrete || 0]
         );
         res.status(201).json({ mensagem: 'Compromisso criado com sucesso!', id: result.insertId });
     } catch (error) {
@@ -29,15 +29,15 @@ exports.criar = async (req, res) => {
 
 exports.atualizar = async (req, res) => {
     const { id } = req.params;
-    const { titulo, descricao, data, hora, urgencia, repeticao, status } = req.body;
+    const { titulo, descricao, data, hora, urgencia, repeticao, status, tempo_lembrete } = req.body;
     try {
         // Verifica posse
         const [rows] = await pool.execute('SELECT id FROM compromissos WHERE id = ? AND usuario_id = ?', [id, req.user.id]);
         if (rows.length === 0) return res.status(404).json({ erro: 'Compromisso não encontrado ou não pertence ao usuário.' });
 
         await pool.execute(
-            'UPDATE compromissos SET titulo=?, descricao=?, data=?, hora=?, urgencia=?, repeticao=?, status=? WHERE id=?',
-            [titulo, descricao || '', data, hora, urgencia, repeticao, status, id]
+            'UPDATE compromissos SET titulo=?, descricao=?, data=?, hora=?, urgencia=?, repeticao=?, status=?, tempo_lembrete=?, lembrete_enviado=0, notificacao_hora_enviada=0 WHERE id=?',
+            [titulo, descricao || '', data, hora, urgencia, repeticao, status, tempo_lembrete || 0, id]
         );
         res.json({ mensagem: 'Compromisso atualizado com sucesso!' });
     } catch (error) {

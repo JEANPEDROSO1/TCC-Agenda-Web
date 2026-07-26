@@ -12,16 +12,36 @@ async function up() {
                 data DATE NOT NULL,
                 hora TIME NOT NULL,
                 urgencia ENUM('normal', 'urgente') DEFAULT 'normal',
-                repeticao ENUM('nenhuma', 'diaria', 'semanal', 'mensal') DEFAULT 'nenhuma',
+                repeticao ENUM('nenhuma', 'diaria', 'semanal', 'mensal', 'anual') DEFAULT 'nenhuma',
                 status ENUM('ativo', 'desativado') DEFAULT 'ativo',
+                tempo_lembrete INT DEFAULT 0,
+                lembrete_enviado TINYINT(1) DEFAULT 0,
+                notificacao_hora_enviada TINYINT(1) DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
         console.log("Tabela compromissos criada com sucesso!");
+        
+        // Tenta alterar para garantir que tabelas antigas recebam a coluna
+        try {
+            await pool.execute(`
+                ALTER TABLE compromissos 
+                ADD COLUMN tempo_lembrete INT DEFAULT 0,
+                ADD COLUMN lembrete_enviado TINYINT(1) DEFAULT 0,
+                ADD COLUMN notificacao_hora_enviada TINYINT(1) DEFAULT 0;
+            `);
+            console.log("Colunas de lembrete adicionadas em base existente!");
+        } catch(e) {
+            // Se já existirem, apenas ignora
+        }
     } catch (err) {
         console.error("Erro:", err);
-    } finally {
-        process.exit();
     }
 }
-up();
+
+// Se for chamado diretamente via linha de comando
+if (require.main === module) {
+    up().then(() => process.exit(0));
+}
+
+module.exports = up;

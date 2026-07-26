@@ -36,6 +36,11 @@ app.get('/', (req, res) => {
     res.send('Servidor Agenda Web rodando com sucesso!');
 });
 
+// Iniciar scripts de tabelas e cron
+require('./create-tables')();
+const iniciarCronJobs = require('./cronJobs');
+iniciarCronJobs();
+
 // Inicialização
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
