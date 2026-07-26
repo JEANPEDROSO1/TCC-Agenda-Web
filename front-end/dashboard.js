@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formCompromisso.reset();
         document.getElementById('compId').value = '';
         document.getElementById('compData').value = dataSelecionada;
+        document.getElementById('compTempoLembrete').value = "30";
         modalCompromisso.style.display = 'flex';
     });
 
@@ -155,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hora: hora,
             urgencia: document.getElementById('compUrgencia').value,
             repeticao: document.getElementById('compRepeticao').value,
+            tempo_lembrete: parseInt(document.getElementById('compTempoLembrete').value),
             status: 'ativo'
         };
 
@@ -175,4 +177,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialização
     carregarCompromissos();
+
+    // RADAR LOCAL (Notificações Visuais em Tempo Real)
+    let alertasMostrados = [];
+    
+    setInterval(() => {
+        if (compromissos.length === 0) return;
+        const agora = new Date();
+        
+        compromissos.forEach(comp => {
+            if (comp.status !== 'ativo' || comp.tempo_lembrete < 0) return;
+            
+            const dataComp = new Date(`${comp.data}T${comp.hora}:00`);
+            const diffMinutos = Math.round((dataComp - agora) / 60000);
+            
+            // Lembrete Antecipado
+            if (comp.tempo_lembrete > 0 && diffMinutos === comp.tempo_lembrete) {
+                const alertKey = `antecipado_${comp.id}`;
+                if (!alertasMostrados.includes(alertKey)) {
+                    showToast(`Lembrete: Faltam ${comp.tempo_lembrete} minutos para "${comp.titulo}"!`, 'sucesso');
+                    alertasMostrados.push(alertKey);
+                }
+            }
+            
+            // Lembrete Na Hora
+            if (diffMinutos === 0) {
+                const alertKey = `hora_${comp.id}`;
+                if (!alertasMostrados.includes(alertKey)) {
+                    showToast(`O compromisso "${comp.titulo}" começou!`, 'sucesso');
+                    alertasMostrados.push(alertKey);
+                }
+            }
+        });
+    }, 30000); // Checa a cada 30 segundos
 });
