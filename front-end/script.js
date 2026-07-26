@@ -1,4 +1,4 @@
-﻿// script.js - Configurações globais e tema
+// script.js - Configurações globais e tema
 (function() {
     const COR_PADRAO = '#2563eb';
     const temaEscuro = localStorage.getItem('agendaWeb_temaEscuro') === 'true';
@@ -78,13 +78,23 @@ window.showToast = function(mensagem, tipo = 'sucesso') {
     }, 3000);
 };
 
-// Sincronizacao de perfil ao carregar a pagina
+// Sincronizacao de perfil e Proteção de Rotas
 document.addEventListener('DOMContentLoaded', async () => {
+    const paginasProtegidas = ['dashboard.html', 'admin.html', 'compromissos.html', 'perfil.html', 'configuracoes.html'];
+    const paginaAtual = window.location.pathname.split('/').pop() || '';
+
     if (typeof API_BASE_URL !== 'undefined') {
         try {
             const res = await fetch(API_BASE_URL + '/auth/me', { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
             if (res.ok) {
                 const data = await res.json();
+                
+                // Proteção para Admin
+                if (paginaAtual === 'admin.html' && data.cargo !== 'admin') {
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
                 if (data.nome) localStorage.setItem('agendaWeb_nome', data.nome);
                 if (data.foto) {
                     localStorage.setItem('agendaWeb_foto', data.foto);
@@ -93,7 +103,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const imgConfig = document.getElementById('imagemPreview');
                     if (imgConfig && !imgConfig.src.startsWith('blob:')) imgConfig.src = data.foto;
                 }
+            } else {
+                // Se não estiver logado e tentar acessar página protegida
+                if (paginasProtegidas.includes(paginaAtual)) {
+                    window.location.href = 'index.html';
+                }
             }
-        } catch (e) {}
+        } catch (e) {
+            if (paginasProtegidas.includes(paginaAtual)) {
+                window.location.href = 'index.html';
+            }
+        }
     }
 });
