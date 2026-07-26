@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>
                     <div class="acoes-tabela">
                         <button class="btn-acao promover" onclick="alternarCargoUsuario(${user.id})" title="${user.cargo === 'admin' ? 'Remover Admin' : 'Tornar Admin'}">${user.cargo === 'admin' ? '⬇️' : '🛡️'}</button>
-                        <button class="btn-acao promover" onclick="alternarStatusUsuario(${user.id})" title="${user.status === 1 ? 'Desativar Usuário' : 'Ativar Usuário'}">${user.status === 1 ? '🔴' : '🟢'}</button>
+                        <button class="btn-acao promover" onclick="alternarStatusUsuario(${user.id})" title="${user.status === 1 ? 'Desativar Usuário' : 'Ativar Usuário'}" style="font-size: 12px; padding: 4px 8px; width: auto; border-radius: 4px; font-weight: bold; background-color: ${user.status === 1 ? '#ef4444' : '#10b981'}; color: white;">${user.status === 1 ? 'Desativar' : 'Ativar'}</button>
                         <button class="btn-acao delete" onclick="deletarUsuario(${user.id})" title="Excluir Usuário">🗑️</button>
                     </div>
                 </td>
