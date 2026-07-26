@@ -128,6 +128,32 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', () => { if (input.value && index < otpInputs.length - 1) otpInputs[index + 1].focus(); });
     });
 
+    const btnReenviarCodigo = document.getElementById('btnReenviarCodigo');
+    if (btnReenviarCodigo) {
+        btnReenviarCodigo.addEventListener('click', async () => {
+            const txt = btnReenviarCodigo.textContent;
+            btnReenviarCodigo.textContent = "Reenviando...";
+            btnReenviarCodigo.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE_URL}/auth/request-password-change`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    mostrarToast("Novo código enviado!");
+                    otpInputs.forEach(i => i.value = '');
+                    otpInputs[0].focus();
+                } else alert(data.erro || "Erro.");
+            } catch (err) { alert("Erro de conexão."); }
+            finally {
+                btnReenviarCodigo.textContent = txt;
+                btnReenviarCodigo.disabled = false;
+            }
+        });
+    }
+
     let codigoGuardado = '';
     btnVerificarCodigo.addEventListener('click', async () => {
         codigoGuardado = Array.from(otpInputs).map(i => i.value).join('');
