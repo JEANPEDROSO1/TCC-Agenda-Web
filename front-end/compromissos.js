@@ -250,8 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
             diaEl.className = 'dia-calendario';
             const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
             
-            const eventos = compromissos.filter(c => c.data === dataStr && c.status === 'ativo');
-            let html = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => `<div class="evento-calendario ${c.urgencia === 'urgente' ? 'urgente' : 'normal'}">${c.hora} - ${c.titulo}</div>`).join('')}</div>` : '';
+            const eventos = compromissos.filter(c => c.data === dataStr);
+            let html = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
+                const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
+            }).join('')}</div>` : '';
 
             diaEl.innerHTML = `<span class="numero-dia">${i}</span>${html}`;
             if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) diaEl.classList.add('hoje');

@@ -203,6 +203,11 @@ html.dark-mode .dia-calendario {
 .evento-calendario.urgente {
     background: #ef4444;
 }
+.evento-calendario.desativado {
+    background: #94a3b8;
+    opacity: 0.65;
+    text-decoration: line-through;
+}
 
 .item-proximo-compromisso {
     padding: 14px;

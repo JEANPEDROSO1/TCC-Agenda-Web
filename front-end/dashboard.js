@@ -35,9 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarLista() {
         listaCompromissosEl.innerHTML = '';
         
-        // Filtra os ativos e que pertencem ao mês selecionado no calendário
+        // Filtra os que pertencem ao mês selecionado no calendário
         const ativos = compromissos.filter(c => {
-            if (c.status !== 'ativo') return false;
             const [a, m] = c.data.split('-');
             return parseInt(m) - 1 === mesAtual && parseInt(a) === anoAtual;
         }).sort((a, b) => new Date(a.data) - new Date(b.data));
@@ -52,9 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'item-proximo-compromisso';
             const partes = comp.data.split('-');
             const dataFmt = partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : comp.data;
-            const cor = comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)';
+            const cor = comp.status === 'desativado' ? '#94a3b8' : (comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)');
+            const opacity = comp.status === 'desativado' ? '0.6' : '1';
+            const extra = comp.status === 'desativado' ? ' <i>(Finalizado)</i>' : '';
             
-            div.innerHTML = `<strong style="color:${cor};">${comp.titulo}</strong><span style="font-size:0.85rem;color:var(--text-muted)">📅 ${dataFmt} - ⏰ ${comp.hora}</span>`;
+            div.style.opacity = opacity;
+            div.innerHTML = `<strong style="color:${cor};">${comp.titulo}${extra}</strong><span style="font-size:0.85rem;color:var(--text-muted)">📅 ${dataFmt} - ⏰ ${comp.hora}</span>`;
             listaCompromissosEl.appendChild(div);
         });
     }
@@ -83,8 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
             diaEl.className = 'dia-calendario';
             const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
             
-            const eventos = compromissos.filter(c => c.data === dataStr && c.status === 'ativo');
-            let htmlEventos = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => `<div class="evento-calendario ${c.urgencia === 'urgente' ? 'urgente' : 'normal'}">${c.hora} - ${c.titulo}</div>`).join('')}</div>` : '';
+            const eventos = compromissos.filter(c => c.data === dataStr);
+            let htmlEventos = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
+                const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
+            }).join('')}</div>` : '';
 
             diaEl.innerHTML = `<span class="numero-dia">${i}</span>${htmlEventos}`;
             
