@@ -16,6 +16,15 @@ function iniciarCronJobs() {
             const dia = String(agora.getDate()).padStart(2, '0');
             const hojeStr = `${ano}-${mes}-${dia}`;
             
+            // Desativa compromissos do passado automaticamente
+            const horaAtualStr = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}:00`;
+            await pool.execute(`
+                UPDATE compromissos 
+                SET status = 'desativado' 
+                WHERE status = 'ativo' 
+                  AND (data < ? OR (data = ? AND hora < ?))
+            `, [hojeStr, hojeStr, horaAtualStr]);
+
             // Busca compromissos de hoje que estão ativos
             const [compromissos] = await pool.execute(`
                 SELECT c.*, u.email 

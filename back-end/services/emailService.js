@@ -63,6 +63,14 @@ async function enviarLembreteCompromisso(destinatario, compromisso, tipo) {
         ? `Faltam ${compromisso.tempo_lembrete} minutos para o seu compromisso começar.` 
         : `O seu compromisso está marcado para agora!`;
 
+    let dataFormatada = compromisso.data;
+    if (compromisso.data instanceof Date) {
+        dataFormatada = compromisso.data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+    } else if (typeof compromisso.data === 'string' && compromisso.data.includes('-')) {
+        const partes = compromisso.data.split('T')[0].split('-');
+        if (partes.length === 3) dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
     const htmlBody = `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
             <h2 style="color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">${tituloLembrete}</h2>
@@ -70,7 +78,7 @@ async function enviarLembreteCompromisso(destinatario, compromisso, tipo) {
             <p>${msgExtra}</p>
             <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #1e40af;">${compromisso.titulo}</h3>
-                <p style="margin-bottom: 0;"><strong>Data:</strong> ${compromisso.data}</p>
+                <p style="margin-bottom: 0;"><strong>Data:</strong> ${dataFormatada}</p>
                 <p style="margin-bottom: 0;"><strong>Hora:</strong> ${compromisso.hora}</p>
                 ${compromisso.descricao ? `<p style="margin-bottom: 0;"><strong>Descrição:</strong> ${compromisso.descricao}</p>` : ''}
             </div>

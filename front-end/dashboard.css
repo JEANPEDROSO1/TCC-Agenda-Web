@@ -241,6 +241,15 @@ html.dark-mode .item-proximo-compromisso:hover {
     color: #cbd5e1;
 }
 
+html.dark-mode .dia-calendario.inativo {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+html.dark-mode .dia-calendario.inativo .numero-dia {
+    color: #475569;
+}
+
 .dia-calendario.hoje {
     background: var(--primary-color);
     border-color: var(--primary-hover);
