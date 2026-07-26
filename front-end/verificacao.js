@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Backspace' && !this.value && index > 0) {
                 codeInputs[index - 1].focus();
+            } else if (e.key === 'Enter') {
+                if (!verifyButton.disabled) {
+                    verifyButton.click();
+                }
             }
         });
         
