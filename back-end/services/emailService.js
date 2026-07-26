@@ -9,9 +9,6 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
-    },
-    tls: {
-        ciphers: 'SSLv3'
     }
 });
 
@@ -22,7 +19,7 @@ const transporter = nodemailer.createTransport({
  */
 async function enviarCodigoRecuperacao(destinatario, codigo) {
     // Caso as credenciais não estejam configuradas, exibe apenas no console (para desenvolvimento local)
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS || process.env.SMTP_PASS === 'sua_senha_do_email_aqui') {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS || process.env.SMTP_PASS.includes('senha')) {
         console.log('\n======================================================');
         console.log('⚠️ NODEMAILER NÃO CONFIGURADO COMPLETAMENTE NO .ENV');
         console.log(`✉️ SIMULAÇÃO DE E-MAIL PARA: ${destinatario}`);
