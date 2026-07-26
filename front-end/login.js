@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (!res.ok) {
+                if (data.codigo === 'PENDING_VERIFICATION') {
+                    sessionStorage.setItem('emailVerificacao', email);
+                    window.location.href = 'verificacao.html';
+                    return;
+                }
                 errorMsg.textContent = data.erro || "Credenciais inválidas.";
                 errorMsg.style.display = 'block';
                 return;

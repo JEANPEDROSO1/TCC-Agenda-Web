@@ -37,6 +37,20 @@ async function updateDb() {
         } else {
             console.error("Erro ao atualizar tabela usuarios:", err);
         }
+    try {
+        console.log("Verificando coluna status na tabela usuarios...");
+        await pool.query(`
+            ALTER TABLE usuarios 
+            ADD COLUMN status TINYINT(1) DEFAULT 0;
+        `);
+        console.log("Coluna status adicionada com sucesso!");
+        await pool.query(`UPDATE usuarios SET status = 0`);
+    } catch (err) {
+        if (err.code === 'ER_DUP_FIELDNAME') {
+             console.log("A coluna status já existe. Pulando.");
+        } else {
+            console.error("Erro ao atualizar coluna status:", err);
+        }
     } finally {
         process.exit();
     }

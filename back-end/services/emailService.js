@@ -111,7 +111,50 @@ async function enviarLembreteCompromisso(destinatario, compromisso, tipo) {
     }
 }
 
+async function enviarCodigoVerificacao(destinatario, codigo) {
+    console.log(`[VERIFICAÇÃO] Preparando envio de e-mail de verificação para: ${destinatario}`);
+
+    const htmlBody = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
+            <h2 style="color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">Confirme sua Conta</h2>
+            <p>Olá,</p>
+            <p>Bem-vindo(a) ao <strong>Agenda Web</strong>! Para ativar sua conta e liberar o acesso, por favor, verifique seu e-mail.</p>
+            <p>Seu código de verificação é:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <span style="font-size: 32px; font-weight: bold; color: #2563eb; letter-spacing: 5px; background: #f3f4f6; padding: 10px 20px; border-radius: 8px; border: 1px dashed #2563eb;">${codigo}</span>
+            </div>
+            <p>Este código expira em 15 minutos.</p>
+            <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 30px;">Se você não se cadastrou, pode ignorar este e-mail.</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                token: GOOGLE_SCRIPT_TOKEN,
+                to: destinatario,
+                subject: 'Confirme sua Conta - Agenda Web',
+                html: htmlBody
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            console.log(`✅ E-mail de verificação enviado para ${destinatario}`);
+            return true;
+        } else {
+            console.error(`❌ Erro no envio de verificação: ${data.error}`);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Falha na requisição HTTPS do e-mail:', error);
+        return false;
+    }
+}
+
 module.exports = {
     enviarCodigoRecuperacao,
-    enviarLembreteCompromisso
+    enviarLembreteCompromisso,
+    enviarCodigoVerificacao
 };

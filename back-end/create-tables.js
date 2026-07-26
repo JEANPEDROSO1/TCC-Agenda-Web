@@ -44,6 +44,18 @@ async function up() {
                 console.log("Coluna foto adicionada na tabela usuarios.");
             } catch(innerE) {}
         }
+        
+        // Garante que a coluna status exista na tabela usuarios
+        try {
+            await pool.execute('ALTER TABLE usuarios ADD COLUMN status TINYINT(1) DEFAULT 0');
+            console.log("Coluna status adicionada na tabela usuarios.");
+            // Força todas as contas atuais a status 0 (regra do usuário)
+            await pool.execute('UPDATE usuarios SET status = 0');
+            console.log("Contas antigas marcadas com status 0 (verificação pendente).");
+        } catch(e) {
+            // Se já existir, ignora.
+            if (e.code !== 'ER_DUP_FIELDNAME') console.error("Erro ao adicionar status:", e);
+        }
 
     } catch (err) {
         console.error("Erro:", err);

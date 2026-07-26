@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
-const { enviarCodigoRecuperacao } = require('../services/emailService');
+const { enviarCodigoRecuperacao, enviarCodigoVerificacao } = require('../services/emailService');
 
 // Cadastro
 exports.register = async (req, res) => {
@@ -18,13 +18,18 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const senhaHash = await bcrypt.hash(senha, salt);
 
-        // Insere no banco
+        const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiracao = new Date(Date.now() + 15 * 60000);
+
+        // Insere no banco com status = 0 por padrão, e o código
         await pool.execute(
-            'INSERT INTO usuarios (nome, email, senha, cargo) VALUES (?, ?, ?, ?)',
-            [nome, email, senhaHash, 'usuario']
+            'INSERT INTO usuarios (nome, email, senha, cargo, codigo_verificacao, codigo_expiracao, status) VALUES (?, ?, ?, ?, ?, ?, 0)',
+            [nome, email, senhaHash, 'usuario', codigo, expiracao]
         );
 
-        res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso!' });
+        enviarCodigoVerificacao(email, codigo).catch(err => console.error("Falha silenciosa ao enviar email de verificação:", err));
+
+        res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso! Verifique seu e-mail.', statusConta: 0 });
     } catch (error) {
         console.error(error);
         res.status(500).json({ erro: 'Erro interno no servidor.' });
@@ -48,6 +53,18 @@ exports.login = async (req, res) => {
         const isMatch = await bcrypt.compare(senha, user.senha);
         if (!isMatch) {
             return res.status(401).json({ erro: 'Credenciais inválidas.' });
+        }
+
+        // Verifica se a conta está ativa
+        if (user.status === 0) {
+            const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+            const expiracao = new Date(Date.now() + 15 * 60000);
+            await pool.execute(
+                'UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE email = ?',
+                [codigo, expiracao, email]
+            );
+            enviarCodigoVerificacao(email, codigo).catch(err => console.error("Falha ao enviar email verificação login:", err));
+            return res.status(403).json({ erro: 'Conta não verificada. Verifique seu e-mail.', codigo: 'PENDING_VERIFICATION' });
         }
 
         // Gera JWT
@@ -299,5 +316,58 @@ exports.me = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ erro: 'Erro interno' });
+    }
+};
+
+// Verificar Conta de E-mail
+exports.verifyAccount = async (req, res) => {
+    const { email, codigo } = req.body;
+    try {
+        const [users] = await pool.execute('SELECT * FROM usuarios WHERE email = ?', [email]);
+        const user = users[0];
+        if (!user) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        
+        if (user.status === 1) return res.status(400).json({ erro: 'Conta já verificada.' });
+        if (user.codigo_verificacao !== codigo) return res.status(400).json({ erro: 'Código inválido.' });
+        if (new Date(user.codigo_expiracao) < new Date()) return res.status(400).json({ erro: 'Código expirado. Solicite um novo.' });
+
+        // Atualiza status e limpa código
+        await pool.execute('UPDATE usuarios SET status = 1, codigo_verificacao = NULL, codigo_expiracao = NULL WHERE email = ?', [email]);
+        
+        // Loga o usuário
+        const payload = { id: user.id, cargo: user.cargo, nome: user.nome };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        res.json({ mensagem: 'Conta verificada com sucesso!', usuario: { id: user.id, nome: user.nome, email: user.email, cargo: user.cargo } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro interno no servidor.' });
+    }
+};
+
+// Reenviar Código de Verificação
+exports.resendVerification = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const [users] = await pool.execute('SELECT * FROM usuarios WHERE email = ?', [email]);
+        const user = users[0];
+        if (!user) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        if (user.status === 1) return res.status(400).json({ erro: 'Conta já verificada.' });
+
+        const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiracao = new Date(Date.now() + 15 * 60000);
+        await pool.execute('UPDATE usuarios SET codigo_verificacao = ?, codigo_expiracao = ? WHERE email = ?', [codigo, expiracao, email]);
+        
+        enviarCodigoVerificacao(email, codigo).catch(err => console.error(err));
+        res.json({ mensagem: 'Um novo código foi enviado para o seu e-mail.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro interno no servidor.' });
     }
 };

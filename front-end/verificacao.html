@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="forgot-password.css">
+    <link rel="icon" href="IMG/LOGO AGENDA WEB BORDA.png" type="image/x-icon">
+    <title>Agenda Web | Verificar Conta</title>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .resend-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .btn-resend {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+        .btn-resend:hover {
+            color: var(--primary-hover);
+        }
+        .user-email-display {
+            font-weight: bold;
+            color: var(--primary-color);
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="forgot-password-page">
+        <section class="forgot-password-card step-card active" data-step="code">
+            <a href="login.html" class="botao-voltar" aria-label="Voltar para login">←</a>
+            <a href="index.html" class="logo-link auth-logo">
+                <img class="logo" src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+            </a>
+            <h1>Verificar Conta</h1>
+            <p class="step-description">Foi enviado um código de verificação para o e-mail: <br><span class="user-email-display" id="displayEmail">carregando...</span></p>
+            <div class="code-inputs" id="code-inputs">
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+                <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]*" required>
+            </div>
+            <button type="button" class="step-button" id="verify-code-button">Verificar e Entrar</button>
+            <div class="resend-container">
+                <button type="button" class="btn-resend" id="resend-button">Reenviar Código</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Agenda Web. Todos os direitos reservados. || Desenvolvido por: Jean Pedroso</p>
+    </footer>
+    <script src="verificacao.js" defer></script>
+</body>
+
+</html>

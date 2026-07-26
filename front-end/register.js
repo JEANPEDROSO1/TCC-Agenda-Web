@@ -94,8 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            alert("Cadastro realizado com sucesso!");
-            window.location.href = "login.html";
+            sessionStorage.setItem('emailVerificacao', email);
+            showToast(data.mensagem || "Cadastro realizado com sucesso! Verifique seu e-mail.");
+            setTimeout(() => {
+                window.location.href = "verificacao.html";
+            }, 2000);
         } catch (error) {
             errorMsg.textContent = "Erro de conexão com o servidor.";
             errorMsg.style.display = 'block';

@@ -10,6 +10,10 @@ router.post('/verify-code', authController.verifyCode);
 router.post('/reset-password', authController.resetPassword);
 router.post('/logout', authController.logout);
 
+// Verificação de E-mail (Conta)
+router.post('/verify-account', authController.verifyAccount);
+router.post('/resend-verification', authController.resendVerification);
+
 // Rotas protegidas (Usuário logado)
 router.post('/request-password-change', authMiddleware, authController.requestPasswordChange);
 router.post('/verify-code-auth', authMiddleware, authController.verifyCodeAuth);
