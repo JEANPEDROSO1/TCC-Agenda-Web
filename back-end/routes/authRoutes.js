@@ -15,5 +15,6 @@ router.post('/request-password-change', authMiddleware, authController.requestPa
 router.post('/verify-code-auth', authMiddleware, authController.verifyCodeAuth);
 router.post('/verify-change-password', authMiddleware, authController.verifyPasswordChange);
 router.put('/perfil', authMiddleware, authController.updatePerfil);
+router.get('/me', authMiddleware, authController.me);
 
 module.exports = router;

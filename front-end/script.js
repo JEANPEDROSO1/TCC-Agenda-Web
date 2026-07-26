@@ -77,3 +77,23 @@ window.showToast = function(mensagem, tipo = 'sucesso') {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 };
+
+// Sincronizacao de perfil ao carregar a pagina
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof API_BASE_URL !== 'undefined') {
+        try {
+            const res = await fetch($(${API_BASE_URL})/auth/me, { method: 'GET', headers: { 'Content-Type': 'application/json' }, credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.nome) localStorage.setItem('agendaWeb_nome', data.nome);
+                if (data.foto) {
+                    localStorage.setItem('agendaWeb_foto', data.foto);
+                    const imgPerfil = document.getElementById('imagemPerfilPreview');
+                    if (imgPerfil && !imgPerfil.src.startsWith('blob:')) imgPerfil.src = data.foto;
+                    const imgConfig = document.getElementById('imagemPreview');
+                    if (imgConfig && !imgConfig.src.startsWith('blob:')) imgConfig.src = data.foto;
+                }
+            }
+        } catch (e) {}
+    }
+});
