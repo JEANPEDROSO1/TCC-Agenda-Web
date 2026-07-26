@@ -44,14 +44,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    btnSalvarConfig.addEventListener('click', () => {
+    btnSalvarConfig.addEventListener('click', async () => {
         localStorage.setItem('agendaWeb_temaEscuro', toggleTema.checked);
         localStorage.setItem('agendaWeb_nome', inputNome.value);
         localStorage.setItem('agendaWeb_fuso', selectFuso.value);
         
+        let foto = null;
         if (imagemPreview.src && !imagemPreview.src.includes('avatar-padrao') && !imagemPreview.src.includes('data:image/svg')) {
-            try { localStorage.setItem('agendaWeb_foto', imagemPreview.src); } 
-            catch (err) { console.warn("Imagem grande demais."); }
+            foto = imagemPreview.src;
+            try { localStorage.setItem('agendaWeb_foto', foto); } 
+            catch (err) { console.warn("Imagem grande demais para localStorage."); }
+        }
+
+        const nome = inputNome.value.trim();
+
+        // Envia para o banco de dados também (mesmo fluxo de perfil.js)
+        try {
+            const btnOriginal = btnSalvarConfig.textContent;
+            btnSalvarConfig.textContent = "Salvando...";
+            btnSalvarConfig.disabled = true;
+
+            await fetch(`${API_BASE_URL}/auth/perfil`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ nome, foto })
+            });
+            
+            btnSalvarConfig.textContent = btnOriginal;
+            btnSalvarConfig.disabled = false;
+        } catch(e) {
+            console.error("Erro ao sincronizar com backend:", e);
+            btnSalvarConfig.disabled = false;
         }
 
         toastNotificacao.classList.add('mostrar');

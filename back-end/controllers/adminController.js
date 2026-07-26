@@ -7,8 +7,8 @@ exports.obterEstatisticas = async (req, res) => {
             return res.status(403).json({ erro: 'Acesso negado. Apenas administradores.' });
         }
 
-        // Obtém todos os usuários
-        const [usuarios] = await pool.execute('SELECT id, nome, email, cargo FROM usuarios');
+        // Obtém todos os usuários (incluindo a foto para aparecer na tabela)
+        const [usuarios] = await pool.execute('SELECT id, nome, email, cargo, foto FROM usuarios');
         
         // Obtém estatísticas de compromissos
         const [compromissosCount] = await pool.execute('SELECT COUNT(*) as total FROM compromissos');
