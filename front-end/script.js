@@ -12,6 +12,54 @@
         document.documentElement.style.setProperty('--primary-hover', corPrincipal);
     }
 
+    // --- Injeção do Preloader Global ---
+    const preloaderStyle = document.createElement('style');
+    preloaderStyle.innerHTML = `
+        body.loading { overflow: hidden; }
+        #global-preloader {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #ffffff; /* Tema Claro */
+            z-index: 999999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .dark-mode #global-preloader { background: #0f172a; } /* Tema Escuro */
+        #global-preloader img { width: 120px; height: auto; margin-bottom: 20px; animation: pulse 1.5s infinite; }
+        #global-preloader h1 { font-size: 28px; margin: 0 0 5px 0; color: #1f2937; font-family: sans-serif; }
+        .dark-mode #global-preloader h1 { color: #f1f5f9; }
+        #global-preloader p { font-size: 14px; margin: 0; color: #64748b; font-family: sans-serif; }
+        .dark-mode #global-preloader p { color: #94a3b8; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(preloaderStyle);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add('loading');
+        document.body.insertAdjacentHTML('afterbegin', `
+            <div id="global-preloader">
+                <img src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+                <h1>Agenda Web</h1>
+                <p>Desenvolvido por Jean Pedroso</p>
+            </div>
+        `);
+    });
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const p = document.getElementById('global-preloader');
+            if(p) {
+                p.style.opacity = '0';
+                setTimeout(() => {
+                    p.remove();
+                    document.body.classList.remove('loading');
+                }, 500);
+            }
+        }, 600); // 600ms extra para dar o "charme" da tela de load
+    });
 
 })();
 
