@@ -7,6 +7,7 @@ router.use(authMiddleware);
 
 router.get('/estatisticas', adminController.obterEstatisticas);
 router.put('/usuarios/:id/cargo', adminController.alternarCargo);
+router.put('/usuarios/:id/status', adminController.alternarStatus);
 router.delete('/usuarios/:id', adminController.deletarUsuario);
 
 module.exports = router;

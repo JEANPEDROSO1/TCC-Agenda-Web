@@ -8,7 +8,7 @@ exports.obterEstatisticas = async (req, res) => {
         }
 
         // Obtém todos os usuários (incluindo a foto para aparecer na tabela)
-        const [usuarios] = await pool.execute('SELECT id, nome, email, cargo, foto FROM usuarios');
+        const [usuarios] = await pool.execute('SELECT id, nome, email, cargo, foto, status FROM usuarios');
         
         // Obtém estatísticas de compromissos
         const [compromissosCount] = await pool.execute('SELECT COUNT(*) as total FROM compromissos');
@@ -57,5 +57,23 @@ exports.deletarUsuario = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ erro: 'Erro ao deletar usuário.' });
+    }
+};
+
+exports.alternarStatus = async (req, res) => {
+    try {
+        if (req.user.cargo !== 'admin') return res.status(403).json({ erro: 'Acesso negado.' });
+        const { id } = req.params;
+        
+        const [users] = await pool.execute('SELECT status FROM usuarios WHERE id = ?', [id]);
+        if (users.length === 0) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        
+        const novoStatus = users[0].status === 1 ? 0 : 1;
+        await pool.execute('UPDATE usuarios SET status = ? WHERE id = ?', [novoStatus, id]);
+        
+        res.json({ mensagem: `Status do usuário alterado para ${novoStatus === 1 ? 'Ativo' : 'Desativado'}.` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: 'Erro ao alterar status do usuário.' });
     }
 };

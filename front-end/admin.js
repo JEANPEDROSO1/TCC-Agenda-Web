@@ -67,9 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td>${user.email}</td>
                 <td><span class="badge-cargo ${user.cargo}">${user.cargo === 'admin' ? 'Administrador' : 'Usuário'}</span></td>
+                <td><span style="color: ${user.status === 1 ? 'var(--primary-color)' : '#94a3b8'}; font-weight: bold;">${user.status === 1 ? 'Ativo' : 'Desativado'}</span></td>
                 <td>
                     <div class="acoes-tabela">
                         <button class="btn-acao promover" onclick="alternarCargoUsuario(${user.id})" title="${user.cargo === 'admin' ? 'Remover Admin' : 'Tornar Admin'}">${user.cargo === 'admin' ? '⬇️' : '🛡️'}</button>
+                        <button class="btn-acao promover" onclick="alternarStatusUsuario(${user.id})" title="${user.status === 1 ? 'Desativar Usuário' : 'Ativar Usuário'}">${user.status === 1 ? '🔴' : '🟢'}</button>
                         <button class="btn-acao delete" onclick="deletarUsuario(${user.id})" title="Excluir Usuário">🗑️</button>
                     </div>
                 </td>
@@ -91,6 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const data = await res.json();
                 alert(data.erro || 'Erro ao alterar cargo.');
+            }
+        } catch (error) { console.error(error); }
+    };
+
+    window.alternarStatusUsuario = async (id) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/usuarios/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            });
+            if (res.ok) {
+                carregarDados();
+            } else {
+                const data = await res.json();
+                alert(data.erro || 'Erro ao alterar status.');
             }
         } catch (error) { console.error(error); }
     };
@@ -120,15 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function atualizarGraficoUsuarios() {
         const ctxUsuarios = document.getElementById('graficoUsuarios').getContext('2d');
         const countAdmin = usuarios.filter(u => u.cargo === 'admin').length;
+        const countAtivos = usuarios.filter(u => u.cargo === 'usuario' && u.status === 1).length;
+        const countDesativados = usuarios.filter(u => u.status === 0).length;
         
         if (chartUsuarios) chartUsuarios.destroy();
         chartUsuarios = new Chart(ctxUsuarios, {
             type: 'doughnut',
             data: {
-                labels: ['Administradores', 'Usuários Comuns'],
+                labels: ['Administradores', 'Usuários Comuns (Ativos)', 'Usuários Desativados'],
                 datasets: [{
-                    data: [countAdmin, usuarios.length - countAdmin],
-                    backgroundColor: ['#f59e0b', corPrincipalHex],
+                    data: [countAdmin, countAtivos, countDesativados],
+                    backgroundColor: ['#f59e0b', corPrincipalHex, '#94a3b8'],
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
