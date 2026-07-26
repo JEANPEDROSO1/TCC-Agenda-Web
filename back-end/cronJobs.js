@@ -8,13 +8,13 @@ function iniciarCronJobs() {
     // Roda a cada 1 minuto
     cron.schedule('* * * * *', async () => {
         try {
-            // Obter hora atual no fuso do servidor (ou ajustado)
-            const agora = new Date();
-            // Precisamos formatar 'agora' para comparar com o DB, mas é mais fácil no SQL
-            // Porém o Node local pode ter fuso diferente. 
-            // O ideal é trazer todos os compromissos de hoje e calcular a diferença em JS para evitar problemas de fuso no MySQL.
-
-            const hojeStr = agora.toISOString().split('T')[0];
+            // Obter hora atual no fuso do Brasil (GMT-3) para evitar bugs em servidores UTC (Render)
+            const agora = new Date(new Date().toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+            
+            const ano = agora.getFullYear();
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const hojeStr = `${ano}-${mes}-${dia}`;
             
             // Busca compromissos de hoje que estão ativos
             const [compromissos] = await pool.execute(`
@@ -25,8 +25,11 @@ function iniciarCronJobs() {
             `, [hojeStr]);
 
             for (let comp of compromissos) {
-                // Monta a data/hora do compromisso
-                const dataComp = new Date(`${comp.data.split('T')[0]}T${comp.hora}`);
+                // Monta a data/hora do compromisso no fuso correto (Brasil)
+                const horaBD = comp.hora.substring(0, 5); // "14:30"
+                const [h, m] = horaBD.split(':');
+                const dataComp = new Date(ano, agora.getMonth(), agora.getDate(), parseInt(h), parseInt(m), 0);
+                
                 const diffMinutos = Math.round((dataComp - agora) / 60000);
 
                 // 1. Alerta Antecipado (lembrete_enviado == 0)
