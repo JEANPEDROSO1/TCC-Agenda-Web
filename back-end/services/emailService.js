@@ -1,16 +1,26 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-// Configuração do transportador Nodemailer para Outlook
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp-mail.outlook.com',
-    port: process.env.SMTP_PORT || 587,
-    secure: false, // true para porta 465, false para as outras
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-});
+// Identifica se é Gmail para usar as configurações nativas seguras do Nodemailer
+const isGmail = process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail');
+
+const transporter = isGmail 
+    ? nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        }
+    })
+    : nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp-mail.outlook.com',
+        port: process.env.SMTP_PORT || 587,
+        secure: Number(process.env.SMTP_PORT) === 465,
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
+        }
+    });
 
 /**
  * Envia um e-mail com o código de recuperação
