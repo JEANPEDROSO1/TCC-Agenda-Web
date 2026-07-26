@@ -23,7 +23,7 @@ app.use(cors({
     },
     credentials: true // Permite o envio de cookies no CORS (necessário para JWT)
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
 // Rotas
