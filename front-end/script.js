@@ -31,8 +31,13 @@
     let showPreloader = !isInternalLink;
 
     if (showPreloader) {
+        document.documentElement.classList.add('preload-active');
         const preloaderStyle = document.createElement('style');
         preloaderStyle.innerHTML = `
+            html.preload-active body > *:not(#global-preloader) {
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
             body.loading { overflow: hidden; }
             #global-preloader {
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -87,6 +92,7 @@
                 const p = document.getElementById('global-preloader');
                 if(p) {
                     p.style.opacity = '0';
+                    document.documentElement.classList.remove('preload-active');
                     setTimeout(() => {
                         p.remove();
                         document.body.classList.remove('loading');
