@@ -86,17 +86,18 @@
         });
 
         window.addEventListener('load', () => {
-        setTimeout(() => {
-            const p = document.getElementById('global-preloader');
-            if(p) {
-                p.style.opacity = '0';
-                setTimeout(() => {
-                    p.remove();
-                    document.body.classList.remove('loading');
-                }, 500);
-            }
-        }, 600); // 600ms extra para dar o "charme" da tela de load
-    });
+            setTimeout(() => {
+                const p = document.getElementById('global-preloader');
+                if(p) {
+                    p.style.opacity = '0';
+                    setTimeout(() => {
+                        p.remove();
+                        document.body.classList.remove('loading');
+                    }, 500);
+                }
+            }, 600); // 600ms extra para dar o "charme" da tela de load
+        });
+    }
 
     // --- Lógica do Menu Hambúrguer (Mobile) ---
     document.addEventListener("DOMContentLoaded", () => {
