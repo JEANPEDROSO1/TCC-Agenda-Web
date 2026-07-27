@@ -7,7 +7,7 @@ body {
 
 .barra-lateral-dashboard {
     width: 250px;
-    min-height: 100vh;
+    min-height: 100dvh;
     background: linear-gradient(180deg, #1e3a8a 0%, var(--primary-color) 100%);
     color: #fff;
     padding: 24px 16px;
@@ -298,7 +298,7 @@ html.dark-mode .dia-calendario.selecionado {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     display: flex;
@@ -455,7 +455,7 @@ html.dark-mode .input-padrao { background: var(--bg-color); color: var(--text-co
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
     z-index: 950;
