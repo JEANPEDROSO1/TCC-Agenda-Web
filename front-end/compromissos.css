@@ -406,7 +406,30 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     }
     .modal-content {
         width: 95%;
-        max-height: 95vh;
-        padding: 15px;
+        max-height: 98vh;
+        padding: 12px 15px;
+    }
+    .modal-header {
+        margin-bottom: 10px;
+    }
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+    .form-group {
+        margin-bottom: 8px;
+    }
+    .form-group label {
+        margin-bottom: 2px;
+        font-size: 0.85rem;
+    }
+    .input-padrao {
+        padding: 6px 10px;
+    }
+    textarea.input-padrao {
+        min-height: 40px;
+    }
+    .modal-footer {
+        margin-top: 10px;
+        padding-top: 10px;
     }
 }
