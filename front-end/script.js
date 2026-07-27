@@ -9,29 +9,26 @@
 
     if (corPrincipal !== COR_PADRAO) {
         document.documentElement.style.setProperty('--primary-color', corPrincipal);
-        document.documentElement.style.setProperty('--primary-hover', corPrincipal);
     }
 
     // --- Injeção do Preloader Global ---
-    let navType = '';
+    let isInternalLink = false;
     try {
-        const navEntries = typeof performance !== 'undefined' && performance.getEntriesByType ? performance.getEntriesByType("navigation") : [];
-        if (navEntries.length > 0) {
-            navType = navEntries[0].type;
-        } else if (typeof performance !== 'undefined' && performance.navigation) {
-            if (performance.navigation.type === 1) navType = 'reload';
+        if (document.referrer && document.referrer.includes(window.location.hostname)) {
+            isInternalLink = true;
         }
-    } catch(e) {
-        console.warn("API de navegação não suportada.");
-    }
+        
+        // Verifica se é F5 (reload)
+        const navEntries = typeof performance !== 'undefined' && performance.getEntriesByType ? performance.getEntriesByType("navigation") : [];
+        if (navEntries.length > 0 && navEntries[0].type === 'reload') {
+            isInternalLink = false; // Se foi reload, mostra o preloader
+        } else if (typeof performance !== 'undefined' && performance.navigation && performance.navigation.type === 1) {
+            isInternalLink = false;
+        }
+    } catch(e) {}
     
-    const appStarted = sessionStorage.getItem('agendaWeb_appStarted');
-    
-    let showPreloader = false;
-    if (navType === 'reload' || !appStarted) {
-        showPreloader = true;
-        sessionStorage.setItem('agendaWeb_appStarted', 'true');
-    }
+    // Mostra o preloader SE NÃO for um clique de link interno
+    let showPreloader = !isInternalLink;
 
     if (showPreloader) {
         const preloaderStyle = document.createElement('style');
@@ -93,9 +90,9 @@
                     setTimeout(() => {
                         p.remove();
                         document.body.classList.remove('loading');
-                    }, 500);
+                    }, 500); // 500ms para a animação de fade-out
                 }
-            }, 600); // 600ms extra para dar o "charme" da tela de load
+            }, 2000); // Exatos 2 segundos (2000ms) de tempo de tela
         });
     }
 
