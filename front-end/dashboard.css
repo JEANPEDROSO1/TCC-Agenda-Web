@@ -411,3 +411,138 @@ html.dark-mode .form-group label { color: var(--text-color); }
 html.dark-mode .btn-secundario { background: rgba(255,255,255,0.1); color: var(--text-color); }
 html.dark-mode .btn-secundario:hover { background: rgba(255,255,255,0.2); }
 html.dark-mode .input-padrao { background: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
+
+/* ============================================================ */
+/* RESPONSIVIDADE MOBILE (Telas < 768px)                        */
+/* ============================================================ */
+
+/* Header Mobile Oculto no Desktop */
+.cabecalho-mobile {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg, #1e3a8a, var(--primary-color));
+    color: white;
+    z-index: 900;
+    padding: 0 15px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cabecalho-mobile h1 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.btn-hamburger {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Fundo desfocado quando o menu abre no mobile */
+.overlay-menu-mobile {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 950;
+}
+.overlay-menu-mobile.ativo {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    /* Ativar Header Mobile */
+    .cabecalho-mobile {
+        display: flex;
+    }
+
+    /* Barra Lateral Escondida e Flutuante */
+    .barra-lateral-dashboard {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        width: 260px;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    }
+
+    .barra-lateral-dashboard.aberta {
+        transform: translateX(0);
+    }
+
+    /* Ocultar barra lateral na impressão */
+    @media print {
+        .barra-lateral-dashboard { display: none; }
+    }
+
+    /* Ajuste do conteúdo principal para ocupar tela toda */
+    .conteudo-dashboard {
+        margin-left: 0 !important;
+        padding: 15px;
+        padding-top: 80px !important; /* Espaço pro Header Mobile */
+    }
+
+    /* Grids: De 2 colunas para 1 coluna (Empilhar) */
+    .grade-dashboard,
+    .dashboard-grid,
+    .config-grid,
+    .perfil-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+    }
+
+    /* Formulários: Inputs lado-a-lado viram blocos inteiros */
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .col-metade {
+        width: 100%;
+    }
+
+    /* Calendário Mobile */
+    .dias-da-semana {
+        font-size: 0.8rem; /* Letra menor */
+    }
+    .grade-calendario {
+        gap: 4px;
+    }
+    .dia-calendario {
+        min-height: 50px;
+        padding: 4px;
+    }
+    .dia-numero {
+        font-size: 0.9rem;
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Modais Ocupando Quase Tudo */
+    .modal-content {
+        width: 95%;
+        padding: 20px 15px;
+        margin: 10px auto;
+    }
+
+    /* Tabelas e Paineis Administrador com Rolagem Horizontal */
+    .cartao-vidro, .painel-admin-section, .tabela-container {
+        overflow-x: auto;
+    }
+    
+    table {
+        min-width: 600px; /* Garante que a tabela não esprema */
+    }
+}

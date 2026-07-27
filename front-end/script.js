@@ -76,18 +76,51 @@
         });
 
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                const p = document.getElementById('global-preloader');
-                if(p) {
-                    p.style.opacity = '0';
-                    setTimeout(() => {
-                        p.remove();
-                        document.body.classList.remove('loading');
-                    }, 500);
-                }
-            }, 600); // 600ms extra para dar o "charme" da tela de load
-        });
-    }
+        setTimeout(() => {
+            const p = document.getElementById('global-preloader');
+            if(p) {
+                p.style.opacity = '0';
+                setTimeout(() => {
+                    p.remove();
+                    document.body.classList.remove('loading');
+                }, 500);
+            }
+        }, 600); // 600ms extra para dar o "charme" da tela de load
+    });
+
+    // --- Lógica do Menu Hambúrguer (Mobile) ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const barraLateral = document.querySelector('.barra-lateral-dashboard');
+        
+        if (barraLateral) {
+            // Pega o nome da página atual a partir da tag title (ex: "Agenda Web | Dashboard" -> "Dashboard")
+            const nomePagina = document.title.split('|')[1] ? document.title.split('|')[1].trim() : 'Agenda Web';
+            
+            const headerHtml = `
+                <header class="cabecalho-mobile">
+                    <h1>${nomePagina}</h1>
+                    <button class="btn-hamburger" id="btnMenuMobile">☰</button>
+                </header>
+                <div class="overlay-menu-mobile" id="overlayMenuMobile"></div>
+            `;
+            // Insere no início do body
+            document.body.insertAdjacentHTML('afterbegin', headerHtml);
+
+            const btnMenu = document.getElementById('btnMenuMobile');
+            const overlayMenu = document.getElementById('overlayMenuMobile');
+
+            btnMenu.addEventListener('click', () => {
+                barraLateral.classList.toggle('aberta');
+                overlayMenu.classList.toggle('ativo');
+            });
+
+            // Fechar ao clicar fora do menu
+            overlayMenu.addEventListener('click', () => {
+                barraLateral.classList.remove('aberta');
+                overlayMenu.classList.remove('ativo');
+            });
+        }
+    });
 
 })();
 
