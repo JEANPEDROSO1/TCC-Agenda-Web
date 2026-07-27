@@ -361,7 +361,7 @@ html.dark-mode .dia-calendario.selecionado {
     flex: 1;
 }
 
-.input-padrao {
+.input-padrao { box-sizing: border-box;
     padding: 10px 14px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -376,7 +376,7 @@ html.dark-mode .dia-calendario.selecionado {
     border-color: var(--primary-color);
 }
 
-textarea.input-padrao {
+textarea.input-padrao { box-sizing: border-box;
     resize: vertical;
     min-height: 80px;
 }
@@ -410,7 +410,7 @@ html.dark-mode .modal-header h2 { color: var(--primary-color); }
 html.dark-mode .form-group label { color: var(--text-color); }
 html.dark-mode .btn-secundario { background: rgba(255,255,255,0.1); color: var(--text-color); }
 html.dark-mode .btn-secundario:hover { background: rgba(255,255,255,0.2); }
-html.dark-mode .input-padrao { background: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
+html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
 
 /* ============================================================ */
 /* RESPONSIVIDADE MOBILE (Telas < 768px)                        */
@@ -594,7 +594,7 @@ html.dark-mode .cabecalho-mobile img {
     .form-group, .col-metade {
         width: 100% !important;
     }
-    .input-padrao {
+    .input-padrao { box-sizing: border-box;
         width: 100% !important;
         max-width: 100%;
     }
@@ -605,3 +605,5 @@ html.dark-mode .cabecalho-mobile img {
         overflow: hidden !important;
     }
 }
+
+

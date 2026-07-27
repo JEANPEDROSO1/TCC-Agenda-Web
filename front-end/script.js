@@ -77,7 +77,7 @@
             document.body.classList.add('loading');
             document.body.insertAdjacentHTML('afterbegin', `
                 <div id="global-preloader">
-                    <img src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web">
+                    <img src="IMG/logo.png" alt="Logo Agenda Web">
                     <h1>Agenda Web</h1>
                     <p>Desenvolvido por Jean Pedroso</p>
                     <div class="progress-container">
@@ -112,7 +112,7 @@
             
             const headerHtml = `
                 <header class="cabecalho-mobile">
-                    <img src="IMG/LOGO%20AGENDA%20WEB%20BORDA.png" alt="Logo Agenda Web" style="height: 40px; width: auto; object-fit: contain;">
+                    <img src="IMG/logo.png" alt="Logo Agenda Web" style="height: 40px; width: auto; object-fit: contain;">
                     <button class="btn-hamburger" id="btnMenuMobile">☰</button>
                 </header>
                 <div class="overlay-menu-mobile" id="overlayMenuMobile"></div>
