@@ -112,7 +112,7 @@
             
             const headerHtml = `
                 <header class="cabecalho-mobile">
-                    <img src="IMG/LOGO AGENDA WEB BORDA.png" alt="Logo Agenda Web" style="height: 40px; width: auto; object-fit: contain;">
+                    <img src="IMG/LOGO%20AGENDA%20WEB%20BORDA.png" alt="Logo Agenda Web" style="height: 40px; width: auto; object-fit: contain;">
                     <button class="btn-hamburger" id="btnMenuMobile">☰</button>
                 </header>
                 <div class="overlay-menu-mobile" id="overlayMenuMobile"></div>
