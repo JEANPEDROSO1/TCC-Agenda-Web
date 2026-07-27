@@ -13,8 +13,18 @@
     }
 
     // --- Injeção do Preloader Global ---
-    const navEntries = performance.getEntriesByType("navigation");
-    const navType = navEntries.length > 0 ? navEntries[0].type : '';
+    let navType = '';
+    try {
+        const navEntries = typeof performance !== 'undefined' && performance.getEntriesByType ? performance.getEntriesByType("navigation") : [];
+        if (navEntries.length > 0) {
+            navType = navEntries[0].type;
+        } else if (typeof performance !== 'undefined' && performance.navigation) {
+            if (performance.navigation.type === 1) navType = 'reload';
+        }
+    } catch(e) {
+        console.warn("API de navegação não suportada.");
+    }
+    
     const appStarted = sessionStorage.getItem('agendaWeb_appStarted');
     
     let showPreloader = false;
