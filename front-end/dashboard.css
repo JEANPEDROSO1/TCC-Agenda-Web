@@ -1,4 +1,4 @@
-body {
+﻿body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
@@ -292,7 +292,7 @@ html.dark-mode .dia-calendario.selecionado {
     }
 }
 
-/* --- ESTILOS DO MODAL E FORMULÁRIOS (Reaproveitados de compromissos) --- */
+/* --- ESTILOS DO MODAL E FORMULÃRIOS (Reaproveitados de compromissos) --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -502,16 +502,16 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
         transform: translateX(0);
     }
 
-    /* Ocultar barra lateral na impressão */
+    /* Ocultar barra lateral na impressÃ£o */
     @media print {
         .barra-lateral-dashboard { display: none; }
     }
 
-    /* Ajuste do conteúdo principal para ocupar tela toda */
+    /* Ajuste do conteÃºdo principal para ocupar tela toda */
     .conteudo-dashboard {
         margin-left: 0 !important;
         padding: 15px;
-        padding-top: 80px !important; /* Espaço pro Header Mobile */
+        padding-top: 80px !important; /* EspaÃ§o pro Header Mobile */
         width: 100%;
         display: block; /* Remove o comportamento de flex estranho se houver */
     }
@@ -525,7 +525,7 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
         gap: 15px;
     }
 
-    /* Formulários: Inputs lado-a-lado viram blocos inteiros */
+    /* FormulÃ¡rios: Inputs lado-a-lado viram blocos inteiros */
     .form-row {
         flex-direction: column;
         gap: 15px;
@@ -534,7 +534,7 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
         width: 100%;
     }
 
-    /* Calendário Mobile */
+    /* CalendÃ¡rio Mobile */
     .dias-da-semana {
         font-size: 0.8rem; /* Letra menor */
     }
@@ -564,11 +564,11 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
     }
     
     table {
-        min-width: 600px; /* Garante que a tabela não esprema */
+        min-width: 600px; /* Garante que a tabela nÃ£o esprema */
     }
 }
-/* Invers�o da logo no cabe�alho mobile quando em dark mode */
-html.dark-mode .cabecalho-mobile img {
+/* Inversão da logo no cabeçalho mobile quando em dark mode */
+.cabecalho-mobile img {
     filter: brightness(0) invert(1);
 }
 /* FIX MOBILE EXTRA */
@@ -605,5 +605,6 @@ html.dark-mode .cabecalho-mobile img {
         overflow: hidden !important;
     }
 }
+
 
 
