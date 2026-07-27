@@ -126,12 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('compHora').value = comp.hora;
             document.getElementById('compUrgencia').value = comp.urgencia;
             document.getElementById('compRepeticao').value = comp.repeticao;
-            document.getElementById('compTempoLembrete').value = comp.tempo_lembrete !== undefined && comp.tempo_lembrete !== null ? comp.tempo_lembrete : "30";
+            document.getElementById('compTempoLembrete').value = comp.tempo_lembrete !== undefined && comp.tempo_lembrete !== null ? comp.tempo_lembrete : "0";
         } else {
             modalTitulo.textContent = 'Novo Compromisso';
             formCompromisso.reset();
             document.getElementById('compId').value = '';
-            document.getElementById('compTempoLembrete').value = "30";
+            document.getElementById('compTempoLembrete').value = "0";
         }
         modalCompromisso.style.display = 'flex';
     }
