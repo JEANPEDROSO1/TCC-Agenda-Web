@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         imagemPreview.src = cropper.getCroppedCanvas({ width: 300, height: 300 }).toDataURL('image/jpeg');
         modalCropFoto.classList.add('hidden');
         cropper.destroy();
+        btnSalvarPerfil.click(); // Salva automaticamente ao confirmar o recorte
     });
 
     btnSalvarPerfil.addEventListener('click', async () => {
@@ -156,6 +157,20 @@ document.addEventListener('DOMContentLoaded', () => {
     btnFecharModal.addEventListener('click', fecharModal);
 
     otpInputs.forEach((input, index) => {
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+            if (pasteData) {
+                for (let i = 0; i < pasteData.length; i++) {
+                    otpInputs[i].value = pasteData[i];
+                }
+                if (pasteData.length === 6) {
+                    btnVerificarCodigo.click();
+                } else {
+                    otpInputs[Math.min(pasteData.length, 5)].focus();
+                }
+            }
+        });
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Backspace' && !input.value && index > 0) otpInputs[index - 1].focus();
             else if (e.key === 'Enter') btnVerificarCodigo.click();
@@ -286,7 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', (e) => {
         if (e.target === modalSenha) fecharModal();
         if (e.target === modalVisualizarFoto) modalVisualizarFoto.classList.add('hidden');
-        if (e.target === modalCropFoto) btnCancelarCrop.click();
     });
 
     carregarDados();

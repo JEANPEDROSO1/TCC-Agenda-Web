@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Salvar dados no localStorage
                 localStorage.setItem('agendaWeb_cargo', data.usuario.cargo);
                 localStorage.setItem('agendaWeb_nome', data.usuario.nome);
+                localStorage.setItem('agendaWeb_email', data.usuario.email);
                 if(data.usuario.foto) localStorage.setItem('agendaWeb_foto', data.usuario.foto);
                 
                 sessionStorage.removeItem('emailVerificacao');
