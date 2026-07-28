@@ -429,6 +429,7 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         width: calc(50% - 4px) !important;
         flex: none !important;
         min-width: 0 !important;
+        overflow: hidden !important;
     }
     .modal-content {
         width: 95%;
@@ -456,6 +457,13 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         width: 100% !important;
         min-width: 0 !important;
         box-sizing: border-box !important;
+    }
+    /* Ocultar ícones nativos de calendário/relógio no mobile para economizar espaço horizontal, 
+       eles ainda abrem ao tocar no campo */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none !important;
+        -webkit-appearance: none;
     }
     textarea.input-padrao {
         min-height: 40px;
