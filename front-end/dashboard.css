@@ -354,7 +354,7 @@ html.dark-mode .dia-calendario.selecionado {
 
 .form-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 24px;
     width: 100%;
 }
@@ -364,6 +364,7 @@ html.dark-mode .dia-calendario.selecionado {
 }
 
 .input-padrao { box-sizing: border-box;
+    min-width: 0;
     padding: 10px 14px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -599,8 +600,8 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     
     .form-row {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 24px !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+        gap: 12px !important;
         width: 100% !important;
         box-sizing: border-box;
     }
