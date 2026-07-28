@@ -1,4 +1,4 @@
-﻿body {
+body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #f5f7ff 0%, #eef2ff 100%);
@@ -481,6 +481,9 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
     /* Ativar Header Mobile */
     .cabecalho-mobile {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
     }
 
     /* Barra Lateral Escondida e Flutuante */
@@ -568,8 +571,11 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
     }
 }
 /* Inversão da logo no cabeçalho mobile quando em dark mode */
+/* Fundo branco para garantir que a logo seja visível independentemente da transparência */
 .cabecalho-mobile img {
-    filter: brightness(0) invert(1);
+    flex-shrink: 0;
+    min-width: 80px;
+    object-fit: contain;
 }
 /* FIX MOBILE EXTRA */
 @media (max-width: 768px) {
