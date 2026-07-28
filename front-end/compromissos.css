@@ -270,7 +270,7 @@ html.dark-mode .btn-fechar:hover {
 
 .form-row {
     display: flex;
-    gap: 16px;
+    gap: 24px;
 }
 
 .col-metade {
@@ -421,12 +421,12 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     }
     .form-row {
         flex-direction: row !important;
-        gap: 8px;
+        gap: 24px !important;
         width: 100% !important;
         box-sizing: border-box;
     }
     .col-metade {
-        width: calc(50% - 4px) !important;
+        width: calc(50% - 12px) !important;
         flex: none !important;
         min-width: 0 !important;
     }

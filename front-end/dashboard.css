@@ -354,7 +354,7 @@ html.dark-mode .dia-calendario.selecionado {
 
 .form-row {
     display: flex;
-    gap: 16px;
+    gap: 24px;
 }
 
 .col-metade {
@@ -411,7 +411,10 @@ html.dark-mode .form-group label { color: var(--text-color); }
 html.dark-mode .btn-secundario { background: rgba(255,255,255,0.1); color: var(--text-color); }
 html.dark-mode .btn-secundario:hover { background: rgba(255,255,255,0.2); }
 html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
-
+html.dark-mode input[type="date"]::-webkit-calendar-picker-indicator,
+html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
 /* ============================================================ */
 /* RESPONSIVIDADE MOBILE (Telas < 768px)                        */
 /* ============================================================ */
@@ -593,12 +596,18 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
     }
     
     .form-row {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-    .form-group, .col-metade {
+        flex-direction: row !important;
+        gap: 24px !important;
         width: 100% !important;
+        box-sizing: border-box;
+    }
+    .form-group {
+        width: 100% !important;
+    }
+    .col-metade {
+        width: calc(50% - 12px) !important;
+        flex: none !important;
+        min-width: 0 !important;
     }
     .input-padrao { box-sizing: border-box;
         width: 100% !important;
@@ -609,6 +618,19 @@ html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-colo
         min-height: 60px !important;
         max-height: 60px !important;
         overflow: hidden !important;
+    }
+
+    input[type="date"].input-padrao,
+    input[type="time"].input-padrao {
+        padding: 8px 4px !important;
+        font-size: 12px !important;
+        letter-spacing: -0.5px;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none !important;
+        -webkit-appearance: none;
     }
 }
 
