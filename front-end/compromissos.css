@@ -226,15 +226,18 @@
 }
 
 .btn-fechar {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
+    background: transparent !important;
+    border: none !important;
+    font-size: 1.5rem !important;
     color: #64748b;
     cursor: pointer;
+    width: auto !important;
+    padding: 0 !important;
+    min-width: auto !important;
 }
 
 .btn-fechar:hover {
-    color: #1e293b;
+    color: #1e293b !important;
 }
 
 .form-group {
@@ -401,8 +404,13 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         flex-direction: column;
     }
     .form-row {
-        flex-direction: row;
+        flex-direction: row !important;
         gap: 8px;
+    }
+    .col-metade {
+        width: auto !important;
+        flex: 1;
+        min-width: 0;
     }
     .modal-content {
         width: 95%;
