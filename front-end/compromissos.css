@@ -226,18 +226,34 @@
 }
 
 .btn-fechar {
-    background: transparent !important;
+    background: #f1f5f9 !important;
     border: none !important;
-    font-size: 1.5rem !important;
+    font-size: 1.2rem !important;
     color: #64748b;
     cursor: pointer;
-    width: auto !important;
+    width: 32px !important;
+    height: 32px !important;
     padding: 0 !important;
-    min-width: auto !important;
+    min-width: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .btn-fechar:hover {
+    background: #e2e8f0 !important;
     color: #1e293b !important;
+}
+
+html.dark-mode .btn-fechar {
+    background: rgba(255,255,255,0.1) !important;
+    color: #cbd5e1 !important;
+}
+
+html.dark-mode .btn-fechar:hover {
+    background: rgba(255,255,255,0.2) !important;
+    color: #f8fafc !important;
 }
 
 .form-group {
@@ -406,32 +422,40 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     .form-row {
         flex-direction: row !important;
         gap: 8px;
+        width: 100% !important;
+        box-sizing: border-box;
     }
     .col-metade {
-        width: auto !important;
-        flex: 1;
-        min-width: 0;
+        width: calc(50% - 4px) !important;
+        flex: none !important;
+        min-width: 0 !important;
     }
     .modal-content {
         width: 95%;
         max-height: 98vh;
         padding: 12px 15px;
+        box-sizing: border-box;
+        overflow-x: hidden;
     }
     .modal-header {
         margin-bottom: 10px;
     }
     .modal-header h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
     .form-group {
         margin-bottom: 8px;
     }
     .form-group label {
         margin-bottom: 2px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
     .input-padrao {
-        padding: 6px 10px;
+        padding: 4px 6px !important;
+        font-size: 13px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     textarea.input-padrao {
         min-height: 40px;
