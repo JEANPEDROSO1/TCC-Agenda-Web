@@ -353,12 +353,14 @@ html.dark-mode .dia-calendario.selecionado {
 }
 
 .form-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
+    width: 100%;
 }
 
 .col-metade {
-    flex: 1;
+    min-width: 0;
 }
 
 .input-padrao { box-sizing: border-box;
@@ -596,7 +598,8 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     }
     
     .form-row {
-        flex-direction: row !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
         gap: 24px !important;
         width: 100% !important;
         box-sizing: border-box;
@@ -605,8 +608,7 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         width: 100% !important;
     }
     .col-metade {
-        width: calc(50% - 12px) !important;
-        flex: none !important;
+        width: 100% !important;
         min-width: 0 !important;
     }
     .input-padrao { box-sizing: border-box;

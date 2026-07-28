@@ -269,12 +269,14 @@ html.dark-mode .btn-fechar:hover {
 }
 
 .form-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
+    width: 100%;
 }
 
 .col-metade {
-    flex: 1;
+    min-width: 0;
 }
 
 .largura-total {
@@ -420,14 +422,14 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         flex-direction: column;
     }
     .form-row {
-        flex-direction: row !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
         gap: 24px !important;
         width: 100% !important;
         box-sizing: border-box;
     }
     .col-metade {
-        width: calc(50% - 12px) !important;
-        flex: none !important;
+        width: 100% !important;
         min-width: 0 !important;
     }
     .modal-content {
