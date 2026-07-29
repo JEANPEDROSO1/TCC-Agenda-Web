@@ -26,6 +26,22 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    flex: 1;
+}
+
+#filtroBusca {
+    flex: 2;
+    min-width: 200px;
+}
+
+#filtroData {
+    flex: 1;
+    min-width: 150px;
+}
+
+#filtroStatus {
+    flex: 1;
+    min-width: 130px;
 }
 
 .input-padrao {
@@ -46,8 +62,8 @@
 
 #formCompromisso input[type="date"].input-padrao,
 #formCompromisso input[type="time"].input-padrao {
-    width: auto !important;
-    min-width: 140px;
+    width: 100% !important;
+    max-width: 180px;
 }
 
 .grupo-visualizacao {
@@ -470,7 +486,8 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     /* Força os inputs de data e hora a ficarem menores internamente para não estourarem a largura no iOS */
     #formCompromisso input[type="date"].input-padrao,
     #formCompromisso input[type="time"].input-padrao {
-        width: 140px !important;
+        width: 100% !important;
+        max-width: 100% !important;
         padding: 8px 4px !important;
         font-size: 12px !important;
         letter-spacing: -0.5px;
