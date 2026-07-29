@@ -44,8 +44,8 @@
     border-color: var(--primary-color);
 }
 
-input[type="date"].input-padrao,
-input[type="time"].input-padrao {
+#formCompromisso input[type="date"].input-padrao,
+#formCompromisso input[type="time"].input-padrao {
     width: auto !important;
     min-width: 140px;
 }
@@ -468,8 +468,8 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     }
     
     /* Força os inputs de data e hora a ficarem menores internamente para não estourarem a largura no iOS */
-    input[type="date"].input-padrao,
-    input[type="time"].input-padrao {
+    #formCompromisso input[type="date"].input-padrao,
+    #formCompromisso input[type="time"].input-padrao {
         width: 140px !important;
         padding: 8px 4px !important;
         font-size: 12px !important;
