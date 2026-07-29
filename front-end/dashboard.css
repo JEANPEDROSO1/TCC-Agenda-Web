@@ -381,7 +381,11 @@ html.dark-mode .dia-calendario.selecionado {
 
 input[type="date"].input-padrao,
 input[type="time"].input-padrao {
+    -webkit-appearance: none;
+    appearance: none;
     min-height: 42px;
+    line-height: 1.2;
+    width: 100%;
 }
 
 #formCompromisso input[type="date"].input-padrao,
@@ -639,9 +643,12 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         width: 100% !important;
         max-width: 100% !important;
         padding: 8px 4px !important;
-        font-size: 12px !important;
+        font-size: 14px !important;
         letter-spacing: -0.5px;
         min-height: 42px;
+        -webkit-appearance: none;
+        appearance: none;
+        box-sizing: border-box !important;
     }
     
     input[type="date"]::-webkit-calendar-picker-indicator,
