@@ -466,8 +466,9 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     }
     .modal-content {
         width: 95%;
-        max-height: 98vh;
+        max-height: 85vh;
         padding: 12px 15px;
+        margin: auto;
         box-sizing: border-box;
         overflow-x: hidden;
     }

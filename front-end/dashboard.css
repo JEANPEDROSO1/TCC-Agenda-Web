@@ -329,15 +329,24 @@ html.dark-mode .dia-calendario.selecionado {
 }
 
 .btn-fechar {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
+    background: #f1f5f9 !important;
+    border: none !important;
+    font-size: 1.2rem !important;
     color: #64748b;
     cursor: pointer;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    min-width: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .btn-fechar:hover {
-    color: #1e293b;
+    background: #e2e8f0 !important;
+    color: #1e293b !important;
 }
 
 .form-group {
@@ -426,6 +435,14 @@ textarea.input-padrao { box-sizing: border-box;
 html.dark-mode .modal-content { background: var(--card-bg); }
 html.dark-mode .modal-header h2 { color: var(--primary-color); }
 html.dark-mode .form-group label { color: var(--text-color); }
+html.dark-mode .btn-fechar {
+    background: rgba(255,255,255,0.1) !important;
+    color: #cbd5e1 !important;
+}
+html.dark-mode .btn-fechar:hover {
+    background: rgba(255,255,255,0.2) !important;
+    color: #fff !important;
+}
 html.dark-mode .btn-secundario { background: rgba(255,255,255,0.1); color: var(--text-color); }
 html.dark-mode .btn-secundario:hover { background: rgba(255,255,255,0.2); }
 html.dark-mode .input-padrao { box-sizing: border-box; background: var(--bg-color); color: var(--text-color); border-color: var(--border-color); }
@@ -578,9 +595,9 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     /* Modais Ocupando Quase Tudo */
     .modal-content {
         width: 95%;
-        max-height: 98vh;
+        max-height: 85vh;
         padding: 12px 15px;
-        margin: 10px auto;
+        margin: auto;
         box-sizing: border-box;
         overflow-x: hidden;
     }
