@@ -578,8 +578,24 @@ html.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     /* Modais Ocupando Quase Tudo */
     .modal-content {
         width: 95%;
-        padding: 20px 15px;
+        max-height: 98vh;
+        padding: 12px 15px;
         margin: 10px auto;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    .modal-header {
+        margin-bottom: 10px;
+    }
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+    .form-group {
+        margin-bottom: 8px;
+    }
+    .form-group label {
+        margin-bottom: 2px;
+        font-size: 0.8rem;
     }
 
     /* Tabelas e Paineis Administrador com Rolagem Horizontal */
