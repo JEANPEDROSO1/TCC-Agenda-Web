@@ -263,3 +263,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
+
+// Helper para repetição de compromissos
+window.ocorreNaData = function(comp, dataStr) {
+    if (comp.data === dataStr) return true;
+    if (dataStr < comp.data) return false; // Evento ainda não começou
+
+    if (comp.repeticao === 'diaria') {
+        return true;
+    }
+
+    if (comp.repeticao === 'semanal') {
+        const d1 = new Date(comp.data + "T12:00:00");
+        const d2 = new Date(dataStr + "T12:00:00");
+        const diffDias = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+        return diffDias % 7 === 0;
+    }
+
+    if (comp.repeticao === 'mensal') {
+        const day1 = comp.data.split('-')[2];
+        const day2 = dataStr.split('-')[2];
+        return day1 === day2;
+    }
+
+    if (comp.repeticao === 'anual') {
+        const md1 = comp.data.substring(5);
+        const md2 = dataStr.substring(5);
+        return md1 === md2;
+    }
+
+    return false;
+};

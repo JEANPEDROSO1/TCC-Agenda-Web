@@ -35,11 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarLista() {
         listaCompromissosEl.innerHTML = '';
         
-        // Filtra os que pertencem ao mês selecionado no calendário
-        const ativos = compromissos.filter(c => {
-            const [a, m] = c.data.split('-');
-            return parseInt(m) - 1 === mesAtual && parseInt(a) === anoAtual;
-        }).sort((a, b) => new Date(a.data) - new Date(b.data));
+        // Filtra os que pertencem ao mês selecionado no calendário, considerando as repetições
+        let ativos = [];
+        const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
+        compromissos.forEach(c => {
+            for (let i = 1; i <= diasNoMes; i++) {
+                const dataStr = `${anoAtual}-${String(mesAtual + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                if (window.ocorreNaData(c, dataStr)) {
+                    ativos.push({...c, data: dataStr});
+                }
+            }
+        });
+        
+        ativos.sort((a, b) => new Date(a.data) - new Date(b.data));
         
         if (ativos.length === 0) {
             listaCompromissosEl.innerHTML = `<div class="estado-vazio"><p class="mensagem-vazia">Nenhum compromisso pendente para este mês.</p></div>`;
@@ -85,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diaEl.className = 'dia-calendario';
             const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
             
-            const eventos = compromissos.filter(c => c.data === dataStr);
+            const eventos = compromissos.filter(c => window.ocorreNaData(c, dataStr));
             let htmlEventos = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
                 const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
                 return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
@@ -190,10 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (compromissos.length === 0) return;
         const agora = new Date();
         
+        const dataHojeStr = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`;
+        
         compromissos.forEach(comp => {
             if (comp.status !== 'ativo' || comp.tempo_lembrete < 0) return;
             
-            const dataComp = new Date(`${comp.data}T${comp.hora}:00`);
+            if (!window.ocorreNaData(comp, dataHojeStr)) return;
+
+            const dataComp = new Date(`${dataHojeStr}T${comp.hora}:00`);
             const diffMinutos = Math.round((dataComp - agora) / 60000);
             
             // Lembrete Antecipado

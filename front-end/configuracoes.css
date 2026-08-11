@@ -287,3 +287,6 @@ html.dark-mode .btn-secundario-pequeno:hover {
         justify-content: center;
     }
 }
+
+html, body { touch-action: pan-x pan-y !important; }
+

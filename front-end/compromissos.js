@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchBusca = rmAcentos(comp.titulo.toLowerCase()).includes(termoBusca) || rmAcentos(comp.descricao.toLowerCase()).includes(termoBusca);
             if (termoBusca.trim() !== '') return matchBusca;
 
-            const matchData = filtroData.value ? comp.data === filtroData.value : true;
+            const matchData = filtroData.value ? window.ocorreNaData(comp, filtroData.value) : true;
             let matchStatus = true;
             if (filtroStatus.value === 'ativos') matchStatus = comp.status === 'ativo';
             if (filtroStatus.value === 'desativados') matchStatus = comp.status === 'desativado';
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const [a, m, d] = comp.data.split('-');
             const dataCompromisso = new Date(`${comp.data}T${comp.hora}:00`);
-            const jaPassou = dataCompromisso < agora;
+            const jaPassou = dataCompromisso < agora && (!comp.repeticao || comp.repeticao === 'nenhuma');
 
             if (comp.status === 'desativado' || jaPassou) {
                 card.style.opacity = '0.6';
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
             diaEl.className = 'dia-calendario';
             const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
             
-            const eventos = compromissos.filter(c => c.data === dataStr);
+            const eventos = compromissos.filter(c => window.ocorreNaData(c, dataStr));
             let html = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
                 const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
                 return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
