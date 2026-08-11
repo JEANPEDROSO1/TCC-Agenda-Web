@@ -65,7 +65,7 @@ function iniciarCronJobs() {
 
             // Busca TODOS os compromissos ativos
             const [compromissos] = await pool.execute(`
-                SELECT c.*, u.email, u.nome 
+                SELECT c.*, DATE_FORMAT(c.data, '%Y-%m-%d') as data, u.email, u.nome 
                 FROM compromissos c
                 JOIN usuarios u ON c.usuario_id = u.id
                 WHERE c.status = 'ativo'
