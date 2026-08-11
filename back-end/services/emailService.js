@@ -74,7 +74,7 @@ async function enviarLembreteCompromisso(destinatario, compromisso, tipo) {
     const htmlBody = `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;">
             <h2 style="color: #2563eb; text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">${tituloLembrete}</h2>
-            <p>Olá,</p>
+            <p>Olá, ${compromisso.nome},</p>
             <p>${msgExtra}</p>
             <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <h3 style="margin-top: 0; color: #1e40af;">${compromisso.titulo}</h3>
