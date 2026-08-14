@@ -59,9 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'item-proximo-compromisso';
             const partes = comp.data.split('-');
             const dataFmt = partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : comp.data;
-            const cor = comp.status === 'desativado' ? '#94a3b8' : (comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)');
-            const opacity = comp.status === 'desativado' ? '0.6' : '1';
-            const extra = comp.status === 'desativado' ? ' <i>(Finalizado)</i>' : '';
+            
+            // Verifica se o compromisso já passou no frontend
+            const dataCompromisso = new Date(`${comp.data}T${comp.hora}:00`);
+            const jaPassou = dataCompromisso < new Date() && (!comp.repeticao || comp.repeticao === 'nenhuma');
+            
+            const isDesativado = comp.status === 'desativado' || jaPassou;
+            const cor = isDesativado ? '#94a3b8' : (comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)');
+            const opacity = isDesativado ? '0.6' : '1';
+            const extra = isDesativado ? ' <i>(Finalizado)</i>' : '';
             
             div.style.opacity = opacity;
             div.innerHTML = `<strong style="color:${cor};">${comp.titulo}${extra}</strong><span style="font-size:0.85rem;color:var(--text-muted)">📅 ${dataFmt} - ⏰ ${comp.hora}</span>`;

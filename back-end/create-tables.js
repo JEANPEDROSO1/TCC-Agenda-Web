@@ -17,6 +17,7 @@ async function up() {
                 tempo_lembrete INT DEFAULT 0,
                 lembrete_enviado TINYINT(1) DEFAULT 0,
                 notificacao_hora_enviada TINYINT(1) DEFAULT 0,
+                ultima_notificacao_data DATE DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
@@ -28,10 +29,20 @@ async function up() {
                 ALTER TABLE compromissos 
                 ADD COLUMN tempo_lembrete INT DEFAULT 0,
                 ADD COLUMN lembrete_enviado TINYINT(1) DEFAULT 0,
-                ADD COLUMN notificacao_hora_enviada TINYINT(1) DEFAULT 0;
+                ADD COLUMN notificacao_hora_enviada TINYINT(1) DEFAULT 0,
+                ADD COLUMN ultima_notificacao_data DATE DEFAULT NULL;
             `);
             console.log("Colunas de lembrete adicionadas em base existente!");
-        } catch(e) {}
+        } catch(e) {
+            // Se já existirem, tentar adicionar só a nova
+            try {
+                await pool.execute(`
+                    ALTER TABLE compromissos 
+                    ADD COLUMN ultima_notificacao_data DATE DEFAULT NULL;
+                `);
+                console.log("Coluna ultima_notificacao_data adicionada na tabela compromissos.");
+            } catch(e2) {}
+        }
 
         // Garante que a coluna foto seja grande o suficiente para armazenar Base64
         try {
