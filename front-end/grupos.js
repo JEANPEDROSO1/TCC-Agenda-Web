@@ -110,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 mostrarDetalhesGrupo(dados.grupo, dados.meu_papel, dados.membros, dados.convites);
                 carregarCompromissosDoGrupo(id);
                 
+                document.querySelector('.grade-grupos').classList.add('grupo-aberto');
+                document.getElementById('btnVoltarGrupos').style.display = 'inline-block';
+                
                 // Em telas pequenas, rola a página para os detalhes do grupo
                 if (window.innerWidth <= 768) {
                     setTimeout(() => {
@@ -258,6 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Eventos DOM
+    document.getElementById('btnVoltarGrupos').addEventListener('click', () => {
+        document.querySelector('.grade-grupos').classList.remove('grupo-aberto');
+        detalhesGrupoEl.style.display = 'none';
+        grupoSelecionadoId = null;
+        renderizarListaGrupos();
+    });
+
     btnNovoGrupo.addEventListener('click', () => {
         formCriarGrupo.reset();
         modalCriarGrupo.style.display = 'flex';
@@ -441,7 +451,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('')}</div>` : '';
 
             diaEl.innerHTML = `<span class="numero-dia">${i}</span>${html}`;
-            if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) diaEl.classList.add('hoje');
+            if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) {
+                diaEl.classList.add('hoje');
+            }
+
+            diaEl.classList.add('selecionavel');
+            diaEl.onclick = () => {
+                if (meuPapelSelecionado === 'admin' || meuPapelSelecionado === 'membro') {
+                    document.getElementById('modalTitulo').textContent = 'Novo Compromisso (Grupo)';
+                    formCompromisso.reset();
+                    document.getElementById('compId').value = '';
+                    document.getElementById('compGrupoId').value = grupoSelecionadoId;
+                    document.getElementById('compData').value = dataStr;
+                    modalCompromisso.style.display = 'flex';
+                } else {
+                    showToast('Você não tem permissão para criar eventos.', 'aviso');
+                }
+            };
 
             calendarioGrupoEl.appendChild(diaEl);
         }

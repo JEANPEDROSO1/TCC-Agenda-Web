@@ -85,6 +85,48 @@
             margin-right: 10px;
         }
 
+        .btn-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-toggle.ativo {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .grade-grupos.grupo-aberto {
+            grid-template-columns: 1fr;
+        }
+
+        .grade-grupos.grupo-aberto .coluna-lista {
+            display: none !important;
+        }
+
+        .dia.hoje {
+            background: rgba(37, 99, 235, 0.6);
+            color: white;
+            font-weight: bold;
+            border: 2px solid var(--primary-color);
+        }
+
+        .dia.selecionavel {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dia.selecionavel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .grade-grupos {
                 grid-template-columns: 1fr;
@@ -121,7 +163,7 @@
     <main class="conteudo-dashboard">
         <div class="grade-grupos">
             
-            <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="coluna-lista" style="display: flex; flex-direction: column; gap: 20px;">
                 <!-- CONVITES PENDENTES -->
                 <section class="cartao-vidro" id="secaoConvites" style="display: none;">
                     <div class="cabecalho-cartao" style="margin-bottom: 10px;">
@@ -146,26 +188,18 @@
 
             <section class="cartao-vidro" id="detalhesGrupo" style="display: none;">
                 <div class="cabecalho-cartao" style="justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
-                    <div>
-                        <h2 id="grupoNomeTitulo" style="margin-bottom: 5px; color: var(--primary-color);">Nome do Grupo</h2>
-                        <p id="grupoDescricaoDesc" style="color: var(--text-muted); font-size: 0.9rem;">Descrição do grupo aqui.</p>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button id="btnVoltarGrupos" class="btn-secundario" style="display: none; padding: 5px 10px;">&larr; Voltar</button>
+                        <div>
+                            <h2 id="grupoNomeTitulo" style="margin-bottom: 5px; color: var(--primary-color);">Nome do Grupo</h2>
+                            <p id="grupoDescricaoDesc" style="color: var(--text-muted); font-size: 0.9rem;">Descrição do grupo aqui.</p>
+                        </div>
                         <span id="meuPapelBadge" class="badge-papel papel-comum">Meu Papel</span>
                     </div>
                     <button id="btnExcluirGrupo" class="btn-secundario" style="color: #ef4444; border-color: #ef4444; display: none;">Excluir Grupo</button>
                 </div>
 
-                <div id="areaAdicionarMembro" style="display: none; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="margin-top: 0; font-size: 1rem; margin-bottom: 10px;">Convidar Membro</h3>
-                    <form id="formAdicionarMembro" style="display: flex; gap: 10px; align-items: center;">
-                        <input type="email" id="novoMembroEmail" class="input-padrao" placeholder="E-mail do usuário" required style="flex: 1;">
-                        <select id="novoMembroPapel" class="input-padrao" style="width: 120px;">
-                            <option value="comum">Comum</option>
-                            <option value="membro">Membro</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                        <button type="submit" class="botao-principal-vidro" style="padding: 10px 15px;">Convidar</button>
-                    </form>
-                </div>
+                <!-- (Área Adicionar Membro movida para a viewMembrosGrupo) -->
 
                 <!-- TABS DO GRUPO (CALENDÁRIO / MEMBROS) -->
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -197,6 +231,9 @@
                                 <div class="grade-calendario" id="calendarioGrupo">
                                     <!-- Gerado via JS -->
                                 </div>
+                                <button id="btnNovoCompromissoGrupo" class="botao-principal-vidro largura-total" style="margin-top: 15px; display: none;">
+                                    + Novo Compromisso
+                                </button>
                             </div>
                         </div>
 
@@ -205,9 +242,6 @@
                             <div class="cabecalho-cartao" style="margin-bottom: 10px;">
                                 <h3 style="margin: 0; font-size: 1.1rem; color: #1e3a8a;">Próximos Eventos</h3>
                             </div>
-                            <button id="btnNovoCompromissoGrupo" class="botao-principal-vidro largura-total" style="margin-bottom: 15px; display: none;">
-                                + Novo Compromisso
-                            </button>
                             <div class="lista-compromissos" id="listaCompromissosGrupo" style="min-height: 200px;">
                                 <p class="mensagem-vazia">Nenhum evento futuro.</p>
                             </div>
@@ -216,6 +250,19 @@
                 </div>
 
                 <div id="viewMembrosGrupo" style="display: none;">
+                    <div id="areaAdicionarMembro" style="display: none; background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="margin-top: 0; font-size: 1rem; margin-bottom: 10px;">Convidar Membro</h3>
+                        <form id="formAdicionarMembro" style="display: flex; gap: 10px; align-items: center;">
+                            <input type="email" id="novoMembroEmail" class="input-padrao" placeholder="E-mail do usuário" required style="flex: 1;">
+                            <select id="novoMembroPapel" class="input-padrao" style="width: 120px;">
+                                <option value="comum">Comum</option>
+                                <option value="membro">Membro</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <button type="submit" class="botao-principal-vidro" style="padding: 10px 15px;">Convidar</button>
+                        </form>
+                    </div>
+
                     <h3>Membros e Convites da Equipe</h3>
                     <div class="membros-lista" id="listaMembros">
                         <!-- Gerado via JS -->
@@ -325,7 +372,7 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=4" defer></script>
+    <script src="grupos.js?v=5" defer></script>
 </body>
 
 </html>
