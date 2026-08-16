@@ -32,7 +32,7 @@ async function up() {
         
         // Garante que a coluna status exista na tabela grupo_membros (se já existia)
         try {
-            await pool.execute('ALTER TABLE grupo_membros ADD COLUMN status VARCHAR(20) DEFAULT "aceito"');
+            await pool.execute('ALTER TABLE grupo_membros ADD COLUMN status VARCHAR(20) DEFAULT \\'aceito\\'');
             console.log("Coluna status adicionada na tabela grupo_membros.");
         } catch(e) {
             // Ignora se já existir

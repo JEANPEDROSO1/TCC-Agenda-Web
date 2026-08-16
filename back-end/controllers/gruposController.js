@@ -52,7 +52,7 @@ exports.obterGrupo = async (req, res) => {
     try {
         // Verifica se o usuário pertence ao grupo
         const [membrosValida] = await pool.execute(
-            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = "aceito"',
+            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = \\'aceito\\'',
             [id, usuario_id]
         );
 
@@ -227,7 +227,7 @@ exports.aceitarConvite = async (req, res) => {
     const usuario_id = req.user.id;
     try {
         const [result] = await pool.execute(
-            'UPDATE grupo_membros SET status = "aceito" WHERE grupo_id = ? AND usuario_id = ? AND status = "pendente"',
+            'UPDATE grupo_membros SET status = \\'aceito\\' WHERE grupo_id = ? AND usuario_id = ? AND status = \\'pendente\\'',
             [id, usuario_id]
         );
         if (result.affectedRows === 0) return res.status(404).json({ erro: "Convite não encontrado ou já aceito." });
