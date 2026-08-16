@@ -82,7 +82,7 @@ exports.obterGrupo = async (req, res) => {
         res.json({ grupo: grupos[0], meu_papel: membrosValida[0].papel, membros, convites });
     } catch (error) {
         console.error("Erro ao obter grupo:", error);
-        res.status(500).json({ erro: "Erro ao obter detalhes do grupo." });
+        res.status(500).json({ erro: "Erro SQL: " + error.message });
     }
 };
 

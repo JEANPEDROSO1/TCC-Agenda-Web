@@ -116,9 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         detalhesGrupoEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 100);
                 }
+            } else {
+                const err = await res.json();
+                showToast(err.erro || "Erro ao abrir grupo.", 'erro');
             }
         } catch (error) {
             console.error("Erro ao carregar detalhes do grupo:", error);
+            showToast("Falha na comunicação com o servidor.", 'erro');
         }
     }
 
