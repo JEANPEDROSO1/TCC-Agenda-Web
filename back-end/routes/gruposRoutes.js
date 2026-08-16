@@ -12,6 +12,15 @@ router.post('/', gruposController.criarGrupo);
 // Listar os grupos que o usuário participa
 router.get('/', gruposController.listarMeusGrupos);
 
+// Listar convites pendentes
+router.get('/convites', gruposController.listarConvitesPendentes);
+
+// Aceitar convite
+router.put('/:id/aceitar', gruposController.aceitarConvite);
+
+// Recusar convite
+router.delete('/:id/recusar', gruposController.recusarConvite);
+
 // Obter detalhes de um grupo (incluindo membros)
 router.get('/:id', gruposController.obterGrupo);
 

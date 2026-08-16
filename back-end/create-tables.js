@@ -21,6 +21,7 @@ async function up() {
                 grupo_id INT NOT NULL,
                 usuario_id INT NOT NULL,
                 papel ENUM('admin', 'membro', 'comum') DEFAULT 'comum',
+                status VARCHAR(20) DEFAULT 'aceito',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (grupo_id, usuario_id),
                 FOREIGN KEY (grupo_id) REFERENCES grupos(id) ON DELETE CASCADE,
@@ -28,6 +29,14 @@ async function up() {
             )
         `);
         console.log("Tabela grupo_membros criada com sucesso!");
+        
+        // Garante que a coluna status exista na tabela grupo_membros (se já existia)
+        try {
+            await pool.execute('ALTER TABLE grupo_membros ADD COLUMN status VARCHAR(20) DEFAULT "aceito"');
+            console.log("Coluna status adicionada na tabela grupo_membros.");
+        } catch(e) {
+            // Ignora se já existir
+        }
 
         console.log("Criando tabela de compromissos...");
         await pool.execute(`

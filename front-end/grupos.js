@@ -19,12 +19,65 @@ document.addEventListener('DOMContentLoaded', () => {
     let meuPapelSelecionado = null;
 
     async function carregarGrupos() {
+        carregarConvites();
         try {
             const res = await fetch(`${API_BASE_URL}/grupos`, { method: 'GET', credentials: 'include' });
             if (res.ok) {
                 grupos = await res.json();
                 renderizarListaGrupos();
             }
+        } catch (error) {
+            console.error("Erro ao carregar grupos:", error);
+        }
+    }
+
+    async function carregarConvites() {
+        const secaoConvites = document.getElementById('secaoConvites');
+        const listaConvites = document.getElementById('listaConvites');
+        try {
+            const res = await fetch(`${API_BASE_URL}/grupos/convites`, { method: 'GET', credentials: 'include' });
+            if (res.ok) {
+                const convites = await res.json();
+                if (convites.length > 0) {
+                    secaoConvites.style.display = 'block';
+                    listaConvites.innerHTML = '';
+                    convites.forEach(c => {
+                        const div = document.createElement('div');
+                        div.className = 'item-grupo';
+                        div.innerHTML = `
+                            <h3>${c.nome}</h3>
+                            <p>${c.descricao || 'Sem descrição'}</p>
+                            <span class="badge-papel papel-${c.papel}">Convite para: ${c.papel}</span>
+                            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                <button onclick="aceitarConvite(${c.id})" class="botao-principal-vidro" style="padding: 5px 10px; font-size: 0.8rem;">Aceitar</button>
+                                <button onclick="recusarConvite(${c.id})" class="btn-secundario" style="color: #ef4444; border-color: #ef4444; padding: 5px 10px; font-size: 0.8rem;">Recusar</button>
+                            </div>
+                        `;
+                        listaConvites.appendChild(div);
+                    });
+                } else {
+                    secaoConvites.style.display = 'none';
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    window.aceitarConvite = async (id) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/grupos/${id}/aceitar`, { method: 'PUT', credentials: 'include' });
+            if (res.ok) { showToast("Convite aceito!"); carregarGrupos(); }
+            else showToast("Erro ao aceitar convite", "erro");
+        } catch (e) { console.error(e); }
+    };
+
+    window.recusarConvite = async (id) => {
+        if (!confirm("Recusar este convite?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/grupos/${id}/recusar`, { method: 'DELETE', credentials: 'include' });
+            if (res.ok) { showToast("Convite recusado!"); carregarGrupos(); }
+            else showToast("Erro ao recusar convite", "erro");
+        } catch (e) { console.error(e); }
+    };
         } catch (error) {
             console.error("Erro ao carregar grupos:", error);
         }
@@ -58,14 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`${API_BASE_URL}/grupos/${id}`, { method: 'GET', credentials: 'include' });
             if (res.ok) {
                 const dados = await res.json();
-                mostrarDetalhesGrupo(dados.grupo, dados.meu_papel, dados.membros);
+                mostrarDetalhesGrupo(dados.grupo, dados.meu_papel, dados.membros, dados.convites);
+                carregarCompromissosDoGrupo(id);
             }
         } catch (error) {
             console.error("Erro ao carregar detalhes do grupo:", error);
         }
     }
 
-    function mostrarDetalhesGrupo(grupo, meuPapel, membros) {
+    function mostrarDetalhesGrupo(grupo, meuPapel, membros, convites) {
         meuPapelSelecionado = meuPapel;
         detalhesGrupoEl.style.display = 'block';
         grupoNomeTitulo.textContent = grupo.nome;
@@ -75,9 +129,16 @@ document.addEventListener('DOMContentLoaded', () => {
         meuPapelBadge.className = `badge-papel papel-${meuPapel}`;
 
         // Permissões
+        const btnNovoComp = document.getElementById('btnNovoCompromissoGrupo');
+        if (meuPapel === 'admin' || meuPapel === 'membro') {
+            btnNovoComp.style.display = 'block';
+        } else {
+            btnNovoComp.style.display = 'none';
+        }
+
         if (meuPapel === 'admin') {
             areaAdicionarMembro.style.display = 'block';
-            if (grupo.admin_id === window.usuarioLogadoId) {
+            if (grupo.admin_id == window.usuarioLogadoId) {
                 btnExcluirGrupo.style.display = 'inline-block';
             } else {
                 btnExcluirGrupo.style.display = 'none';
@@ -87,50 +148,66 @@ document.addEventListener('DOMContentLoaded', () => {
             btnExcluirGrupo.style.display = 'none';
         }
 
-        renderizarMembros(membros, grupo.admin_id);
+        renderizarMembros(membros, convites, grupo.admin_id);
     }
 
-    function renderizarMembros(membros, adminIdOriginal) {
+    function renderizarMembros(membros, convites, adminIdOriginal) {
         listaMembrosEl.innerHTML = '';
         
-        membros.forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'item-membro';
-            
-            const isAdminGeral = m.id === adminIdOriginal;
-            const badge = `<span class="badge-papel papel-${m.papel}" style="margin-top:0;">${isAdminGeral ? 'Criador' : m.papel}</span>`;
-            
-            let acoesHtml = '';
-            
-            // Só admin pode editar os outros (e não a si mesmo no select, nem o criador)
-            if (meuPapelSelecionado === 'admin' && !isAdminGeral && m.id !== window.usuarioLogadoId) {
-                acoesHtml = `
-                    <div class="acoes-membro">
-                        <select onchange="window.alterarPapel(${m.id}, this.value)">
-                            <option value="comum" ${m.papel === 'comum' ? 'selected' : ''}>Comum</option>
-                            <option value="membro" ${m.papel === 'membro' ? 'selected' : ''}>Membro</option>
-                            <option value="admin" ${m.papel === 'admin' ? 'selected' : ''}>Admin</option>
-                        </select>
-                        <button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">Remover</button>
-                    </div>
-                `;
-            } else if (m.id === window.usuarioLogadoId && !isAdminGeral) {
-                // Eu mesmo posso sair do grupo (se não for o criador)
-                acoesHtml = `<button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">Sair do Grupo</button>`;
-            }
+        // Primeiro os membros ativos
+        membros.forEach(m => renderizarItemMembro(m, adminIdOriginal, false));
+        
+        // Depois os convites pendentes
+        if (convites && convites.length > 0) {
+            const divSeparador = document.createElement('div');
+            divSeparador.innerHTML = '<h4 style="margin: 15px 0 5px 0; color: var(--text-muted);">Convites Pendentes</h4>';
+            listaMembrosEl.appendChild(divSeparador);
+            convites.forEach(c => renderizarItemMembro(c, adminIdOriginal, true));
+        }
+    }
 
-            div.innerHTML = `
-                <div>
-                    <strong style="display:block; color:white;">${m.nome} ${m.id === window.usuarioLogadoId ? '(Você)' : ''}</strong>
-                    <span style="font-size:0.8rem; color:var(--text-muted);">${m.email}</span>
-                </div>
-                <div style="display:flex; align-items:center; gap:15px;">
-                    ${badge}
-                    ${acoesHtml}
+    function renderizarItemMembro(m, adminIdOriginal, isConvite) {
+        const div = document.createElement('div');
+        div.className = 'item-membro';
+        if (isConvite) div.style.opacity = '0.7';
+        
+        const isAdminGeral = m.id === adminIdOriginal;
+        let txtBadge = isConvite ? `Convite: ${m.papel}` : (isAdminGeral ? 'Criador' : m.papel);
+        const badge = `<span class="badge-papel papel-${m.papel}" style="margin-top:0;">${txtBadge}</span>`;
+        
+        let acoesHtml = '';
+        
+        // Só admin pode editar os outros (e não a si mesmo no select, nem o criador)
+        if (meuPapelSelecionado === 'admin' && !isAdminGeral && m.id !== window.usuarioLogadoId) {
+            acoesHtml = `
+                <div class="acoes-membro">
+                    ${!isConvite ? `
+                    <select onchange="window.alterarPapel(${m.id}, this.value)">
+                        <option value="comum" ${m.papel === 'comum' ? 'selected' : ''}>Comum</option>
+                        <option value="membro" ${m.papel === 'membro' ? 'selected' : ''}>Membro</option>
+                        <option value="admin" ${m.papel === 'admin' ? 'selected' : ''}>Admin</option>
+                    </select>` : ''}
+                    <button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">
+                        ${isConvite ? 'Cancelar Convite' : 'Remover'}
+                    </button>
                 </div>
             `;
-            listaMembrosEl.appendChild(div);
-        });
+        } else if (m.id === window.usuarioLogadoId && !isAdminGeral && !isConvite) {
+            // Eu mesmo posso sair do grupo (se não for o criador)
+            acoesHtml = `<button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">Sair do Grupo</button>`;
+        }
+
+        div.innerHTML = `
+            <div>
+                <strong style="display:block; color:white;">${m.nome} ${m.id === window.usuarioLogadoId ? '(Você)' : ''}</strong>
+                <span style="font-size:0.8rem; color:var(--text-muted);">${m.email}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                ${badge}
+                ${acoesHtml}
+            </div>
+        `;
+        listaMembrosEl.appendChild(div);
     }
 
     // Ações Globais na Janela (para os botões inline)
@@ -218,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, papel })
             });
             if (res.ok) {
-                showToast("Membro adicionado!");
+                showToast("Convite enviado!");
                 formAdicionarMembro.reset();
                 carregarDetalhesGrupo(grupoSelecionadoId);
             } else {
@@ -229,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnExcluirGrupo.addEventListener('click', async () => {
-        if (!confirm("CUIDADO: Tem certeza que deseja excluir o grupo inteiro? Todos os compromissos dele serão perdidos para todos os membros.")) return;
+        if (!confirm("CUIDADO: Tem certeza que deseja excluir o grupo inteiro? Todos os compromissos serão excluídos e todos os usuários serão removidos do grupo.")) return;
         try {
             const res = await fetch(`${API_BASE_URL}/grupos/${grupoSelecionadoId}`, {
                 method: 'DELETE', credentials: 'include'
@@ -243,6 +320,213 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(err.erro || "Erro ao excluir", 'erro');
             }
         } catch (e) { console.error(e); }
+    });
+
+    // ----------------------------------------------------------------------
+    // LÓGICA DE COMPROMISSOS DO GRUPO (CALENDÁRIO E LISTA)
+    // ----------------------------------------------------------------------
+    let compromissosGrupo = [];
+    let calMesAtual = new Date().getMonth();
+    let calAnoAtual = new Date().getFullYear();
+
+    const viewCalendarioGrupo = document.getElementById('viewCalendarioGrupo');
+    const viewMembrosGrupo = document.getElementById('viewMembrosGrupo');
+    const btnTabCalendario = document.getElementById('btnTabCalendario');
+    const btnTabMembros = document.getElementById('btnTabMembros');
+    const listaCompromissosGrupo = document.getElementById('listaCompromissosGrupo');
+    const calendarioGrupoEl = document.getElementById('calendarioGrupo');
+    const mesEAnoEl = document.getElementById('mesEAno');
+
+    btnTabCalendario.addEventListener('click', () => {
+        btnTabCalendario.classList.add('ativo');
+        btnTabMembros.classList.remove('ativo');
+        viewCalendarioGrupo.style.display = 'block';
+        viewMembrosGrupo.style.display = 'none';
+        renderizarCalendarioGrupo(calMesAtual, calAnoAtual);
+    });
+
+    btnTabMembros.addEventListener('click', () => {
+        btnTabMembros.classList.add('ativo');
+        btnTabCalendario.classList.remove('ativo');
+        viewMembrosGrupo.style.display = 'block';
+        viewCalendarioGrupo.style.display = 'none';
+    });
+
+    async function carregarCompromissosDoGrupo(id) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/compromissos`, { method: 'GET', credentials: 'include' });
+            if (res.ok) {
+                const dados = await res.json();
+                compromissosGrupo = dados.filter(c => c.grupo_id === id).map(c => ({ ...c, data: c.data.split('T')[0] }));
+                renderizarListaCompromissosGrupo();
+                renderizarCalendarioGrupo(calMesAtual, calAnoAtual);
+            }
+        } catch (error) { console.error(error); }
+    }
+
+    function renderizarListaCompromissosGrupo() {
+        listaCompromissosGrupo.innerHTML = '';
+        const agora = new Date();
+        
+        const futuros = compromissosGrupo.filter(c => {
+            const dataComp = new Date(`${c.data}T${c.hora}:00`);
+            return dataComp >= agora || c.repeticao !== 'nenhuma';
+        }).sort((a,b) => new Date(`${a.data}T${a.hora}:00`) - new Date(`${b.data}T${b.hora}:00`));
+
+        if (futuros.length === 0) {
+            listaCompromissosGrupo.innerHTML = '<p class="mensagem-vazia">Nenhum evento futuro no grupo.</p>';
+            return;
+        }
+
+        futuros.forEach(comp => {
+            const div = document.createElement('div');
+            div.className = 'compromisso-item';
+            div.style.background = 'rgba(16, 185, 129, 0.1)';
+            div.style.borderLeft = '4px solid #10b981';
+            
+            const [a, m, d] = comp.data.split('-');
+            const tagUrgencia = comp.urgencia === 'urgente' ? `<span style="color:#ef4444; font-size:0.7rem;">(Urgente)</span>` : '';
+            
+            const canEdit = meuPapelSelecionado === 'admin' || meuPapelSelecionado === 'membro';
+            const editBtn = canEdit ? `<button onclick="editarCompromissoGrupo(${comp.id})" style="background:none; border:none; color:var(--primary-color); cursor:pointer;">✏️</button>` : '';
+
+            div.innerHTML = `
+                <div class="compromisso-info">
+                    <strong>${comp.hora} - ${comp.titulo} ${tagUrgencia}</strong>
+                    <span>${d}/${m}/${a} ${comp.repeticao !== 'nenhuma' ? '🔄 '+comp.repeticao : ''}</span>
+                </div>
+                ${editBtn}
+            `;
+            listaCompromissosGrupo.appendChild(div);
+        });
+    }
+
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+    function renderizarCalendarioGrupo(mes, ano) {
+        calendarioGrupoEl.innerHTML = '';
+        mesEAnoEl.textContent = `${meses[mes]} ${ano}`;
+
+        const primeiroDia = new Date(ano, mes, 1).getDay();
+        const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+        const diasNoMesAnterior = new Date(ano, mes, 0).getDate();
+
+        for (let i = primeiroDia; i > 0; i--) {
+            const div = document.createElement('div');
+            div.className = 'dia-calendario inativo';
+            div.innerHTML = `<span class="numero-dia">${diasNoMesAnterior - i + 1}</span>`;
+            calendarioGrupoEl.appendChild(div);
+        }
+
+        const hoje = new Date();
+        for (let i = 1; i <= diasNoMes; i++) {
+            const diaEl = document.createElement('div');
+            diaEl.className = 'dia-calendario';
+            const dataStr = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            
+            const eventos = compromissosGrupo.filter(c => {
+                if (window.ocorreNaData) return window.ocorreNaData(c, dataStr);
+                return c.data === dataStr;
+            });
+
+            let html = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
+                return `<div class="evento-calendario grupo">${c.hora} - ${c.titulo}</div>`;
+            }).join('')}</div>` : '';
+
+            diaEl.innerHTML = `<span class="numero-dia">${i}</span>${html}`;
+            if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) diaEl.classList.add('hoje');
+
+            calendarioGrupoEl.appendChild(diaEl);
+        }
+    }
+
+    document.getElementById('mesAnterior').addEventListener('click', () => {
+        if (--calMesAtual < 0) { calMesAtual = 11; calAnoAtual--; }
+        renderizarCalendarioGrupo(calMesAtual, calAnoAtual);
+    });
+
+    document.getElementById('proximoMes').addEventListener('click', () => {
+        if (++calMesAtual > 11) { calMesAtual = 0; calAnoAtual++; }
+        renderizarCalendarioGrupo(calMesAtual, calAnoAtual);
+    });
+
+    // ----------------------------------------------------------------------
+    // LÓGICA DO MODAL DE COMPROMISSO DO GRUPO
+    // ----------------------------------------------------------------------
+    const modalCompromisso = document.getElementById('modalCompromisso');
+    const formCompromisso = document.getElementById('formCompromisso');
+
+    document.getElementById('btnNovoCompromissoGrupo').addEventListener('click', () => {
+        document.getElementById('modalTitulo').textContent = 'Novo Compromisso (Grupo)';
+        formCompromisso.reset();
+        document.getElementById('compId').value = '';
+        document.getElementById('compGrupoId').value = grupoSelecionadoId;
+        modalCompromisso.style.display = 'flex';
+    });
+
+    document.getElementById('btnFecharModal').addEventListener('click', () => modalCompromisso.style.display = 'none');
+    document.getElementById('btnCancelarModal').addEventListener('click', () => modalCompromisso.style.display = 'none');
+
+    window.editarCompromissoGrupo = (id) => {
+        const comp = compromissosGrupo.find(c => c.id === id);
+        if (!comp) return;
+        document.getElementById('modalTitulo').textContent = 'Editar Compromisso (Grupo)';
+        document.getElementById('compId').value = comp.id;
+        document.getElementById('compGrupoId').value = comp.grupo_id;
+        document.getElementById('compTitulo').value = comp.titulo;
+        document.getElementById('compDescricao').value = comp.descricao;
+        document.getElementById('compData').value = comp.data;
+        document.getElementById('compHora').value = comp.hora;
+        document.getElementById('compUrgencia').value = comp.urgencia;
+        document.getElementById('compRepeticao').value = comp.repeticao;
+        document.getElementById('compTempoLembrete').value = comp.tempo_lembrete !== undefined ? comp.tempo_lembrete : 30;
+        modalCompromisso.style.display = 'flex';
+    };
+
+    formCompromisso.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('compId').value;
+        const data = document.getElementById('compData').value;
+        const hora = document.getElementById('compHora').value;
+        
+        const dataEscolhida = new Date(`${data}T${hora}:00`);
+        if (dataEscolhida < new Date()) {
+            showToast('Não agende compromissos no passado.', 'erro');
+            return;
+        }
+
+        const novoComp = {
+            titulo: document.getElementById('compTitulo').value,
+            descricao: document.getElementById('compDescricao').value,
+            data: data,
+            hora: hora,
+            urgencia: document.getElementById('compUrgencia').value,
+            repeticao: document.getElementById('compRepeticao').value,
+            grupo_id: document.getElementById('compGrupoId').value,
+            tempo_lembrete: parseInt(document.getElementById('compTempoLembrete').value),
+            status: 'ativo'
+        };
+
+        try {
+            let res;
+            if (id) {
+                res = await fetch(`${API_BASE_URL}/compromissos/${id}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
+                });
+            } else {
+                res = await fetch(`${API_BASE_URL}/compromissos`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(novoComp)
+                });
+            }
+            if (res.ok) {
+                showToast(id ? "Atualizado!" : "Criado com sucesso!");
+                modalCompromisso.style.display = 'none';
+                carregarCompromissosDoGrupo(grupoSelecionadoId);
+            } else {
+                const err = await res.json();
+                showToast(err.erro || "Erro ao salvar", 'erro');
+            }
+        } catch (error) { console.error(error); }
     });
 
     // Pega o ID do usuário logado para lógicas da UI

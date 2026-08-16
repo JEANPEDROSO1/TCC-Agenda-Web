@@ -15,8 +15,8 @@ exports.criarGrupo = async (req, res) => {
 
         // Adiciona o criador como admin do grupo na tabela de membros
         await pool.execute(
-            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel) VALUES (?, ?, ?)',
-            [grupo_id, admin_id, 'admin']
+            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel, status) VALUES (?, ?, ?, ?)',
+            [grupo_id, admin_id, 'admin', 'aceito']
         );
 
         res.status(201).json({ mensagem: "Grupo criado com sucesso!", id: grupo_id });
@@ -34,7 +34,7 @@ exports.listarMeusGrupos = async (req, res) => {
             SELECT g.id, g.nome, g.descricao, g.admin_id, gm.papel 
             FROM grupos g
             JOIN grupo_membros gm ON g.id = gm.grupo_id
-            WHERE gm.usuario_id = ?
+            WHERE gm.usuario_id = ? AND gm.status = 'aceito'
             ORDER BY g.created_at DESC
         `, [usuario_id]);
 
@@ -52,7 +52,7 @@ exports.obterGrupo = async (req, res) => {
     try {
         // Verifica se o usuário pertence ao grupo
         const [membrosValida] = await pool.execute(
-            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ?',
+            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = "aceito"',
             [id, usuario_id]
         );
 
@@ -64,14 +64,22 @@ exports.obterGrupo = async (req, res) => {
         if (grupos.length === 0) return res.status(404).json({ erro: "Grupo não encontrado." });
 
         const [membros] = await pool.execute(`
-            SELECT u.id, u.nome, u.email, gm.papel, gm.created_at
+            SELECT u.id, u.nome, u.email, gm.papel, gm.created_at, gm.status
             FROM grupo_membros gm
             JOIN usuarios u ON gm.usuario_id = u.id
-            WHERE gm.grupo_id = ?
+            WHERE gm.grupo_id = ? AND gm.status = 'aceito'
             ORDER BY FIELD(gm.papel, 'admin', 'membro', 'comum'), u.nome ASC
         `, [id]);
 
-        res.json({ grupo: grupos[0], meu_papel: membrosValida[0].papel, membros });
+        const [convites] = await pool.execute(`
+            SELECT u.id, u.nome, u.email, gm.papel, gm.created_at, gm.status
+            FROM grupo_membros gm
+            JOIN usuarios u ON gm.usuario_id = u.id
+            WHERE gm.grupo_id = ? AND gm.status = 'pendente'
+            ORDER BY u.nome ASC
+        `, [id]);
+
+        res.json({ grupo: grupos[0], meu_papel: membrosValida[0].papel, membros, convites });
     } catch (error) {
         console.error("Erro ao obter grupo:", error);
         res.status(500).json({ erro: "Erro ao obter detalhes do grupo." });
@@ -103,14 +111,14 @@ exports.adicionarMembro = async (req, res) => {
         if (existente.length > 0) return res.status(400).json({ erro: "Usuário já é membro deste grupo." });
 
         await pool.execute(
-            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel) VALUES (?, ?, ?)',
+            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel, status) VALUES (?, ?, ?, "pendente")',
             [id, novo_membro_id, papel]
         );
 
-        res.status(201).json({ mensagem: "Membro adicionado com sucesso!" });
+        res.status(201).json({ mensagem: "Convite enviado com sucesso!" });
     } catch (error) {
         console.error("Erro ao adicionar membro:", error);
-        res.status(500).json({ erro: "Erro ao adicionar membro." });
+        res.status(500).json({ erro: error.message || "Erro ao adicionar membro." });
     }
 };
 
@@ -195,5 +203,51 @@ exports.excluirGrupo = async (req, res) => {
     } catch (error) {
         console.error("Erro ao excluir grupo:", error);
         res.status(500).json({ erro: "Erro ao excluir grupo." });
+    }
+};
+
+exports.listarConvitesPendentes = async (req, res) => {
+    const usuario_id = req.user.id;
+    try {
+        const [convites] = await pool.execute(`
+            SELECT g.id, g.nome, g.descricao, gm.papel, gm.created_at as data_convite
+            FROM grupos g
+            JOIN grupo_membros gm ON g.id = gm.grupo_id
+            WHERE gm.usuario_id = ? AND gm.status = 'pendente'
+            ORDER BY gm.created_at DESC
+        `, [usuario_id]);
+        res.json(convites);
+    } catch (error) {
+        res.status(500).json({ erro: "Erro ao listar convites." });
+    }
+};
+
+exports.aceitarConvite = async (req, res) => {
+    const { id } = req.params;
+    const usuario_id = req.user.id;
+    try {
+        const [result] = await pool.execute(
+            'UPDATE grupo_membros SET status = "aceito" WHERE grupo_id = ? AND usuario_id = ? AND status = "pendente"',
+            [id, usuario_id]
+        );
+        if (result.affectedRows === 0) return res.status(404).json({ erro: "Convite não encontrado ou já aceito." });
+        res.json({ mensagem: "Convite aceito com sucesso!" });
+    } catch (error) {
+        res.status(500).json({ erro: "Erro ao aceitar convite." });
+    }
+};
+
+exports.recusarConvite = async (req, res) => {
+    const { id } = req.params;
+    const usuario_id = req.user.id;
+    try {
+        const [result] = await pool.execute(
+            'DELETE FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = "pendente"',
+            [id, usuario_id]
+        );
+        if (result.affectedRows === 0) return res.status(404).json({ erro: "Convite não encontrado." });
+        res.json({ mensagem: "Convite recusado." });
+    } catch (error) {
+        res.status(500).json({ erro: "Erro ao recusar convite." });
     }
 };
