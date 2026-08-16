@@ -203,6 +203,9 @@ html.dark-mode .dia-calendario {
 .evento-calendario.urgente {
     background: #ef4444;
 }
+.evento-calendario.grupo {
+    background: #10b981;
+}
 .evento-calendario.desativado {
     background: #94a3b8;
     opacity: 0.65;

@@ -34,6 +34,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error('Erro ao carregar compromissos:', e); }
     }
 
+    async function carregarGruposSelect() {
+        const compGrupoId = document.getElementById('compGrupoId');
+        if (!compGrupoId) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/grupos`, { method: 'GET', credentials: 'include' });
+            if (res.ok) {
+                const grupos = await res.json();
+                compGrupoId.innerHTML = '<option value="">Nenhum (Pessoal)</option>';
+                grupos.forEach(g => {
+                    if (g.papel === 'admin' || g.papel === 'membro') {
+                        compGrupoId.innerHTML += `<option value="${g.id}">${g.nome}</option>`;
+                    }
+                });
+            }
+        } catch (e) {}
+    }
+
     // Renderiza Lista
     function renderizarLista() {
         listaCompromissosEl.innerHTML = '';
@@ -89,9 +106,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.opacity = '0.6';
             }
 
+            let badgeGrupoHtml = '';
+            let estiloCardHeader = '';
+            if (comp.grupo_id && comp.status !== 'desativado' && !jaPassou) {
+                badgeGrupoHtml = `<span style="background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; color: #10b981; margin-left: 5px;">Grupo</span>`;
+                estiloCardHeader = 'style="color: #10b981;"';
+            }
+
+            const canEditOrDelete = !comp.grupo_id || comp.meu_papel_grupo === 'admin' || comp.meu_papel_grupo === 'membro';
+
             card.innerHTML = `
                 <div class="card-header">
-                    <h3>${comp.titulo}</h3>
+                    <h3 ${estiloCardHeader}>${comp.titulo}${badgeGrupoHtml}</h3>
                     <span class="tag-urgencia ${comp.urgencia}">${comp.urgencia}</span>
                 </div>
                 <div class="card-body">
@@ -104,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="card-actions">
-                    ${!jaPassou && comp.status !== 'desativado' ? `<button class="btn-acao editar" onclick="editarCompromisso(${comp.id})">Editar</button>` : ''}
-                    <button class="btn-acao excluir" onclick="excluirCompromisso(${comp.id})">Excluir</button>
+                    ${(!jaPassou && comp.status !== 'desativado' && canEditOrDelete) ? `<button class="btn-acao editar" onclick="editarCompromisso(${comp.id})">Editar</button>` : ''}
+                    ${canEditOrDelete ? `<button class="btn-acao excluir" onclick="excluirCompromisso(${comp.id})">Excluir</button>` : ''}
                 </div>
             `;
             listaCompromissosEl.appendChild(card);
@@ -126,12 +152,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('compHora').value = comp.hora;
             document.getElementById('compUrgencia').value = comp.urgencia;
             document.getElementById('compRepeticao').value = comp.repeticao;
+            document.getElementById('compGrupoId').value = comp.grupo_id || "";
             document.getElementById('compTempoLembrete').value = comp.tempo_lembrete !== undefined && comp.tempo_lembrete !== null ? comp.tempo_lembrete : "0";
         } else {
             modalTitulo.textContent = 'Novo Compromisso';
             formCompromisso.reset();
             document.getElementById('compId').value = '';
             document.getElementById('compTempoLembrete').value = "0";
+            document.getElementById('compGrupoId').value = "";
         }
         modalCompromisso.style.display = 'flex';
     }
@@ -158,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hora: hora,
             urgencia: document.getElementById('compUrgencia').value,
             repeticao: document.getElementById('compRepeticao').value,
+            grupo_id: document.getElementById('compGrupoId').value || null,
             tempo_lembrete: parseInt(document.getElementById('compTempoLembrete').value),
             status: 'ativo'
         };
@@ -252,7 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const eventos = compromissos.filter(c => window.ocorreNaData(c, dataStr));
             let html = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
-                const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                const dataCompromisso = new Date(`${dataStr}T${c.hora}:00`);
+                const jaPassou = dataCompromisso < new Date();
+                const isDesativado = c.status === 'desativado' || jaPassou;
+                let clazz = isDesativado ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                if (c.grupo_id && !isDesativado) clazz = 'grupo';
                 return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
             }).join('')}</div>` : '';
 
@@ -288,5 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     carregarCompromissos();
+    carregarGruposSelect();
     renderizarCalendario(calMesAtual, calAnoAtual);
 });

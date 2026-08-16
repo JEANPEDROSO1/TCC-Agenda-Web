@@ -31,6 +31,24 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error('Erro ao carregar compromissos:', e); }
     }
 
+    async function carregarGruposSelect() {
+        const compGrupoId = document.getElementById('compGrupoId');
+        if (!compGrupoId) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/grupos`, { method: 'GET', credentials: 'include' });
+            if (res.ok) {
+                const grupos = await res.json();
+                compGrupoId.innerHTML = '<option value="">Nenhum (Pessoal)</option>';
+                grupos.forEach(g => {
+                    // Apenas admin ou membro podem vincular (comum só visualiza)
+                    if (g.papel === 'admin' || g.papel === 'membro') {
+                        compGrupoId.innerHTML += `<option value="${g.id}">${g.nome}</option>`;
+                    }
+                });
+            }
+        } catch (e) {}
+    }
+
     // Renderiza a lista de "Próximos Compromissos"
     function renderizarLista() {
         listaCompromissosEl.innerHTML = '';
@@ -60,17 +78,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const partes = comp.data.split('-');
             const dataFmt = partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : comp.data;
             
-            // Verifica se o compromisso já passou no frontend
+            // Verifica se o compromisso já passou no frontend (para aquela data específica)
             const dataCompromisso = new Date(`${comp.data}T${comp.hora}:00`);
-            const jaPassou = dataCompromisso < new Date() && (!comp.repeticao || comp.repeticao === 'nenhuma');
+            const jaPassou = dataCompromisso < new Date();
             
             const isDesativado = comp.status === 'desativado' || jaPassou;
-            const cor = isDesativado ? '#94a3b8' : (comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)');
+            let cor = isDesativado ? '#94a3b8' : (comp.urgencia === 'urgente' ? '#ef4444' : 'var(--primary-color)');
+            let badgeHtml = '';
+            if (comp.grupo_id && !isDesativado) {
+                cor = '#10b981'; // Verde para grupos
+                badgeHtml = `<span style="background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 5px;">Grupo</span>`;
+            }
+
             const opacity = isDesativado ? '0.6' : '1';
             const extra = isDesativado ? ' <i>(Finalizado)</i>' : '';
             
             div.style.opacity = opacity;
-            div.innerHTML = `<strong style="color:${cor};">${comp.titulo}${extra}</strong><span style="font-size:0.85rem;color:var(--text-muted)">📅 ${dataFmt} - ⏰ ${comp.hora}</span>`;
+            div.innerHTML = `<strong style="color:${cor}; display:flex; align-items:center;">${comp.titulo}${extra}${badgeHtml}</strong><span style="font-size:0.85rem;color:var(--text-muted)">📅 ${dataFmt} - ⏰ ${comp.hora}</span>`;
             listaCompromissosEl.appendChild(div);
         });
     }
@@ -101,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const eventos = compromissos.filter(c => window.ocorreNaData(c, dataStr));
             let htmlEventos = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
-                const clazz = c.status === 'desativado' ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                const dataCompromisso = new Date(`${dataStr}T${c.hora}:00`);
+                const jaPassou = dataCompromisso < new Date();
+                const isDesativado = c.status === 'desativado' || jaPassou;
+                let clazz = isDesativado ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
+                if (c.grupo_id && !isDesativado) clazz = 'grupo'; // Classe CSS para verde
                 return `<div class="evento-calendario ${clazz}">${c.hora} - ${c.titulo}</div>`;
             }).join('')}</div>` : '';
 
@@ -176,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             urgencia: document.getElementById('compUrgencia').value,
             repeticao: document.getElementById('compRepeticao').value,
             tempo_lembrete: parseInt(document.getElementById('compTempoLembrete').value),
+            grupo_id: document.getElementById('compGrupoId')?.value || null,
             status: 'ativo'
         };
 
@@ -196,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicialização
     carregarCompromissos();
+    carregarGruposSelect();
 
     // RADAR LOCAL (Notificações Visuais em Tempo Real)
     let alertasMostrados = [];

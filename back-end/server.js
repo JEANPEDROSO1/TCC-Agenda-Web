@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const compromissosRoutes = require('./routes/compromissosRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const gruposRoutes = require('./routes/gruposRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/compromissos', compromissosRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/grupos', gruposRoutes);
 
 // Rota raiz para teste
 app.get('/', (req, res) => {

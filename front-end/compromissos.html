@@ -25,6 +25,7 @@
             <ul>
                 <li><a href="dashboard.html">Painel</a></li>
                 <li><a href="compromissos.html" class="ativo">Compromissos</a></li>
+                <li><a href="grupos.html">Grupos</a></li>
                 <li><a href="configuracoes.html">Configurações</a></li>
                 <li><a href="perfil.html">Perfil</a></li>
                 <li style="display: none;" class="admin-nav-item"><a href="admin.html">Administrador</a></li>
@@ -142,16 +143,25 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="compTempoLembrete">Lembrete por E-mail</label>
-                        <select id="compTempoLembrete" class="input-padrao largura-total">
-                            <option value="-1">Não receber lembrete</option>
-                            <option value="0" selected>Na hora do compromisso</option>
-                            <option value="15">15 minutos antes</option>
-                            <option value="30">30 minutos antes</option>
-                            <option value="60">1 hora antes</option>
-                            <option value="1440">1 dia antes</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group col-metade">
+                            <label for="compGrupoId">Vincular a Grupo</label>
+                            <select id="compGrupoId" class="input-padrao largura-total">
+                                <option value="">Nenhum (Pessoal)</option>
+                                <!-- Preenchido via JS -->
+                            </select>
+                        </div>
+                        <div class="form-group col-metade">
+                            <label for="compTempoLembrete">Lembrete por E-mail</label>
+                            <select id="compTempoLembrete" class="input-padrao largura-total">
+                                <option value="-1">Não receber</option>
+                                <option value="0" selected>Na hora</option>
+                                <option value="15">15 min antes</option>
+                                <option value="30">30 min antes</option>
+                                <option value="60">1 hora antes</option>
+                                <option value="1440">1 dia antes</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="modal-footer">

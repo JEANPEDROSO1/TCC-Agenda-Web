@@ -63,13 +63,26 @@ function iniciarCronJobs() {
                 
                 const diffMinutos = Math.round((dataComp - agora) / 60000);
 
+                // Prepara a lista de e-mails de destino
+                let emailsDestino = [comp.email]; // Email original
+                if (comp.grupo_id) {
+                    const [membros] = await pool.execute(`
+                        SELECT u.email FROM grupo_membros gm
+                        JOIN usuarios u ON gm.usuario_id = u.id
+                        WHERE gm.grupo_id = ?
+                    `, [comp.grupo_id]);
+                    emailsDestino = membros.map(m => m.email);
+                }
+
                 // Lembrete antecipado
                 if (comp.tempo_lembrete > 0 && comp.lembrete_enviado === 0) {
-                    // Só envia o antecipado se ainda NÃO PASSOU da hora do compromisso.
-                    // Se já passou, ignoramos para não acumular com o email da hora.
                     if (diffMinutos <= comp.tempo_lembrete && diffMinutos > 0) {
-                        const sucesso = await enviarLembreteCompromisso(comp.email, comp, 'antecipado');
-                        if (sucesso) {
+                        let enviouAlgum = false;
+                        for (let emailDest of emailsDestino) {
+                            const sucesso = await enviarLembreteCompromisso(emailDest, comp, 'antecipado');
+                            if (sucesso) enviouAlgum = true;
+                        }
+                        if (enviouAlgum) {
                             await pool.execute(
                                 'UPDATE compromissos SET lembrete_enviado = 1, ultima_notificacao_data = ? WHERE id = ?', 
                                 [hojeStr, comp.id]
@@ -77,7 +90,6 @@ function iniciarCronJobs() {
                             comp.lembrete_enviado = 1;
                         }
                     } else if (diffMinutos <= 0) {
-                        // Já passou do tempo, marca como enviado para não ser mais disparado hoje
                         await pool.execute(
                             'UPDATE compromissos SET lembrete_enviado = 1, ultima_notificacao_data = ? WHERE id = ?', 
                             [hojeStr, comp.id]
@@ -88,11 +100,13 @@ function iniciarCronJobs() {
 
                 // Notificação da hora
                 if (comp.notificacao_hora_enviada === 0) {
-                    // Se o horário já passou (diffMinutos <= 0), enviamos.
-                    // Não verificamos "diffMinutos > -15" para garantir o envio mesmo se o servidor hibernou
                     if (diffMinutos <= 0) {
-                        const sucesso = await enviarLembreteCompromisso(comp.email, comp, 'hora');
-                        if (sucesso) {
+                        let enviouAlgum = false;
+                        for (let emailDest of emailsDestino) {
+                            const sucesso = await enviarLembreteCompromisso(emailDest, comp, 'hora');
+                            if (sucesso) enviouAlgum = true;
+                        }
+                        if (enviouAlgum) {
                             await pool.execute(
                                 'UPDATE compromissos SET notificacao_hora_enviada = 1, ultima_notificacao_data = ? WHERE id = ?', 
                                 [hojeStr, comp.id]
