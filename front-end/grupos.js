@@ -78,10 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
             else showToast("Erro ao recusar convite", "erro");
         } catch (e) { console.error(e); }
     };
-        } catch (error) {
-            console.error("Erro ao carregar grupos:", error);
-        }
-    }
 
     function renderizarListaGrupos() {
         listaGruposEl.innerHTML = '';
