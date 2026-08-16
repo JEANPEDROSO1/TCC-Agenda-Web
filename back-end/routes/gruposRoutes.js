@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const gruposController = require('../controllers/gruposController');
-const { authMiddleware } = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Rotas protegidas por autenticação
 router.use(authMiddleware);
