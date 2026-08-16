@@ -451,22 +451,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('')}</div>` : '';
 
             diaEl.innerHTML = `<span class="numero-dia">${i}</span>${html}`;
-            if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) {
+            const dataAtual = new Date(ano, mes, i);
+            const hojeData = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            
+            if (dataAtual < hojeData) {
+                diaEl.classList.add('passado');
+            } else if (dataAtual > hojeData) {
+                diaEl.classList.add('futuro');
+            } else {
                 diaEl.classList.add('hoje');
             }
 
             diaEl.classList.add('selecionavel');
             diaEl.onclick = () => {
-                if (meuPapelSelecionado === 'admin' || meuPapelSelecionado === 'membro') {
-                    document.getElementById('modalTitulo').textContent = 'Novo Compromisso (Grupo)';
-                    formCompromisso.reset();
-                    document.getElementById('compId').value = '';
-                    document.getElementById('compGrupoId').value = grupoSelecionadoId;
-                    document.getElementById('compData').value = dataStr;
-                    modalCompromisso.style.display = 'flex';
-                } else {
-                    showToast('Você não tem permissão para criar eventos.', 'aviso');
-                }
+                document.querySelectorAll('.dia-calendario').forEach(el => el.classList.remove('selecionado'));
+                diaEl.classList.add('selecionado');
+                window.dataSelecionadaCalendario = dataStr;
             };
 
             calendarioGrupoEl.appendChild(diaEl);
@@ -494,6 +494,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formCompromisso.reset();
         document.getElementById('compId').value = '';
         document.getElementById('compGrupoId').value = grupoSelecionadoId;
+        if (window.dataSelecionadaCalendario) {
+            document.getElementById('compData').value = window.dataSelecionadaCalendario;
+        }
         modalCompromisso.style.display = 'flex';
     });
 

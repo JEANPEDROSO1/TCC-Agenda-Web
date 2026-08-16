@@ -127,6 +127,58 @@
             transform: scale(1.05);
         }
 
+        .btn-voltar-redondo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-voltar-redondo:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .dia-calendario.passado .numero-dia {
+            color: #6b7280; /* Cinza para passado */
+            opacity: 0.7;
+        }
+
+        .dia-calendario.futuro .numero-dia {
+            color: #ffffff; /* Branco para o futuro */
+        }
+
+        .dia-calendario.hoje {
+            border: 2px solid var(--primary-color) !important;
+            background: rgba(37, 99, 235, 0.1);
+        }
+        
+        .dia-calendario.hoje .numero-dia {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .dia-calendario.selecionado {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        .dia-calendario.selecionado .numero-dia {
+            color: white !important;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .grade-grupos {
                 grid-template-columns: 1fr;
@@ -188,8 +240,12 @@
 
             <section class="cartao-vidro" id="detalhesGrupo" style="display: none;">
                 <div class="cabecalho-cartao" style="justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <button id="btnVoltarGrupos" class="btn-secundario" style="display: none; padding: 5px 10px;">&larr; Voltar</button>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button id="btnVoltarGrupos" class="btn-voltar-redondo" style="display: none;" title="Voltar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                                <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
                         <div>
                             <h2 id="grupoNomeTitulo" style="margin-bottom: 5px; color: var(--primary-color);">Nome do Grupo</h2>
                             <p id="grupoDescricaoDesc" style="color: var(--text-muted); font-size: 0.9rem;">Descrição do grupo aqui.</p>
@@ -372,7 +428,7 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=5" defer></script>
+    <script src="grupos.js?v=7" defer></script>
 </body>
 
 </html>
