@@ -109,6 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dados = await res.json();
                 mostrarDetalhesGrupo(dados.grupo, dados.meu_papel, dados.membros, dados.convites);
                 carregarCompromissosDoGrupo(id);
+                
+                // Em telas pequenas, rola a página para os detalhes do grupo
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        detalhesGrupoEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
             }
         } catch (error) {
             console.error("Erro ao carregar detalhes do grupo:", error);
