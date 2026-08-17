@@ -130,6 +130,10 @@
         .btn-voltar-redondo {
             width: 38px;
             height: 38px;
+            min-width: 38px;
+            min-height: 38px;
+            max-width: 38px;
+            max-height: 38px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -141,6 +145,7 @@
             transition: all 0.2s;
             flex-shrink: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         .btn-voltar-redondo:hover {
@@ -248,13 +253,13 @@
                         <div class="cartao-vidro cartao-calendario" style="padding: 15px;">
                             <div class="cabecalho-cartao">
                                 <button id="mesAnterior" class="botao-navegacao-mes" style="flex-shrink: 0; padding: 0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 18px; height: 18px;">
                                         <path d="M15 18L9 12L15 6" />
                                     </svg>
                                 </button>
                                 <h3 id="mesEAno" style="margin: 0; font-size: 1.1rem; color: #1e3a8a;"></h3>
                                 <button id="proximoMes" class="botao-navegacao-mes" style="flex-shrink: 0; padding: 0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 18px; height: 18px;">
                                         <path d="M9 18L15 12L9 6" />
                                     </svg>
                                 </button>
@@ -407,7 +412,7 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=11" defer></script>
+    <script src="grupos.js?v=12" defer></script>
 </body>
 
 </html>
