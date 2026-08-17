@@ -72,14 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        ativos.slice(0, 5).forEach(comp => {
+        ativos.forEach(comp => {
             const div = document.createElement('div');
             div.className = 'item-proximo-compromisso';
             const partes = comp.data.split('-');
             const dataFmt = partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : comp.data;
             
             // Verifica se o compromisso já passou no frontend (para aquela data específica)
-            const dataCompromisso = new Date(`${comp.data}T${comp.hora}:00`);
+            const horaFormatada = comp.hora.length > 5 ? comp.hora : `${comp.hora}:00`;
+            const dataCompromisso = new Date(`${comp.data}T${horaFormatada}`);
             const jaPassou = dataCompromisso < new Date();
             
             const isDesativado = comp.status === 'desativado' || jaPassou;
@@ -191,7 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const hora = document.getElementById('compHora').value;
 
         // Bloquear data passada (com tolerância de 5 minutos)
-        const dataEscolhida = new Date(`${data}T${hora}:00`);
+        const horaFormatada = hora.length > 5 ? hora : `${hora}:00`;
+        const dataEscolhida = new Date(`${data}T${horaFormatada}`);
         const limitePassado = new Date();
         limitePassado.setMinutes(limitePassado.getMinutes() - 5);
         
@@ -245,7 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!window.ocorreNaData(comp, dataHojeStr)) return;
 
-            const dataComp = new Date(`${dataHojeStr}T${comp.hora}:00`);
+            const horaFormatada = comp.hora.length > 5 ? comp.hora : `${comp.hora}:00`;
+            const dataComp = new Date(`${dataHojeStr}T${horaFormatada}`);
             const diffMinutos = Math.round((dataComp - agora) / 60000);
             
             // Lembrete Antecipado

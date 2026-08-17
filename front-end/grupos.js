@@ -448,9 +448,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const agora = new Date();
         
         const futuros = compromissosGrupo.filter(c => {
-            const dataComp = new Date(`${c.data}T${c.hora}:00`);
+            const horaFormatada = c.hora.length > 5 ? c.hora : `${c.hora}:00`;
+            const dataComp = new Date(`${c.data}T${horaFormatada}`);
             return dataComp >= agora || c.repeticao !== 'nenhuma';
-        }).sort((a,b) => new Date(`${a.data}T${a.hora}:00`) - new Date(`${b.data}T${b.hora}:00`));
+        }).sort((a,b) => {
+            const horaA = a.hora.length > 5 ? a.hora : `${a.hora}:00`;
+            const horaB = b.hora.length > 5 ? b.hora : `${b.hora}:00`;
+            return new Date(`${a.data}T${horaA}`) - new Date(`${b.data}T${horaB}`);
+        });
 
         if (futuros.length === 0) {
             listaCompromissosGrupo.innerHTML = '<p class="mensagem-vazia">Nenhum evento futuro no grupo.</p>';
@@ -594,7 +599,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = document.getElementById('compData').value;
         const hora = document.getElementById('compHora').value;
         
-        const dataEscolhida = new Date(`${data}T${hora}:00`);
+        const horaFormatada = hora.length > 5 ? hora : `${hora}:00`;
+        const dataEscolhida = new Date(`${data}T${horaFormatada}`);
         const limitePassado = new Date();
         limitePassado.setMinutes(limitePassado.getMinutes() - 5);
 
