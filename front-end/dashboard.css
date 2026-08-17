@@ -79,7 +79,7 @@ body {
 .painel-compromissos-dashboard {
     display: flex;
     flex-direction: column;
-    max-height: 720px; /* Altura aproximada do calendário */
+    max-height: 800px; /* Altura aproximada do calendário + botão */
 }
 
 .cabecalho-cartao {
