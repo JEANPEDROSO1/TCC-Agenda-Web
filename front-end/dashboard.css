@@ -242,9 +242,18 @@ html.dark-mode .item-proximo-compromisso:hover {
     border-color: var(--primary-color);
 }
 
+html.dark-mode .dia-calendario:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
 .dia-calendario .numero-dia {
     font-weight: bold;
     color: #475569;
+}
+
+html.dark-mode .dia-calendario .numero-dia {
+    color: #f8fafc;
 }
 
 .dia-calendario.inativo {
@@ -253,6 +262,10 @@ html.dark-mode .item-proximo-compromisso:hover {
 
 .dia-calendario.inativo .numero-dia {
     color: #cbd5e1;
+}
+
+html.dark-mode .dia-calendario.inativo .numero-dia {
+    color: #475569;
 }
 
 html.dark-mode .dia-calendario.inativo {

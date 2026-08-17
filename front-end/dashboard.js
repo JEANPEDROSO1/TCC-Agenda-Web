@@ -127,7 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const eventos = compromissos.filter(c => window.ocorreNaData(c, dataStr));
             let htmlEventos = eventos.length > 0 ? `<div style="display:flex;flex-direction:column;gap:2px;">${eventos.map(c => {
-                const dataCompromisso = new Date(`${dataStr}T${c.hora}:00`);
+                const horaFormatada = c.hora.length > 5 ? c.hora : `${c.hora}:00`;
+                const dataCompromisso = new Date(`${dataStr}T${horaFormatada}`);
                 const jaPassou = dataCompromisso < new Date();
                 const isDesativado = c.status === 'desativado' || jaPassou;
                 let clazz = isDesativado ? 'desativado' : (c.urgencia === 'urgente' ? 'urgente' : 'normal');
