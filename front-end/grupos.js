@@ -472,16 +472,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const tagUrgencia = comp.urgencia === 'urgente' ? `<span style="color:#ef4444; font-size:0.7rem;">(Urgente)</span>` : '';
             
             const canEdit = meuPapelSelecionado === 'admin' || meuPapelSelecionado === 'membro';
-            const editBtn = canEdit ? `<button onclick="editarCompromissoGrupo(${comp.id})" style="background:none; border:none; color:var(--primary-color); cursor:pointer;">✏️</button>` : '';
+            
+            let acoesCompromisso = '';
+            if (canEdit) {
+                acoesCompromisso = `
+                    <div style="display:flex; gap:10px; margin-left: 10px;">
+                        <button onclick="editarCompromissoGrupo(${comp.id})" title="Editar Evento" style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.2); color:#3b82f6; cursor:pointer; padding:6px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+                        <button onclick="excluirCompromissoGrupo(${comp.id})" title="Excluir Evento" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:#ef4444; cursor:pointer; padding:6px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:0.2s;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                `;
+            }
 
             const nomeCriador = comp.criador_nome ? ` <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 5px;">(por ${comp.criador_nome})</span>` : '';
             div.innerHTML = `
-                <div class="compromisso-info">
+                <div class="compromisso-info" style="flex:1;">
                     <strong>${comp.hora} - ${comp.titulo} ${tagUrgencia}${nomeCriador}</strong>
                     <span>${d}/${m}/${a} ${comp.repeticao !== 'nenhuma' ? '🔄 '+comp.repeticao : ''}</span>
                 </div>
-                ${editBtn}
+                ${acoesCompromisso}
             `;
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.justifyContent = 'space-between';
             listaCompromissosGrupo.appendChild(div);
         });
     }
@@ -591,6 +607,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('compRepeticao').value = comp.repeticao;
         document.getElementById('compTempoLembrete').value = comp.tempo_lembrete !== undefined ? comp.tempo_lembrete : 30;
         modalCompromisso.style.display = 'flex';
+    };
+
+    window.excluirCompromissoGrupo = (id) => {
+        solicitarConfirmacao("Excluir Evento?", "Tem certeza que deseja apagar este evento do grupo? Ninguém mais conseguirá visualizá-lo.", async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/compromissos/${id}`, {
+                    method: 'DELETE', credentials: 'include'
+                });
+                if (res.ok) {
+                    showToast("Evento excluído!");
+                    carregarCompromissosDoGrupo(grupoSelecionadoId);
+                } else {
+                    const err = await res.json();
+                    showToast(err.erro || "Erro ao excluir evento", 'erro');
+                }
+            } catch (error) { console.error(error); }
+        });
     };
 
     formCompromisso.addEventListener('submit', async (e) => {
