@@ -595,7 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const hora = document.getElementById('compHora').value;
         
         const dataEscolhida = new Date(`${data}T${hora}:00`);
-        if (dataEscolhida < new Date()) {
+        const limitePassado = new Date();
+        limitePassado.setMinutes(limitePassado.getMinutes() - 5);
+
+        if (dataEscolhida < limitePassado) {
             showToast('Não agende compromissos no passado.', 'erro');
             return;
         }

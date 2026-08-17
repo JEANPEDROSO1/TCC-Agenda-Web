@@ -190,9 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = document.getElementById('compData').value;
         const hora = document.getElementById('compHora').value;
 
-        // Bloquear data passada
+        // Bloquear data passada (com tolerância de 5 minutos)
         const dataEscolhida = new Date(`${data}T${hora}:00`);
-        if (dataEscolhida < new Date()) {
+        const limitePassado = new Date();
+        limitePassado.setMinutes(limitePassado.getMinutes() - 5);
+        
+        if (dataEscolhida < limitePassado) {
             showToast('Não é possível agendar um compromisso no passado.', 'erro');
             return;
         }
