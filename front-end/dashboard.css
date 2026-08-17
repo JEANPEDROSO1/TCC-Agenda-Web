@@ -63,7 +63,7 @@ body {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 24px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .cartao-vidro,
@@ -74,6 +74,11 @@ body {
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12);
     padding: 20px;
+}
+
+.painel-compromissos-dashboard {
+    display: flex;
+    flex-direction: column;
 }
 
 .cabecalho-cartao {

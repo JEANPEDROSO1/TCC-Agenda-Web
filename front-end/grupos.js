@@ -464,9 +464,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         futuros.forEach(comp => {
             const div = document.createElement('div');
-            div.className = 'compromisso-item';
-            div.style.background = 'rgba(16, 185, 129, 0.1)';
-            div.style.borderLeft = '4px solid #10b981';
+            div.className = 'item-proximo-compromisso';
+            div.style.flexDirection = 'row';
+            div.style.alignItems = 'center';
+            div.style.justifyContent = 'space-between';
             
             const [a, m, d] = comp.data.split('-');
             const tagUrgencia = comp.urgencia === 'urgente' ? `<span style="color:#ef4444; font-size:0.7rem;">(Urgente)</span>` : '';
@@ -491,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
             div.innerHTML = `
                 <div class="compromisso-info" style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; padding-right:15px;">
                     <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-                        <strong style="color:var(--text-color); font-size:0.95rem; line-height:1.2;">${comp.hora} - ${comp.titulo}</strong>
+                        <strong style="color:#10b981; font-size:0.95rem; line-height:1.2;">${comp.hora} - ${comp.titulo}</strong>
                         ${tagUrgencia}
                     </div>
                     ${nomeCriador}
@@ -499,9 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 ${acoesCompromisso}
             `;
-            div.style.display = 'flex';
-            div.style.alignItems = 'center';
-            div.style.justifyContent = 'space-between';
             listaCompromissosGrupo.appendChild(div);
         });
     }
