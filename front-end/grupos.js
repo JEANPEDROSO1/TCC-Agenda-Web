@@ -458,15 +458,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 diaEl.classList.add('passado');
             } else if (dataAtual > hojeData) {
                 diaEl.classList.add('futuro');
-            } else {
-                diaEl.classList.add('hoje');
             }
+
+            if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) diaEl.classList.add('hoje');
+            if (dataStr === window.dataSelecionadaCalendario) diaEl.classList.add('selecionado');
 
             diaEl.classList.add('selecionavel');
             diaEl.onclick = () => {
-                document.querySelectorAll('.dia-calendario').forEach(el => el.classList.remove('selecionado'));
-                diaEl.classList.add('selecionado');
                 window.dataSelecionadaCalendario = dataStr;
+                renderizarCalendarioGrupo(mes, ano);
             };
 
             calendarioGrupoEl.appendChild(diaEl);

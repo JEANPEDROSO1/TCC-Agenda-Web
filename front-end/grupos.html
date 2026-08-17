@@ -158,49 +158,6 @@
             color: #ffffff; /* Branco para o futuro */
         }
 
-        .dia-calendario.hoje {
-            border: 2px solid var(--primary-color) !important;
-            background: rgba(37, 99, 235, 0.1);
-        }
-        
-        .dia-calendario.hoje .numero-dia {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .dia-calendario.selecionado {
-            background: rgba(37, 99, 235, 0.2) !important;
-            border: 2px solid var(--primary-color) !important;
-            transform: scale(1.02);
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
-        }
-
-        .dia-calendario.selecionado .numero-dia {
-            color: #ffffff !important;
-            font-weight: bold;
-        }
-
-        .botao-nav-grupo {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--primary-color);
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            padding: 0;
-            transition: all 0.2s;
-        }
-
-        .botao-nav-grupo:hover {
-            transform: scale(1.05);
-            background: var(--primary-hover, #2563eb);
-        }
-
         @media (max-width: 768px) {
             .grade-grupos {
                 grid-template-columns: 1fr;
@@ -290,13 +247,13 @@
                         <!-- Calendário -->
                         <div class="cartao-vidro cartao-calendario" style="padding: 15px;">
                             <div class="cabecalho-cartao">
-                                <button id="mesAnterior" class="botao-nav-grupo">
+                                <button id="mesAnterior" class="botao-navegacao-mes" style="flex-shrink: 0; padding: 0;">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 20px; height: 20px;">
                                         <path d="M15 18L9 12L15 6" />
                                     </svg>
                                 </button>
                                 <h3 id="mesEAno" style="margin: 0; font-size: 1.1rem; color: #1e3a8a;"></h3>
-                                <button id="proximoMes" class="botao-nav-grupo">
+                                <button id="proximoMes" class="botao-navegacao-mes" style="flex-shrink: 0; padding: 0;">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width: 20px; height: 20px;">
                                         <path d="M9 18L15 12L9 6" />
                                     </svg>
@@ -450,7 +407,7 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=8" defer></script>
+    <script src="grupos.js?v=9" defer></script>
 </body>
 
 </html>
