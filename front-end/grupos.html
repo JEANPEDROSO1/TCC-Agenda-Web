@@ -9,14 +9,14 @@
     <style>
         .grade-grupos {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 1fr;
             gap: 20px;
             align-items: start;
         }
 
         .lista-grupos {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 15px;
         }
 
@@ -435,7 +435,7 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=22" defer></script>
+    <script src="grupos.js?v=23" defer></script>
 </body>
 
 </html>
