@@ -412,7 +412,30 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=20" defer></script>
+    <!-- MODAL CONFIRMAÇÃO EXCLUIR GRUPO -->
+    <div id="modalExcluirGrupo" class="modal-overlay" style="display: none;">
+        <div class="modal-content cartao-vidro" style="max-width: 400px; text-align: center;">
+            <div class="modal-body" style="padding: 30px 20px;">
+                <div style="color: #ef4444; margin-bottom: 15px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; margin: auto;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h2 style="margin-bottom: 15px; color: #ef4444;">Excluir Grupo?</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">
+                    CUIDADO: Tem certeza que deseja excluir o grupo inteiro? Todos os compromissos serão excluídos e todos os usuários serão removidos do grupo.
+                </p>
+                <div class="modal-footer" style="justify-content: center; gap: 15px;">
+                    <button type="button" id="btnCancelarExcluirGrupo" class="btn-secundario" style="flex: 1;">Cancelar</button>
+                    <button type="button" id="btnConfirmarExcluirGrupo" class="botao-principal-vidro" style="flex: 1; background: #ef4444; border-color: #dc2626;">Sim, Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="grupos.js?v=21" defer></script>
 </body>
 
 </html>

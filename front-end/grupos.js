@@ -330,8 +330,20 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error(e); }
     });
 
-    btnExcluirGrupo.addEventListener('click', async () => {
-        if (!confirm("CUIDADO: Tem certeza que deseja excluir o grupo inteiro? Todos os compromissos serão excluídos e todos os usuários serão removidos do grupo.")) return;
+    const modalExcluirGrupo = document.getElementById('modalExcluirGrupo');
+    const btnCancelarExcluirGrupo = document.getElementById('btnCancelarExcluirGrupo');
+    const btnConfirmarExcluirGrupo = document.getElementById('btnConfirmarExcluirGrupo');
+
+    btnExcluirGrupo.addEventListener('click', () => {
+        modalExcluirGrupo.style.display = 'flex';
+    });
+
+    btnCancelarExcluirGrupo.addEventListener('click', () => {
+        modalExcluirGrupo.style.display = 'none';
+    });
+
+    btnConfirmarExcluirGrupo.addEventListener('click', async () => {
+        modalExcluirGrupo.style.display = 'none';
         try {
             const res = await fetch(`${API_BASE_URL}/grupos/${grupoSelecionadoId}`, {
                 method: 'DELETE', credentials: 'include'
@@ -339,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok) {
                 showToast("Grupo excluído com sucesso!");
                 detalhesGrupoEl.style.display = 'none';
+                localStorage.removeItem('ultimoGrupoAberto');
                 carregarGrupos();
             } else {
                 const err = await res.json();
