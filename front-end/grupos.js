@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok) {
                 grupos = await res.json();
                 renderizarListaGrupos();
+                
+                const ultimoGrupo = localStorage.getItem('ultimoGrupoAberto');
+                if (ultimoGrupo) {
+                    carregarDetalhesGrupo(parseInt(ultimoGrupo));
+                }
             }
         } catch (error) {
             console.error("Erro ao carregar grupos:", error);
@@ -112,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 document.querySelector('.grade-grupos').classList.add('grupo-aberto');
                 document.getElementById('btnVoltarGrupos').style.display = 'inline-block';
+                localStorage.setItem('ultimoGrupoAberto', id);
                 
                 // Em telas pequenas, rola a página para os detalhes do grupo
                 if (window.innerWidth <= 768) {
@@ -266,6 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
         detalhesGrupoEl.style.display = 'none';
         grupoSelecionadoId = null;
         renderizarListaGrupos();
+        document.getElementById('btnVoltarGrupos').style.display = 'none';
+        localStorage.removeItem('ultimoGrupoAberto');
     });
 
     btnNovoGrupo.addEventListener('click', () => {
