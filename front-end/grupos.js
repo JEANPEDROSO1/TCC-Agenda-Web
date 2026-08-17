@@ -424,6 +424,13 @@ document.addEventListener('DOMContentLoaded', () => {
         calendarioGrupoEl.innerHTML = '';
         mesEAnoEl.textContent = `${meses[mes]} ${ano}`;
 
+        const hoje = new Date();
+        const dataHojeStr = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`;
+        
+        if (!window.dataSelecionadaCalendario) {
+            window.dataSelecionadaCalendario = dataHojeStr;
+        }
+
         const primeiroDia = new Date(ano, mes, 1).getDay();
         const diasNoMes = new Date(ano, mes + 1, 0).getDate();
         const diasNoMesAnterior = new Date(ano, mes, 0).getDate();
