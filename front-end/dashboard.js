@@ -138,6 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             diaEl.innerHTML = `<span class="numero-dia">${i}</span>${htmlEventos}`;
             
+            const dataAtual = new Date(ano, mes, i);
+            const hojeData = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            
+            if (dataAtual < hojeData) {
+                diaEl.classList.add('inativo');
+            }
+            
             if (i === hoje.getDate() && mes === hoje.getMonth() && ano === hoje.getFullYear()) diaEl.classList.add('hoje');
             if (dataStr === dataSelecionada) diaEl.classList.add('selecionado');
 

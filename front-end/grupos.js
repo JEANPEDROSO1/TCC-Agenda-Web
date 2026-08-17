@@ -547,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hojeData = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
             
             if (dataAtual < hojeData) {
-                diaEl.classList.add('passado');
+                diaEl.classList.add('inativo');
             } else if (dataAtual > hojeData) {
                 diaEl.classList.add('futuro');
             }
