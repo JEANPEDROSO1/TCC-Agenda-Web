@@ -350,7 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (res.ok) {
                 showToast("Grupo excluído com sucesso!");
+                document.querySelector('.grade-grupos').classList.remove('grupo-aberto');
+                document.getElementById('btnVoltarGrupos').style.display = 'none';
                 detalhesGrupoEl.style.display = 'none';
+                grupoSelecionadoId = null;
                 localStorage.removeItem('ultimoGrupoAberto');
                 carregarGrupos();
             } else {
