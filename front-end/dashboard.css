@@ -63,7 +63,7 @@ body {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 24px;
-    align-items: stretch;
+    align-items: start;
 }
 
 .cartao-vidro,
@@ -79,8 +79,7 @@ body {
 .painel-compromissos-dashboard {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: 0; /* Impede o painel de esticar o grid */
+    max-height: 740px; /* Altura ideal do calendário */
 }
 
 .cabecalho-cartao {
