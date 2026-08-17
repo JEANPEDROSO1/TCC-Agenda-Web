@@ -3,10 +3,11 @@ const pool = require('../db');
 exports.listar = async (req, res) => {
     try {
         const [compromissos] = await pool.execute(`
-            SELECT c.*, gm.papel as meu_papel_grupo 
+            SELECT c.*, gm.papel as meu_papel_grupo, u.nome as criador_nome
             FROM compromissos c
             LEFT JOIN grupo_membros gm ON c.grupo_id = gm.grupo_id AND gm.usuario_id = ?
-            WHERE c.usuario_id = ? OR c.grupo_id IN (SELECT grupo_id FROM grupo_membros WHERE usuario_id = ?)
+            LEFT JOIN usuarios u ON c.usuario_id = u.id
+            WHERE c.usuario_id = ? OR c.grupo_id IN (SELECT grupo_id FROM grupo_membros WHERE usuario_id = ? AND status = 'aceito')
             ORDER BY c.data ASC, c.hora ASC
         `, [req.user.id, req.user.id, req.user.id]);
         

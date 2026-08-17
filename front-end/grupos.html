@@ -294,12 +294,12 @@
                         <h3 style="margin-top: 0; font-size: 1rem; margin-bottom: 10px;">Convidar Membro</h3>
                         <form id="formAdicionarMembro" style="display: flex; gap: 10px; align-items: center;">
                             <input type="email" id="novoMembroEmail" class="input-padrao" placeholder="E-mail do usuário" required style="flex: 1;">
-                            <select id="novoMembroPapel" class="input-padrao" style="width: 120px;">
-                                <option value="comum">Comum</option>
-                                <option value="membro">Membro</option>
-                                <option value="admin">Admin</option>
+                            <select id="novoMembroPapel" class="input-padrao" style="flex: 1; min-width: 150px;">
+                                <option value="comum">Comum (Apenas visualiza)</option>
+                                <option value="membro">Membro (Pode editar/criar)</option>
+                                <option value="admin">Administrador (Controle total)</option>
                             </select>
-                            <button type="submit" class="botao-principal-vidro" style="padding: 10px 15px;">Convidar</button>
+                            <button type="submit" class="botao-principal-vidro" style="white-space: nowrap;">Adicionar Membro</button>
                         </form>
                     </div>
 
@@ -435,7 +435,30 @@
         </div>
     </div>
 
-    <script src="grupos.js?v=23" defer></script>
+    <!-- MODAL CONFIRMAÇÃO GENÉRICO -->
+    <div id="modalConfirmacaoGenerico" class="modal-overlay" style="display: none; z-index: 9999;">
+        <div class="modal-content cartao-vidro" style="max-width: 400px; text-align: center;">
+            <div class="modal-body" style="padding: 30px 20px;">
+                <div style="color: #ef4444; margin-bottom: 15px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; margin: auto;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h2 id="tituloConfirmacaoGenerico" style="margin-bottom: 15px; color: var(--text-color);">Tem certeza?</h2>
+                <p id="textoConfirmacaoGenerico" style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">
+                    Esta ação não pode ser desfeita.
+                </p>
+                <div class="modal-footer" style="justify-content: center; gap: 15px;">
+                    <button type="button" id="btnCancelarConfirmacaoGenerico" class="btn-secundario" style="flex: 1;">Cancelar</button>
+                    <button type="button" id="btnConfirmarAcaoGenerico" class="botao-principal-vidro" style="flex: 1; background: #ef4444; border-color: #dc2626;">Sim, Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="grupos.js?v=24" defer></script>
 </body>
 
 </html>

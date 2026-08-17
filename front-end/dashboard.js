@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let badgeHtml = '';
             if (comp.grupo_id && !isDesativado) {
                 cor = '#10b981'; // Verde para grupos
-                badgeHtml = `<span style="background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 5px;">Grupo</span>`;
+                const nomeCriador = comp.criador_nome ? ` por ${comp.criador_nome}` : '';
+                badgeHtml = `<span style="background: rgba(16, 185, 129, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 5px;">Grupo${nomeCriador}</span>`;
             }
 
             const opacity = isDesativado ? '0.6' : '1';

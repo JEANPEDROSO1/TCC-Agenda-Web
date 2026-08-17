@@ -203,14 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <option value="membro" ${m.papel === 'membro' ? 'selected' : ''}>Membro</option>
                         <option value="admin" ${m.papel === 'admin' ? 'selected' : ''}>Admin</option>
                     </select>` : ''}
-                    <button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">
+                    <button onclick="window.removerMembro(${m.id}, '${isConvite ? 'cancelar' : 'remover'}')" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">
                         ${isConvite ? 'Cancelar Convite' : 'Remover'}
                     </button>
                 </div>
             `;
         } else if (m.id === window.usuarioLogadoId && !isAdminGeral && !isConvite) {
             // Eu mesmo posso sair do grupo (se não for o criador)
-            acoesHtml = `<button onclick="window.removerMembro(${m.id})" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">Sair do Grupo</button>`;
+            acoesHtml = `<button onclick="window.removerMembro(${m.id}, 'sair')" class="btn-secundario" style="color:#ef4444; border-color:#ef4444; padding:4px 8px; font-size:0.8rem;">Sair do Grupo</button>`;
         }
 
         div.innerHTML = `
@@ -245,25 +245,63 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) { console.error(e); }
     };
 
-    window.removerMembro = async (usuarioId) => {
-        if (!confirm("Tem certeza que deseja remover este membro?")) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/grupos/${grupoSelecionadoId}/membros/${usuarioId}`, {
-                method: 'DELETE', credentials: 'include'
-            });
-            if (res.ok) {
-                showToast("Membro removido!");
-                if (usuarioId === window.usuarioLogadoId) {
-                    detalhesGrupoEl.style.display = 'none';
-                    carregarGrupos();
+    // Lógica do Modal Genérico de Confirmação
+    const modalConfirmacaoGenerico = document.getElementById('modalConfirmacaoGenerico');
+    const tituloConfirmacaoGenerico = document.getElementById('tituloConfirmacaoGenerico');
+    const textoConfirmacaoGenerico = document.getElementById('textoConfirmacaoGenerico');
+    const btnCancelarConfirmacaoGenerico = document.getElementById('btnCancelarConfirmacaoGenerico');
+    const btnConfirmarAcaoGenerico = document.getElementById('btnConfirmarAcaoGenerico');
+    let callbackConfirmacao = null;
+
+    btnCancelarConfirmacaoGenerico.addEventListener('click', () => {
+        modalConfirmacaoGenerico.style.display = 'none';
+        callbackConfirmacao = null;
+    });
+
+    btnConfirmarAcaoGenerico.addEventListener('click', () => {
+        modalConfirmacaoGenerico.style.display = 'none';
+        if (callbackConfirmacao) callbackConfirmacao();
+        callbackConfirmacao = null;
+    });
+
+    function solicitarConfirmacao(titulo, texto, onConfirm) {
+        tituloConfirmacaoGenerico.textContent = titulo;
+        textoConfirmacaoGenerico.textContent = texto;
+        callbackConfirmacao = onConfirm;
+        modalConfirmacaoGenerico.style.display = 'flex';
+    }
+
+    window.removerMembro = async (usuarioId, tipoAcao = 'remover') => {
+        let titulo = "Remover Membro?";
+        let texto = "Tem certeza que deseja remover este membro? Ele perderá o acesso ao grupo.";
+        
+        if (tipoAcao === 'cancelar') {
+            titulo = "Cancelar Convite?";
+            texto = "Tem certeza que deseja cancelar este convite pendente?";
+        } else if (tipoAcao === 'sair') {
+            titulo = "Sair do Grupo?";
+            texto = "Tem certeza que deseja sair deste grupo? Você perderá o acesso aos compromissos.";
+        }
+
+        solicitarConfirmacao(titulo, texto, async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/grupos/${grupoSelecionadoId}/membros/${usuarioId}`, {
+                    method: 'DELETE', credentials: 'include'
+                });
+                if (res.ok) {
+                    showToast(tipoAcao === 'cancelar' ? "Convite cancelado!" : (tipoAcao === 'sair' ? "Você saiu do grupo!" : "Membro removido!"));
+                    if (usuarioId === window.usuarioLogadoId) {
+                        detalhesGrupoEl.style.display = 'none';
+                        carregarGrupos();
+                    } else {
+                        carregarDetalhesGrupo(grupoSelecionadoId);
+                    }
                 } else {
-                    carregarDetalhesGrupo(grupoSelecionadoId);
+                    const err = await res.json();
+                    showToast(err.erro || "Erro ao executar ação", 'erro');
                 }
-            } else {
-                const err = await res.json();
-                showToast(err.erro || "Erro ao remover", 'erro');
-            }
-        } catch (e) { console.error(e); }
+            } catch (e) { console.error(e); }
+        });
     };
 
     // Eventos DOM
@@ -431,9 +469,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const canEdit = meuPapelSelecionado === 'admin' || meuPapelSelecionado === 'membro';
             const editBtn = canEdit ? `<button onclick="editarCompromissoGrupo(${comp.id})" style="background:none; border:none; color:var(--primary-color); cursor:pointer;">✏️</button>` : '';
 
+            const nomeCriador = comp.criador_nome ? ` <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 5px;">(por ${comp.criador_nome})</span>` : '';
             div.innerHTML = `
                 <div class="compromisso-info">
-                    <strong>${comp.hora} - ${comp.titulo} ${tagUrgencia}</strong>
+                    <strong>${comp.hora} - ${comp.titulo} ${tagUrgencia}${nomeCriador}</strong>
                     <span>${d}/${m}/${a} ${comp.repeticao !== 'nenhuma' ? '🔄 '+comp.repeticao : ''}</span>
                 </div>
                 ${editBtn}
