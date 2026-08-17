@@ -111,8 +111,8 @@ exports.adicionarMembro = async (req, res) => {
         if (existente.length > 0) return res.status(400).json({ erro: "Usuário já é membro deste grupo." });
 
         await pool.execute(
-            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel, status) VALUES (?, ?, ?, "pendente")',
-            [id, novo_membro_id, papel]
+            'INSERT INTO grupo_membros (grupo_id, usuario_id, papel, status) VALUES (?, ?, ?, ?)',
+            [id, novo_membro_id, papel, 'pendente']
         );
 
         res.status(201).json({ mensagem: "Convite enviado com sucesso!" });
