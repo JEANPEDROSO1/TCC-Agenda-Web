@@ -442,7 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarioGrupoEl.appendChild(div);
         }
 
-        const hoje = new Date();
         for (let i = 1; i <= diasNoMes; i++) {
             const diaEl = document.createElement('div');
             diaEl.className = 'dia-calendario';
