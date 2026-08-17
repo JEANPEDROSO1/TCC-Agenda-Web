@@ -96,8 +96,8 @@ exports.adicionarMembro = async (req, res) => {
     try {
         // Verifica permissão (apenas admin pode adicionar)
         const [adminValida] = await pool.execute(
-            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = "admin"',
-            [id, usuario_id]
+            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = ?',
+            [id, usuario_id, 'admin']
         );
         if (adminValida.length === 0) return res.status(403).json({ erro: "Apenas administradores podem adicionar membros." });
 
@@ -131,8 +131,8 @@ exports.alterarPapelMembro = async (req, res) => {
 
     try {
         const [adminValida] = await pool.execute(
-            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = "admin"',
-            [id, usuario_id]
+            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = ?',
+            [id, usuario_id, 'admin']
         );
         if (adminValida.length === 0) return res.status(403).json({ erro: "Apenas administradores podem alterar papéis." });
 
@@ -161,8 +161,8 @@ exports.removerMembro = async (req, res) => {
     try {
         // Admin removendo alguém, OU a própria pessoa saindo
         const isAdmin = await pool.execute(
-            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = "admin"',
-            [id, usuario_id]
+            'SELECT papel FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND papel = ?',
+            [id, usuario_id, 'admin']
         ).then(([rows]) => rows.length > 0);
 
         if (!isAdmin && usuario_id != membroId) {
@@ -242,8 +242,8 @@ exports.recusarConvite = async (req, res) => {
     const usuario_id = req.user.id;
     try {
         const [result] = await pool.execute(
-            'DELETE FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = "pendente"',
-            [id, usuario_id]
+            'DELETE FROM grupo_membros WHERE grupo_id = ? AND usuario_id = ? AND status = ?',
+            [id, usuario_id, 'pendente']
         );
         if (result.affectedRows === 0) return res.status(404).json({ erro: "Convite não encontrado." });
         res.json({ mensagem: "Convite recusado." });
