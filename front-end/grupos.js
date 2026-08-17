@@ -487,11 +487,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            const nomeCriador = comp.criador_nome ? ` <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal; margin-left: 5px;">(por ${comp.criador_nome})</span>` : '';
+            const nomeCriador = comp.criador_nome ? ` <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-top:2px;">(criado por ${comp.criador_nome})</span>` : '';
             div.innerHTML = `
-                <div class="compromisso-info" style="flex:1;">
-                    <strong>${comp.hora} - ${comp.titulo} ${tagUrgencia}${nomeCriador}</strong>
-                    <span>${d}/${m}/${a} ${comp.repeticao !== 'nenhuma' ? '🔄 '+comp.repeticao : ''}</span>
+                <div class="compromisso-info" style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; padding-right:15px;">
+                    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <strong style="color:var(--text-color); font-size:0.95rem; line-height:1.2;">${comp.hora} - ${comp.titulo}</strong>
+                        ${tagUrgencia}
+                    </div>
+                    ${nomeCriador}
+                    <span style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">📅 ${d}/${m}/${a} ${comp.repeticao !== 'nenhuma' ? ' 🔄 '+comp.repeticao : ''}</span>
                 </div>
                 ${acoesCompromisso}
             `;
