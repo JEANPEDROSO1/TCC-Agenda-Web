@@ -249,7 +249,7 @@ html.dark-mode .dia-calendario:hover {
 
 .dia-calendario .numero-dia {
     font-weight: bold;
-    color: #475569;
+    color: #000;
 }
 
 html.dark-mode .dia-calendario .numero-dia {
@@ -261,7 +261,8 @@ html.dark-mode .dia-calendario .numero-dia {
 }
 
 .dia-calendario.inativo .numero-dia {
-    color: #cbd5e1;
+    color: #000;
+    opacity: 0.5;
 }
 
 html.dark-mode .dia-calendario.inativo .numero-dia {

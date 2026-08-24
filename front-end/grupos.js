@@ -450,7 +450,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const futuros = compromissosGrupo.filter(c => {
             const horaFormatada = c.hora.length > 5 ? c.hora : `${c.hora}:00`;
             const dataComp = new Date(`${c.data}T${horaFormatada}`);
-            return dataComp >= agora || c.repeticao !== 'nenhuma';
+            // Mostra se for futuro, tiver repetição, ou se for do mês/ano atual do calendário
+            const isMesmoMes = dataComp.getMonth() === calMesAtual && dataComp.getFullYear() === calAnoAtual;
+            return dataComp >= agora || c.repeticao !== 'nenhuma' || isMesmoMes;
         }).sort((a,b) => {
             const horaA = a.hora.length > 5 ? a.hora : `${a.hora}:00`;
             const horaB = b.hora.length > 5 ? b.hora : `${b.hora}:00`;
@@ -488,11 +490,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
+            const horaFormatada = comp.hora.length > 5 ? comp.hora : `${comp.hora}:00`;
+            const dataComp = new Date(`${comp.data}T${horaFormatada}`);
+            const jaPassou = dataComp < agora;
+            const isDesativado = comp.status === 'desativado' || jaPassou;
+            
+            if (isDesativado) {
+                div.style.opacity = '0.6';
+            }
+            
+            const extra = isDesativado ? ' <i style="color: #94a3b8; font-size: 0.85rem;">(Finalizado)</i>' : '';
+            const corTitulo = isDesativado ? '#94a3b8' : '#10b981';
+
             const nomeCriador = comp.criador_nome ? ` <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-top:2px;">(criado por ${comp.criador_nome})</span>` : '';
             div.innerHTML = `
                 <div class="compromisso-info" style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; padding-right:15px;">
                     <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-                        <strong style="color:#10b981; font-size:0.95rem; line-height:1.2;">${comp.hora} - ${comp.titulo}</strong>
+                        <strong style="color:${corTitulo}; font-size:0.95rem; line-height:1.2;">${comp.hora} - ${comp.titulo}${extra}</strong>
                         ${tagUrgencia}
                     </div>
                     ${nomeCriador}
